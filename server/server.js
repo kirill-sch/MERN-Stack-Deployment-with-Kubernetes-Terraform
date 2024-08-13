@@ -18,7 +18,7 @@ await mongoose.connect(url);
 
 // USER
 
-app.get('api/user', async (req, res) => {
+app.get('api/users', async (req, res) => {
     try {
         const users = await User.find({});
         res.json(users);
@@ -27,13 +27,38 @@ app.get('api/user', async (req, res) => {
     }
 });
 
+app.get('/api/user', async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    try {
+        const user = await User.findOne({ username: username })
+        
+        if (!user) {
+            return res.json({ userFound: false, succeeded: false })
+        }
+
+        if (user.password === password) {
+            res.json({ userFound: true, succeeded: true })
+        } else {
+            res.json({ userFound: true, succeeded: false })
+        }
+    } catch (e) {
+        res.status(500).json({ error: `An error occured while trying to retrieve log in data for: ${username}.` })
+    }
+})
+
 app.post('/api/user', async (req, res) => {
     const body = req.body;
 
     try {
-        /// all user info here
+        const username = body.username;
+        const password = body.password;
+        const email = body.email;
         const user = new User({
-            /// all user info
+            username,
+            password,
+            email
         })
         await user.save();
         res.status(201).json(user);
@@ -107,9 +132,12 @@ app.post('/api/likes', async (req, res) => {
     const body = req.body;
 
     try { 
-        // like info here
+        const name = body.name;
+        const when = Date.now();
+
         const like = new Like({
-            // like info here
+            name,
+            when
         })
         await Like.save();
         res.status(201).json(like);
@@ -152,9 +180,12 @@ app.post('/api/dislikes', async (req, res) => {
     const body = req.body;
 
     try { 
-        // like info here
+        const name = body.name;
+        const when = Date.now();
+
         const dislike = new Dislike({
-            // like info here
+            name,
+            when
         })
         await Dislike.save();
         res.status(201).json(dislike);
@@ -198,12 +229,58 @@ app.get('/api/settings/:username', async (req, res) => {
 
 app.put('/api/settings/:username', async (req, res) => {
     const username = req.params.username;
+    const newSetting = req.body;
 
     try {
+        const updatedSettingsDocument = await Setting.findOneAndUpdate({ username : username}, { $set: newSetting}, { new: true});
         
+        if (updatedSettingsDocument) {
+            res.status(200).json({ message: `Updated users settings: ${username}.` });
+        } else {
+            res.status(404).json({ error: `Username not found: ${username}.` })
+        }
+    } catch (e) {
+        res.status(500).json({ error: `An error occured while trying to update settings for: ${username}.` })
     }
 })
 
+app.delete('/api/settings/:username', async (req, res) => {
+    const username = req.params.username;
+    
+    try {
+        const setting = Setting.findOneAndDelete({ username: username })
 
+        if (!setting) {
+            res.status(404).json({ error: `Settings for: ${username}, not found.` })
+        }
+        res.status(200).json({ message: `Settings successfully deleted for: ${username}.` })
+    } catch (e) {
+        res.status(500).json({ error: `An error occured while deleting settings for: ${username}.` })
+    }
+})
+
+app.post('/api/settings', async (req, res) => {
+    const body = req.body;
+
+    try{
+        const prefAge = body.prefAge;
+        const prefGender = body.prefGender;
+        const prefRace = body.prefRace;
+        const prefJob = body.prefJob;
+        const prefOrigin = body.prefOrigin;
+
+        const setting = new Setting({
+            prefAge,
+            prefGender,
+            prefRace,
+            prefJob,
+            prefOrigin
+        })
+        await setting.save();
+        res.status(201).json(setting);
+    } catch (e) {
+        res.status(500).json({ error: `An error occured while trying to save settings.` })
+    }
+})
 
 app.listen(3000, () => console.log('Server started on http://localhost:3000'));
