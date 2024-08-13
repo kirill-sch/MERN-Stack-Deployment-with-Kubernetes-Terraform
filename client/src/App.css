@@ -33,10 +33,44 @@
   }
 }
 
-.card {
-  padding: 2em;
+.homepage{
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
+  align-content: stretch;
+  justify-items: center;
+  justify-content: stretch;
+  border: 3px solid black;
+  width: 92vw;
+  height: 92vh;
 }
 
-.read-the-docs {
-  color: #888;
+.main{
+  display: flex;
+  flex-direction: column;
+  grid-column: 2;
+  grid-row: 1 / 3;
+  box-shadow: 6px 6px 10px 0px rgba(0, 0, 0, 0.5); 
+  border-radius: 8px;
+}
+.profileImg{
+  align-self: start;
+  justify-self: end;
+  grid-column: 3;
+  grid-row: 1 / 3;
+}
+
+.messagesContainer{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: start;
+  align-content: stretch;
+  justify-content: start;
+  grid-column: 1;
+  grid-row: 1 / 3;
+  border-radius: 14px;
 }
