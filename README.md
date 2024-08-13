@@ -1,7 +1,7 @@
 
 # Final Fantasy dating app
 
-  
+  Final Fantasy dating app using [MoogleApi](https://github.com/jackfperryjr/mog)
 
 ## How to install
 
