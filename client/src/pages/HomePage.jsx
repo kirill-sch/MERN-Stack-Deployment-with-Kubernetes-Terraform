@@ -1,7 +1,12 @@
+import Main from "../components/Main";
+
+
 function HomePage () {
 
     return (
-        <div className="homepage"></div>
+        <div className="homepage">
+            <Main/>
+        </div>
     )
 
 
