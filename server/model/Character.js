@@ -7,9 +7,10 @@ const characterSchema = new Schema({
   gender: String,
   race: String,
   job: String,
+  height: String,
+  weight: String,
   origin: String,
   description: String,
 });
-
 
 export default model('Character', characterSchema);
