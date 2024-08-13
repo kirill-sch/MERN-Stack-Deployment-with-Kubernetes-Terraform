@@ -5,7 +5,9 @@ function HomePage () {
 
     return (
         <div className="homepage">
-            <Main/>
+        <div className="messagesContainer">Messages</div>
+        <Main/>
+        <img src="" alt="Profile" className="profileImg" />
         </div>
     )
 

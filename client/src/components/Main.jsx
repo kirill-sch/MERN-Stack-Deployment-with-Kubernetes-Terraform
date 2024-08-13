@@ -1,6 +1,7 @@
 // Imports //
 
 import React, { useState, useEffect } from "react"
+import ArrowIcon from "./ArrowIcon"
 
 // Global Variables //
 
@@ -12,6 +13,7 @@ function Main() {
 
     const [characters, setCharacters] = useState([])
     const [randomCharacter, setRandomCharacter] = useState(null)
+    const [isMoreDetailsVisible, setIsMoreDetailsVisible] = useState(false);
 
     useEffect(() => {
 
@@ -63,21 +65,67 @@ function Main() {
             {!randomCharacter ? (
                 <p></p>
             ) : (
-                <div className="character" key={randomCharacter.id}>
-                    <img
-                        src={randomCharacter.pictures[0].url}
-                        alt={randomCharacter.name}
-                    />
-                    <h1>Name: {randomCharacter.name}</h1>
-                    {randomCharacter.age === "??" || randomCharacter.age === null ? "" : <h1>Age: {randomCharacter.age}</h1>}
-                    {randomCharacter.gender === "??" || randomCharacter.gender === null ? "" : <h1>Gender: {randomCharacter.gender}</h1>}
-                    {randomCharacter.race === "??" || randomCharacter.race === null ? "" : <h1>Race: {randomCharacter.race}</h1>}
-                    {randomCharacter.job === "??" || randomCharacter.job === null ? "" : <h1>Job: {randomCharacter.job}</h1>}
-                    {randomCharacter.height === "??" || randomCharacter.height === null ? "" : <h1>Height: {randomCharacter.height}</h1>}
-                    {randomCharacter.weight === "??" || randomCharacter.weight === null ? "" : <h1>Weight: {randomCharacter.weight}</h1>}
-                    {randomCharacter.origin === "??" || randomCharacter.origin === null ? "" : <h1>Origin: {randomCharacter.origin}</h1>}
-                    {randomCharacter.description === "??" || randomCharacter.description === null ? "" : <h1>About me: {randomCharacter.description}</h1>}
-                </div>
+                <>
+                    <div className="imageContainer" key={randomCharacter.id}>
+                        <img
+                            src={randomCharacter.pictures[0] === undefined ? '/assets/images/default_profiles/default.jpg' : randomCharacter.pictures[0].url}
+                            alt={randomCharacter.name}
+                        />
+                    </div>
+                    <div className="characterDetails">
+                        <div className="quickDetails">
+                            <h3>{randomCharacter.name}{randomCharacter.race === "??" || randomCharacter.race === null ? "" : `, ${randomCharacter.race}`} </h3>
+                            {randomCharacter.age === "??" || randomCharacter.age === null ? "" : <h3>{randomCharacter.age} years old</h3>}
+
+                        </div>
+
+                        {randomCharacter.job === "??" || randomCharacter.job === null ? "" : <h5 className="job">{randomCharacter.job}</h5>}
+
+                        <div id="arrowDiv"
+                            onMouseOver={() => setIsMoreDetailsVisible(true)}
+                            onMouseOut={() => setIsMoreDetailsVisible(false)}
+                        >
+
+                            <ArrowIcon /></div>
+
+                        {
+                            isMoreDetailsVisible && (
+                                <> <h5 className="moreDetails">More details:</h5>
+                                    {randomCharacter.gender !== "??" && randomCharacter.gender !== null && (
+                                        <h6 className="moreDetails">
+                                            {randomCharacter.gender === "Female" ? "Gender: Female ♀️" : "Gender: Male ♂️"}
+                                        </h6>
+                                    )}
+                                    {randomCharacter.height !== "??" && randomCharacter.height !== null && (
+                                        <h6 className="moreDetails">Height: {randomCharacter.height} 🧍↕</h6>
+                                    )}
+                                    {randomCharacter.weight !== "??" && randomCharacter.weight !== null && (
+                                        <h6 className="moreDetails">Weight: {randomCharacter.weight} 🪶</h6>
+                                    )}
+                                </>
+                            )
+                        }
+
+
+
+                    </div>
+
+
+                    <div className="characterDesc">
+
+                        {randomCharacter.description === "??" || randomCharacter.description === null ? "" : <p>{randomCharacter.description}</p>}
+
+                    </div>
+
+                    {randomCharacter.origin === "??" || randomCharacter.origin === null ? "" : <p className="origin">Origin: {randomCharacter.origin}</p>}
+
+                    <div className="buttonWrapper">
+                        <button className="dislikeButton">👎</button>
+                        <button className="likeButton">❤️</button>
+                    </div>
+
+
+                </>
             )}
 
         </div>
