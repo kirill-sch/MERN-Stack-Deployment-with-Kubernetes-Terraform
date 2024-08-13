@@ -33,7 +33,7 @@ app.get('/api/user', async (req, res) => {
 
     try {
         const user = await User.findOne({ username: username })
-        
+
         if (!user) {
             return res.json({ userFound: false, succeeded: false })
         }
@@ -88,15 +88,15 @@ app.put('/api/user/:user_id', async (req, res) => {
     const updates = req.body;
 
     try {
-     const updatedUserDocument = await User.findByIdAndUpdate(userId, { $set: updates }, { new: true });   
+        const updatedUserDocument = await User.findByIdAndUpdate(userId, { $set: updates }, { new: true });
 
-     if (updatedUserDocument) {
-        res.status(200).json({ message: `Updated user: ${updatedUserDocument}`})
-     } else {
-        res.status(404).json({ error: `User not found with id: ${userId}.`});
-     }
+        if (updatedUserDocument) {
+            res.status(200).json({ message: `Updated user: ${updatedUserDocument}` })
+        } else {
+            res.status(404).json({ error: `User not found with id: ${userId}.` });
+        }
     } catch (e) {
-        res.status(500).json({ error: `An error occured while updating user with id: ${userId}.`})
+        res.status(500).json({ error: `An error occured while updating user with id: ${userId}.` })
     }
 })
 
@@ -106,7 +106,7 @@ app.get('/api/charachters/races', async (req, res) => {
     const userPreferences = req.body.preferences;
 
     try {
-        const filteredCharachters = await Charachter.find({ race: { $in: userPreferences }});
+        const filteredCharachters = await Charachter.find({ race: { $in: userPreferences } });
 
         res.status(200).json(filteredCharachters)
     } catch (e) {
@@ -120,7 +120,7 @@ app.get('/api/likes/:username', async (req, res) => {
     const username = req.params.username;
 
     try {
-        const likes = await Likes.find({ likedBy: username});
+        const likes = await Likes.find({ likedBy: username });
 
         res.status(200).json(likes);
     } catch (e) {
@@ -131,7 +131,7 @@ app.get('/api/likes/:username', async (req, res) => {
 app.post('/api/likes', async (req, res) => {
     const body = req.body;
 
-    try { 
+    try {
         const name = body.name;
         const when = Date.now();
 
@@ -148,7 +148,7 @@ app.post('/api/likes', async (req, res) => {
 
 app.delete('/api/likes/:like_id', async (req, res) => {
     const like_id = req.params.username;
-    
+
     try {
         const like = Like.findOneAndDelete({ _id: like_id });
 
@@ -166,7 +166,7 @@ app.delete('/api/likes/:like_id', async (req, res) => {
 
 app.get('/api/dislikes/:username', async (req, res) => {
     const username = req.params.username;
-    
+
     try {
         const dislikes = await Dislikes.find({ dislikedBy: username });
 
@@ -179,7 +179,7 @@ app.get('/api/dislikes/:username', async (req, res) => {
 app.post('/api/dislikes', async (req, res) => {
     const body = req.body;
 
-    try { 
+    try {
         const name = body.name;
         const when = Date.now();
 
@@ -196,7 +196,7 @@ app.post('/api/dislikes', async (req, res) => {
 
 app.delete('/api/dislikes/:dislike_id', (req, res) => {
     const dislike_id = req.params.username;
-    
+
     try {
         const dislike = DisLike.findOneAndDelete({ _id: dislike_id });
 
@@ -232,8 +232,8 @@ app.put('/api/settings/:username', async (req, res) => {
     const newSetting = req.body;
 
     try {
-        const updatedSettingsDocument = await Setting.findOneAndUpdate({ username : username}, { $set: newSetting}, { new: true});
-        
+        const updatedSettingsDocument = await Setting.findOneAndUpdate({ username: username }, { $set: newSetting }, { new: true });
+
         if (updatedSettingsDocument) {
             res.status(200).json({ message: `Updated users settings: ${username}.` });
         } else {
@@ -246,7 +246,7 @@ app.put('/api/settings/:username', async (req, res) => {
 
 app.delete('/api/settings/:username', async (req, res) => {
     const username = req.params.username;
-    
+
     try {
         const setting = Setting.findOneAndDelete({ username: username })
 
@@ -262,7 +262,7 @@ app.delete('/api/settings/:username', async (req, res) => {
 app.post('/api/settings', async (req, res) => {
     const body = req.body;
 
-    try{
+    try {
         const prefAge = body.prefAge;
         const prefGender = body.prefGender;
         const prefRace = body.prefRace;
