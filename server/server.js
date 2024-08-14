@@ -56,8 +56,23 @@ app.post('/api/user', async (req, res) => {
 
 app.post('/api/users', async (req, res) => {
     try {
-        const { username, password, email, firstName, lastName} = req.body;
+        const { username, password, email, firstName, lastName } = req.body;
         const createdAt = Date.now();
+
+        const alreadyExistedUsers = user.find({})
+
+        alreadyExistedUsers.map(existingUser => {
+
+            if (username === existingUser.username) {
+                res.status(500).json({error_message: "Username already exists!"})
+                return;
+            } else if (email === existingUser.email) {
+                res.status(500).json({error_message: "Email address already registered!"})
+                return;
+            }
+        })
+
+
         const user = await new User({
             firstName,
             lastName,
@@ -66,7 +81,7 @@ app.post('/api/users', async (req, res) => {
             email,
             createdAt
         }).save();
-    
+
         res.status(201).json(user);
     } catch (e) {
         res.status(500).json({ error: 'An error occured while trying to save the user.' })
@@ -304,7 +319,7 @@ app.post('/api/matches', async (req, res) => {
             charactersId,
             matchedAt
         }).save();
-        
+
         res.status(201).json(match);
     } catch (e) {
         res.status(500).json({ error: `An error occured while trying to save matches.` })
