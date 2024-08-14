@@ -6,12 +6,13 @@ import React, { useState, useEffect } from "react"
 
 // Function //
 
-function LoginForm({setIsLoggedin, setLoggedInUser, setButtonClicked}) {
+function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [passwordInputType, setPasswordInputType] = useState("password")
     const [showPasswordButtonTextContent, setShowPasswordButtonTextContent] = useState("Show password")
+    const [loginError, setLoginError] = useState("");
 
     // Handle Username Inputfield
     function handleUsernameChange(event) {
@@ -58,9 +59,15 @@ function LoginForm({setIsLoggedin, setLoggedInUser, setButtonClicked}) {
             setLoggedInUser(validation.user);
             setIsLoggedin(true)
         } else if (!validation.userFound) {
-            alert("Incorrect username!")
+            setLoginError("Incorrect username!")
+            setTimeout(() => {
+                setLoginError("")
+            }, 2300);
         } else if (!validation.succeeded && validation.userFound) {
-            alert("Incorrect password!")
+            setLoginError("Incorrect password!")
+            setTimeout(() => {
+                setLoginError("")
+            }, 2300);
         }
     }
 
@@ -84,45 +91,45 @@ function LoginForm({setIsLoggedin, setLoggedInUser, setButtonClicked}) {
 
     return (
         <>
-                <div className="login">
+            <div className="loginContainer">
                 <button className="goBackButton" onClick={() => setButtonClicked("")}>Go back</button>
-                    <label>
-                        {"Username: "}
-                        <input
-                            type="text"
-                            placeholder="type your username here..."
-                            onChange={handleUsernameChange}
-                            onKeyDown={handleKeyDown}
-                        />
-                    </label>
+                <label>
+                    {"Username: "}
+                    <input
+                        type="text"
+                        onChange={handleUsernameChange}
+                        onKeyDown={handleKeyDown}
+                    />
+                </label>
 
-                    <br />
+                <br />
 
-                    <label>
-                        {"Password: "}
-                        <input
-                            type={passwordInputType}
-                            placeholder="type your password here..."
-                            onChange={handlePasswordChange}
-                            onKeyDown={handleKeyDown}
-                        />
+                <label>
+                    {"Password: "}
+                    <input
+                        type={passwordInputType}
+                        onChange={handlePasswordChange}
+                        onKeyDown={handleKeyDown}
+                    />
+                </label>
 
-                        <button
-                            type="button"
-                            onClick={handleShowPassword}
-                        >
-                        {showPasswordButtonTextContent}</button>
+                <button
+                    type="button"
+                    onClick={handleShowPassword}
+                >
+                    {showPasswordButtonTextContent}</button>
 
-                    </label>
+                <button
+                    type="button"
+                    onClick={handleLogin}
+                >Login</button>
 
-                    <br />
 
-                    <button
-                        type="button"
-                        onClick={handleLogin}
-                    >Login</button>
-
+                <div className={`errorMessage ${loginError === "" ? 'hidden' : 'active'}`}>
+                    <h1>{loginError}</h1>
                 </div>
+
+            </div>
 
         </>
     )
