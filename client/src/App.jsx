@@ -5,7 +5,8 @@ import Signup_Login from './pages/Signup_Login'
 
 function App() {
 
-  const [isLoggedin, setIsLoggedin] = useState(true);
+  const [isLoggedin, setIsLoggedin] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState(null)
 
   return (
     <>
