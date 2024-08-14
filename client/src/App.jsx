@@ -7,11 +7,10 @@ function App() {
 
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null)
-  const [profilePictureURL, setProfilePictureURL] = useState("/assets/images/default_profiles/profile1.webp");
 
   return (
     <>
-    {isLoggedin ? <HomePage profilePictureURL={profilePictureURL}/> : <Signup_Login />}
+    {isLoggedin ? <HomePage setIsLoggedin={setIsLoggedin} loggedInUser={loggedInUser}/> : <Signup_Login setIsLoggedin={setIsLoggedin} setLoggedInUser={setLoggedInUser} />}
     </>
   )
 }

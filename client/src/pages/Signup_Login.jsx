@@ -6,7 +6,7 @@ import RegistrationForm from "../components/RegistrationForm";
 
 // Function //
 
-function Signup_Login() {
+function Signup_Login({setIsLoggedin, setLoggedInUser}) {
 
     const [buttonClicked, setButtonClicked] = useState("")
 
@@ -24,11 +24,11 @@ function Signup_Login() {
             }
 
             {buttonClicked === "login" &&
-                <LoginForm/>
+                <LoginForm setIsLoggedin={setIsLoggedin} setLoggedInUser={setLoggedInUser}/>
             }
 
             {buttonClicked === "signup" &&
-                <RegistrationForm/>
+                <RegistrationForm setLoggedInUser={setLoggedInUser}/>
             }
 
         </>

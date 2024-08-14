@@ -1,6 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import User from "./model/User.js";
 import Charachter from "./model/Character.js";
 import Dislike from "./model/Dislike.js";
@@ -11,6 +14,9 @@ import Match from './model/Match.js';
 dotenv.config({
     path: ['.env.local', '.env']
 });
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 const app = express();
@@ -45,7 +51,7 @@ app.post('/api/user', async (req, res) => {
         }
 
         if (user.password === password) {
-            res.json({ userFound: true, succeeded: true })
+            res.json({ userFound: true, succeeded: true, user: user })
         } else {
             res.json({ userFound: true, succeeded: false })
         }
@@ -56,7 +62,7 @@ app.post('/api/user', async (req, res) => {
 
 app.post('/api/users', async (req, res) => {
     try {
-        const { username, password, email, firstName, lastName} = req.body;
+        const { username, password, email, firstName, lastName, profilePicture } = req.body;
         const createdAt = Date.now();
         const user = await new User({
             firstName,
@@ -64,9 +70,10 @@ app.post('/api/users', async (req, res) => {
             username,
             password,
             email,
+            profilePicture,
             createdAt
         }).save();
-    
+
         res.status(201).json(user);
     } catch (e) {
         res.status(500).json({ error: 'An error occured while trying to save the user.' })
@@ -304,11 +311,25 @@ app.post('/api/matches', async (req, res) => {
             charactersId,
             matchedAt
         }).save();
-        
+
         res.status(201).json(match);
     } catch (e) {
         res.status(500).json({ error: `An error occured while trying to save matches.` })
     }
 })
+
+
+//GET endpoint to list all available profile pictures
+app.get('/api/images', (req, res) => {
+    const imagesDir = path.join(__dirname, '../client/public/assets/images/default_profiles');
+    fs.readdir(imagesDir, (err, files) => {
+        if (err) {
+            return res.status(500).json({ error: 'Unable to scan directory' });
+        }
+        // Filter for image files only
+        const imageFiles = files.filter(file => /\.(webp|png|jpg|jpeg)$/.test(file));
+        res.json(imageFiles);
+    });
+});
 
 app.listen(3000, () => console.log('Server started on http://localhost:3000'));

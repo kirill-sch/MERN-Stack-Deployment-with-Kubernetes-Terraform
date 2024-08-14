@@ -7,9 +7,8 @@ import HomePage from "../pages/HomePage"
 
 // Function //
 
-function LoginForm() {
+function LoginForm({setIsLoggedin, setLoggedInUser}) {
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
 
@@ -33,7 +32,7 @@ function LoginForm() {
         } else if (password.length === 0) {
             alert ("Please type your password!")
         } else {
-            setIsLoggedIn(true)
+            setIsLoggedin(true)
         }
         */
 
@@ -54,18 +53,25 @@ function LoginForm() {
         const validation = await response.json()
 
         if (validation.userFound && validation.succeeded) {
-            setIsLoggedIn(true)
+            console.log("Logged in: ", validation.user);
+            setLoggedInUser(validation.user);
+            setIsLoggedin(true)
         } else if (!validation.userFound) {
             alert("Incorrect username!")
         } else if (!validation.succeeded && validation.userFound) {
             alert("Incorrect password!")
         }
     }
+
+    function handleKeyDown(e) {
+        if (e.key === "Enter") {
+            handleLogin();
+        }
+    };
     
     return (
-        <div>
+        <>
 
-            {!isLoggedIn ? (
                 <div className="login">
                     <label>
                         {"Username: "}
@@ -73,6 +79,7 @@ function LoginForm() {
                             type="text"
                             placeholder="type your username here..."
                             onChange={handleUsernameChange}
+                            onKeyDown={handleKeyDown}
                         />
                     </label>
 
@@ -84,6 +91,7 @@ function LoginForm() {
                             type="password"
                             placeholder="type your password here..."
                             onChange={handlePasswordChange}
+                            onKeyDown={handleKeyDown}
                         />
                     </label>
 
@@ -95,11 +103,8 @@ function LoginForm() {
                     >Login</button>
 
                 </div>
-            ) : (
-                <HomePage/>
-            )}
 
-        </div>
+        </>
     )
 };
 
