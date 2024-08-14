@@ -17,6 +17,8 @@ function RegistrationForm({ setLoggedInUser }) {
     const [imageNames, setImageNames] = useState([]);
     const [profilePictureURL, setProfilePictureURL] = useState("/assets/images/default_profiles/profile1.webp");
     const [selectedImage, setSelectedImage] = useState(null);
+    const [passwordInputType, setPasswordInputType] = useState("password")
+    const [alreadyExistsMessage, setAlreadyExistsMessage] = useState("")
 
     useEffect(() => {
         fetch('/api/images')
@@ -24,7 +26,6 @@ function RegistrationForm({ setLoggedInUser }) {
             .then(data => setImageNames(data))
             .catch(error => console.error('Error fetching images:', error));
     }, []);
-
 
 
     const handleImageClick = (src) => {
@@ -62,6 +63,7 @@ function RegistrationForm({ setLoggedInUser }) {
             }
         }
 
+
         // Validate email format
         if (!validateEmail(emailAddress)) {
             alert("Invalid email format!")
@@ -92,7 +94,19 @@ function RegistrationForm({ setLoggedInUser }) {
             })
 
             if (!response.ok) {
-                throw new Error("Response is not ok in the body of handleSumbit()!")
+
+                const errorData = await response.json()
+                console.log(errorData)
+
+                if (errorData.error_message === "Username already exists!") {
+                    console.log("username already exists: ", userData.username)
+                    setAlreadyExistsMessage(errorData.error_message)
+                    alert(alreadyExistsMessage)
+                } else if (errorData.error_message === "Email address already registered!") {
+                    console.log("email address already exists: ", userData.email)
+                    setAlreadyExistsMessage(errorData.error_message)
+                    alert(alreadyExistsMessage)
+                }
             }
 
             console.log("Registration was successfull!")
@@ -101,6 +115,16 @@ function RegistrationForm({ setLoggedInUser }) {
 
         } catch (error) {
             console.error("handleSubmit() catch error", error)
+        }
+    }
+
+    // Handle Show Password (Show or Hide the password)
+    function handleShowPassword() {
+
+        if (passwordInputType === "password") {
+            setPasswordInputType("text")
+        } else {
+            setPasswordInputType("password")
         }
     }
 
@@ -164,11 +188,19 @@ function RegistrationForm({ setLoggedInUser }) {
                         <label>
                             {"Password: "}
                             <input
-                                type="password"
+                                minLength="8"
+                                type={passwordInputType}
                                 placeholder="password..."
                                 value={password}
                                 onChange={(event) => setPassword(event.target.value)}
                             />
+
+                            <button
+                                type="button"
+                                onClick={handleShowPassword}
+                            >
+                                {passwordInputType === "password" ? "Show password" : "Hide password"}</button>
+
                         </label>
                         {imageNames && <div className="profileimagesDiv">
                             <a style={{ margin: '10px' }}>Choose a profile picture:</a>
