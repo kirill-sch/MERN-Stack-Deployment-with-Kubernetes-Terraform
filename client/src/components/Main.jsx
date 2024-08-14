@@ -9,6 +9,7 @@ const CHARACTERS_API = "https://www.moogleapi.com/api/v1/characters/"
 
 // Function //
 
+// We will need user info here to save username for like and dislike events. //
 function Main() {
 
     const [characters, setCharacters] = useState([])
@@ -55,6 +56,43 @@ function Main() {
         getRandomIndex()
 
     }, [characters])
+
+    const handleLike = async () => {
+        const likedCharacter = randomCharacter.id;
+        // const likedBy = userInfo.username;
+        // const data = { likedBy, likedCharacterId } 
+        try {
+            const response = await fetch('/api/likes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(/*data*/)
+            }) 
+
+            console.log(await response.json())
+            setRandomCharacter(null);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    const handleDislike = async () => {
+        const dislikedCharacter = randomCharacter.id;
+        // const dislikedBy = userInfo.username;
+        // const data = { dislikedBy, dislikedCharacterId } 
+        try {
+            const response = await fetch('/api/dislikes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(/*data*/)
+            }) 
+
+            console.log(await response.json())
+            setRandomCharacter(null);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    
 
 
 
@@ -120,8 +158,8 @@ function Main() {
                     {randomCharacter.origin === "??" || randomCharacter.origin === null ? "" : <p className="origin">Origin: {randomCharacter.origin}</p>}
 
                     <div className="buttonWrapper">
-                        <button className="dislikeButton">👎</button>
-                        <button className="likeButton">❤️</button>
+                        <button className="dislikeButton" onClick={handleDislike}>👎</button>
+                        <button className="likeButton" onClick={handleLike}>❤️</button>
                     </div>
 
 
