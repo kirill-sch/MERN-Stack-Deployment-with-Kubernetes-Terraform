@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react"
 
 // Function //
 
-function LoginForm({setIsLoggedin, setLoggedInUser}) {
+function LoginForm({setIsLoggedin, setLoggedInUser, setButtonClicked}) {
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -85,6 +85,7 @@ function LoginForm({setIsLoggedin, setLoggedInUser}) {
     return (
         <>
                 <div className="login">
+                <button className="goBackButton" onClick={() => setButtonClicked("")}>Go back</button>
                     <label>
                         {"Username: "}
                         <input

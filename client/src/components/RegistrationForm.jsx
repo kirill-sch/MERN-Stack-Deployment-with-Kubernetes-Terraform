@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react"
 
 // Function //
 
-function RegistrationForm({ setLoggedInUser }) {
+function RegistrationForm({ setLoggedInUser , setButtonClicked}) {
 
     const [firstname, setFirstname] = useState("")
     const [lastname, setLastname] = useState("")
@@ -18,7 +18,7 @@ function RegistrationForm({ setLoggedInUser }) {
     const [profilePictureURL, setProfilePictureURL] = useState("/assets/images/default_profiles/profile1.webp");
     const [selectedImage, setSelectedImage] = useState(null);
     const [passwordInputType, setPasswordInputType] = useState("password")
-    const [alreadyExistsMessage, setAlreadyExistsMessage] = useState("")
+    const [errorMessage, setErrorMessage] = useState("")
 
     useEffect(() => {
         fetch('/api/images')
@@ -97,9 +97,13 @@ function RegistrationForm({ setLoggedInUser }) {
                 console.log(errorData)
 
                 if (errorData.error_message) {
-                    setAlreadyExistsMessage(errorData.error_message);
+                    setErrorMessage(errorData.error_message);
+
+                    setTimeout(() => {
+                        setErrorMessage("")
+                    }, 2300);
                 } else {
-                    setAlreadyExistsMessage('An unexpected error occurred.');
+                    setErrorMessage('An unexpected error occurred.');
                 }
                 return;
             }
@@ -111,7 +115,7 @@ function RegistrationForm({ setLoggedInUser }) {
 
         } catch (error) {
             console.error("handleSubmit() catch error", error)
-            setAlreadyExistsMessage('An error occurred while processing your request.');
+            setErrorMessage('An error occurred while processing your request.');
         }
     }
 
@@ -127,18 +131,18 @@ function RegistrationForm({ setLoggedInUser }) {
 
     return (
 
-        <div>
+        <>
+
 
             {!isSendButtonClicked ? (
 
-                <div className="registration">
-
+                <div className="regContainer">
+                                <button className="goBackButton" onClick={() => setButtonClicked("")}>Go back</button>
                     <form className="registrationForm" onSubmit={handleSubmit}>
                         <label>
                             {"First Name: "}
                             <input
                                 type="text"
-                                placeholder="first name..."
                                 value={firstname}
                                 onChange={(event) => setFirstname(event.target.value)}
                             />
@@ -150,7 +154,6 @@ function RegistrationForm({ setLoggedInUser }) {
                             {"Last Name: "}
                             <input
                                 type="text"
-                                placeholder="last name..."
                                 value={lastname}
                                 onChange={(event) => setLastname(event.target.value)}
                             />
@@ -162,7 +165,6 @@ function RegistrationForm({ setLoggedInUser }) {
                             {"Email Address: "}
                             <input
                                 type="text"
-                                placeholder="email address..."
                                 value={emailAddress}
                                 onChange={(event) => setEmailAddress(event.target.value)}
                             />
@@ -174,7 +176,6 @@ function RegistrationForm({ setLoggedInUser }) {
                             {"Username: "}
                             <input
                                 type="text"
-                                placeholder="username..."
                                 value={username}
                                 onChange={(event) => setUsername(event.target.value)}
                             />
@@ -187,46 +188,42 @@ function RegistrationForm({ setLoggedInUser }) {
                             <input
                                 minLength="8"
                                 type={passwordInputType}
-                                placeholder="password..."
                                 value={password}
                                 onChange={(event) => setPassword(event.target.value)}
                             />
-
-                            <button
-                                type="button"
-                                onClick={handleShowPassword}
-                            >
-                                {passwordInputType === "password" ? "Show password" : "Hide password"}</button>
-
                         </label>
 
-                        <div className="errorMessage">
-                            <h1>{alreadyExistsMessage}</h1>
-                        </div>
-
-                        {imageNames && <div className="profileimagesDiv">
-                            <a style={{ margin: '10px' }}>Choose a profile picture:</a>
-                            {imageNames.map((imageName, index) => {
-                                const src = `/assets/images/default_profiles/${imageName}`
-                                const isSelected = src === selectedImage;
-
-                                return (
-                                    <img
-                                        key={index}
-                                        src={src}
-                                        alt={`Profile ${index + 1}`}
-                                        onClick={() => handleImageClick(src)}
-                                        className={ isSelected ? 'active' : ''}
-                                    />
-                                )
-                            })}
-                        </div>}
-
-                        <br />
+                        <button
+                            type="button"
+                            onClick={handleShowPassword}
+                        >
+                            {passwordInputType === "password" ? "Show password" : "Hide password"}</button>
 
                         <button type="submit">Register</button>
 
                     </form>
+
+                    {imageNames && <div className="profileimagesDiv">
+                        <a style={{ margin: '10px' }}>Choose a profile picture:</a>
+                        {imageNames.map((imageName, index) => {
+                            const src = `/assets/images/default_profiles/${imageName}`
+                            const isSelected = src === selectedImage;
+
+                            return (
+                                <img
+                                    key={index}
+                                    src={src}
+                                    alt={`Profile ${index + 1}`}
+                                    onClick={() => handleImageClick(src)}
+                                    className={isSelected ? 'active' : ''}
+                                />
+                            )
+                        })}
+                    </div>}
+
+                    <div className={`errorMessage ${errorMessage === "" ? 'hidden' : 'active'}`}>
+                            <h1>{errorMessage}</h1>
+                        </div>
 
                 </div>
 
@@ -234,7 +231,7 @@ function RegistrationForm({ setLoggedInUser }) {
                 <p>Regisztráció elküldve!</p>
             )}
 
-        </div>
+        </>
     )
 }
 
