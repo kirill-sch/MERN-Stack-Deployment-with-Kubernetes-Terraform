@@ -12,19 +12,19 @@ a {
   transition: background-color 0.3s;
 }
 
-a:hover{
+a:hover {
   cursor: pointer;
   background-color: yellowgreen;
 }
 
 
-input{
+input {
   border-radius: 8px;
   border: none;
   padding: 10px;
 }
 
-label{
+label {
   font-size: 1.2em;
 }
 
@@ -35,9 +35,11 @@ label{
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -46,6 +48,7 @@ label{
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -58,17 +61,21 @@ label{
 }
 
 .no-select {
-  user-select: none; /* Standard syntax */
-  -webkit-user-select: none; /* For Safari and Chrome */
-  -moz-user-select: none; /* For Firefox */
-  -ms-user-select: none; /* For Internet Explorer and Edge */
+  user-select: none;
+  /* Standard syntax */
+  -webkit-user-select: none;
+  /* For Safari and Chrome */
+  -moz-user-select: none;
+  /* For Firefox */
+  -ms-user-select: none;
+  /* For Internet Explorer and Edge */
 }
 
-.homepage.hidden{
+.homepage.hidden {
   display: none;
 }
 
-.homepage{
+.homepage {
   display: grid;
   grid-template-rows: 1fr;
   grid-template-columns: 1fr 2fr 1fr;
@@ -81,12 +88,12 @@ label{
   height: 92vh;
 }
 
-.main{
+.main {
   display: flex;
   flex-direction: column;
   grid-column: 2;
   grid-row: 1 / 3;
-  box-shadow: 6px 6px 10px 0px rgba(0, 0, 0, 0.5); 
+  box-shadow: 6px 6px 10px 0px rgba(0, 0, 0, 0.5);
   border-radius: 8px;
   overflow-y: scroll;
   margin: 10px;
@@ -100,7 +107,7 @@ label{
   max-width: 78%;
 }
 
-.profileContainer{
+.profileContainer {
   display: flex;
   flex-direction: column;
   align-self: start;
@@ -113,21 +120,21 @@ label{
   border-radius: 8px;
 }
 
-.profileImg{
+.profileImg {
   width: 73px;
   border-radius: 100%;
   margin: 15px;
-  border: 3px solid transparent; 
+  border: 3px solid transparent;
   transition: border-color 0.5s;
   box-sizing: border-box;
 }
 
-.profileImg:hover{
+.profileImg:hover {
   cursor: pointer;
   border: 3px solid magenta;
 }
 
-.messagesContainer{
+.messagesContainer {
   width: 100%;
   height: 100%;
   display: flex;
@@ -142,19 +149,19 @@ label{
   border-right: 2px solid black;
 }
 
-.imageContainer{
+.imageContainer {
   padding: 10px;
   margin: 10px;
   margin-bottom: 0;
   border-bottom: 1px solid black;
 }
 
-.imageContainer>img{
+.imageContainer>img {
   max-width: 300px;
   width: 100%;
 }
 
-.characterDetails{
+.characterDetails {
   display: flex;
   flex-direction: column;
   align-items: start;
@@ -165,7 +172,7 @@ label{
   border-bottom: 1px solid black;
 }
 
-.quickDetails{
+.quickDetails {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -173,24 +180,24 @@ label{
   margin-bottom: 10px;
 }
 
-.characterDesc{
+.characterDesc {
   padding: 10px;
   padding-top: 0;
   margin: 10px;
 }
 
-.job{
+.job {
   opacity: 50%;
   margin: 0;
 }
 
-.origin{
+.origin {
   font-size: 0.8em;
   opacity: 70%;
   font-style: italic;
 }
 
-#arrowDiv{
+#arrowDiv {
   display: flex;
   align-self: flex-end;
   align-items: center;
@@ -199,7 +206,7 @@ label{
   font-size: 0.7em;
 }
 
-#arrowVector{
+#arrowVector {
   width: 40px;
   display: flex;
   align-self: flex-end;
@@ -207,17 +214,17 @@ label{
   transition: rotate 0.3s;
 }
 
-#arrowVector:hover{
+#arrowVector:hover {
   rotate: -90deg;
   cursor: none;
 }
 
-.moreDetails{
+.moreDetails {
   margin: 0;
   margin-bottom: 5px;
 }
 
-.buttonWrapper{
+.buttonWrapper {
   display: flex;
   border-radius: 8px;
   align-content: center;
@@ -232,23 +239,23 @@ label{
   padding-bottom: 20px;
 }
 
-.dislikeButton{
-  background-color: red;
-  transition: scale 0.2s;
+.dislikeButton {
+  background-color: red !important;
+  transition: scale 0.2s !important;
 }
 
-.likeButton{
-  background-color: rgb(0, 191, 0);
-  transition: scale 0.2s;
+.likeButton {
+  background-color: rgb(0, 191, 0) !important;
+  transition: scale 0.2s !important;
 }
 
 .dislikeButton:hover,
-.likeButton:hover{
-  scale: 1.4;
+.likeButton:hover {
+  scale: 1.4 !important;
 }
 
 
-.preferencesDiv{
+.preferencesDiv {
   display: flex;
   flex-direction: column;
   border: solid 2px black;
@@ -260,7 +267,7 @@ label{
   width: max-content;
 }
 
-.gendersDiv{
+.gendersDiv {
   border-top: 1px solid black;
   display: flex;
   flex-direction: column;
@@ -272,7 +279,7 @@ label{
   margin-bottom: 5px;
 }*/
 
-.racesDiv{
+.racesDiv {
   border-top: 1px solid black;
   margin-top: 20px;
   display: flex;
@@ -280,19 +287,19 @@ label{
   align-items: flex-start;
 }
 
-.racesDiv label{
+.racesDiv label {
   display: block;
   margin-bottom: 5px;
 }
 
-.profileImgModal{
+.profileImgModal {
   display: flex;
   flex-direction: column;
   background-color: magenta;
   border-radius: 8px;
 }
 
-.profileimagesDiv{
+.profileimagesDiv {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -307,7 +314,7 @@ label{
   border: 2px solid black;
 }
 
-.profileimagesDiv img{
+.profileimagesDiv img {
   width: 100px;
   cursor: pointer;
   transition: scale 0.2s, border-color 0.4s;
@@ -315,15 +322,15 @@ label{
   border: 3px solid rgba(0, 0, 0, 0);
 }
 
-.profileimagesDiv img:hover{
- scale: 1.1;
+.profileimagesDiv img:hover {
+  scale: 1.1;
 }
 
-.profileimagesDiv img.active{
+.profileimagesDiv img.active {
   border: 3px solid magenta;
 }
 
-.regContainer{
+.regContainer {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -333,7 +340,7 @@ label{
   height: 90vh;
 }
 
-.registrationForm{
+.registrationForm {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -349,7 +356,7 @@ label{
   width: min-content;
 }
 
-.errorMessage{
+.errorMessage {
   position: absolute;
   top: 40%;
   background: blueviolet;
@@ -358,18 +365,18 @@ label{
   transition: scale 0.3s;
 }
 
-.errorMessage.active{
+.errorMessage.active {
   scale: 1;
 }
 
-.goBackButton{
+.goBackButton {
   position: absolute;
   height: fit-content;
   top: 10%;
   left: 5%;
 }
 
-.loginContainer{
+.loginContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -381,4 +388,61 @@ label{
   padding-right: 100px;
   width: min-content;
   gap: 20px;
+}
+
+.welcomeContainer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+.welcomeDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 5px solid black;
+  border-radius: 8px;
+  padding: 20px;
+  padding-left: 100px;
+  padding-right: 100px;
+  width: min-content;
+  gap: 20px;
+  background-size: cover;
+  background-position: center;
+  background-color: #242424eb;
+  margin: 50px;
+}
+
+.background-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+  z-index: -1;
+}
+
+.welcomeButtons {
+  display: flex;
+  width: max-content;
+  gap: 50px;
+  font-size: 1.6em;
+
+}
+
+button{
+  transition: background-color 0.3s, scale 0.3s;
+}
+
+button:hover{
+  background-color: magenta;
+  scale: 1.2;
 }
