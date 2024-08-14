@@ -3,7 +3,7 @@ const { Schema, model } = mongoose;
 
 const dislikeSchema = new Schema({
   dislikedBy: String,
-  dislikedCharacter: String,
+  dislikedCharacterId: String,
   dislikedAt: Date
 });
 
