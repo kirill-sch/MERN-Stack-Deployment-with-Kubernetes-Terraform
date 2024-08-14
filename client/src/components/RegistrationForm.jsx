@@ -70,8 +70,6 @@ function RegistrationForm({ setLoggedInUser }) {
             return
         }
 
-        setIsSendButtonClicked(true)
-
         const userData =
         {
             firstName: firstname,
@@ -98,23 +96,22 @@ function RegistrationForm({ setLoggedInUser }) {
                 const errorData = await response.json()
                 console.log(errorData)
 
-                if (errorData.error_message === "Username already exists!") {
-                    console.log("username already exists: ", userData.username)
-                    setAlreadyExistsMessage(errorData.error_message)
-                    alert(alreadyExistsMessage)
-                } else if (errorData.error_message === "Email address already registered!") {
-                    console.log("email address already exists: ", userData.email)
-                    setAlreadyExistsMessage(errorData.error_message)
-                    alert(alreadyExistsMessage)
+                if (errorData.error_message) {
+                    setAlreadyExistsMessage(errorData.error_message);
+                } else {
+                    setAlreadyExistsMessage('An unexpected error occurred.');
                 }
+                return;
             }
 
             console.log("Registration was successfull!")
             console.log(userData)
             setLoggedInUser(userData);
+            setIsSendButtonClicked(true);
 
         } catch (error) {
             console.error("handleSubmit() catch error", error)
+            setAlreadyExistsMessage('An error occurred while processing your request.');
         }
     }
 
@@ -202,6 +199,11 @@ function RegistrationForm({ setLoggedInUser }) {
                                 {passwordInputType === "password" ? "Show password" : "Hide password"}</button>
 
                         </label>
+
+                        <div className="errorMessage">
+                            <h1>{alreadyExistsMessage}</h1>
+                        </div>
+
                         {imageNames && <div className="profileimagesDiv">
                             <a style={{ margin: '10px' }}>Choose a profile picture:</a>
                             {imageNames.map((imageName, index) => {
@@ -222,7 +224,7 @@ function RegistrationForm({ setLoggedInUser }) {
 
                         <br />
 
-                        <button type="submit">Send</button>
+                        <button type="submit">Register</button>
 
                     </form>
 
