@@ -1,6 +1,11 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import User from "./model/User.js";
+import Charachter from "./model/Character.js";
+import Dislike from "./model/Dislike.js";
+import Like from "./model/Like.js";
+import Setting from "./model/Setting.js";
 
 dotenv.config({
     path: ['.env.local', '.env']
@@ -49,18 +54,18 @@ app.get('/api/user', async (req, res) => {
 })
 
 app.post('/api/user', async (req, res) => {
-    const body = req.body;
-
     try {
-        const username = body.username;
-        const password = body.password;
-        const email = body.email;
-        const user = new User({
+        const { username, password, email, firstName, lastName} = req.body;
+        const createdAt = Date.now();
+        const user = await new User({
             username,
             password,
-            email
-        })
-        await user.save();
+            email,
+            firstName,
+            lastName,
+            createdAt
+        }).save();
+    
         res.status(201).json(user);
     } catch (e) {
         res.status(500).json({ error: 'An error occured while trying to save the user.' })
@@ -102,15 +107,15 @@ app.put('/api/user/:user_id', async (req, res) => {
 
 // CHARACTERS
 
-app.get('/api/charachters/races', async (req, res) => {
+app.get('/api/characters/races', async (req, res) => {
     const userPreferences = req.body.preferences;
 
     try {
-        const filteredCharachters = await Charachter.find({ race: { $in: userPreferences } });
+        const filteredCharacters = await Charachter.find({ race: { $in: userPreferences } });
 
-        res.status(200).json(filteredCharachters)
+        res.status(200).json(filteredCharacters)
     } catch (e) {
-        res.status(500).json({ error: `An error occured while trying to find charachters by preferences: ${userPreferences}.` });
+        res.status(500).json({ error: `An error occured while trying to find characters by preferences: ${userPreferences}.` });
     }
 })
 
@@ -120,7 +125,7 @@ app.get('/api/likes/:username', async (req, res) => {
     const username = req.params.username;
 
     try {
-        const likes = await Likes.find({ likedBy: username });
+        const likes = await Like.find({ likedBy: username });
 
         res.status(200).json(likes);
     } catch (e) {
@@ -129,17 +134,15 @@ app.get('/api/likes/:username', async (req, res) => {
 })
 
 app.post('/api/likes', async (req, res) => {
-    const body = req.body;
-
     try {
-        const name = body.name;
-        const when = Date.now();
+        const { likedBy, likedCharacter } = req.body;
+        const likedAt = Date.now();
 
-        const like = new Like({
-            name,
-            when
-        })
-        await Like.save();
+        const like = await new Like({
+            likedBy,
+            likedCharacter,
+            likedAt
+        }).save();
         res.status(201).json(like);
     } catch (e) {
         res.status(500).json({ error: `An error occured while trying to save like.` })
@@ -168,7 +171,7 @@ app.get('/api/dislikes/:username', async (req, res) => {
     const username = req.params.username;
 
     try {
-        const dislikes = await Dislikes.find({ dislikedBy: username });
+        const dislikes = await Dislike.find({ dislikedBy: username });
 
         res.status(200).json(dislikes);
     } catch (e) {
@@ -177,17 +180,16 @@ app.get('/api/dislikes/:username', async (req, res) => {
 })
 
 app.post('/api/dislikes', async (req, res) => {
-    const body = req.body;
-
     try {
-        const name = body.name;
-        const when = Date.now();
+        const { dislikedBy, dislikedCharacter } = req.body;
+        const dislikedAt = Date.now();
 
-        const dislike = new Dislike({
-            name,
-            when
-        })
-        await Dislike.save();
+        const dislike = await new Dislike({
+            dislikedBy,
+            dislikedCharacter,
+            dislikedAt
+        }).save();
+        
         res.status(201).json(dislike);
     } catch (e) {
         res.status(500).json({ error: `An error occured while trying to save dislike.` })
@@ -198,7 +200,7 @@ app.delete('/api/dislikes/:dislike_id', (req, res) => {
     const dislike_id = req.params.username;
 
     try {
-        const dislike = DisLike.findOneAndDelete({ _id: dislike_id });
+        const dislike = Dislike.findOneAndDelete({ _id: dislike_id });
 
         if (!dislike) {
             res.status(404).json({ error: `Dislike with id: ${dislike_id}, not found.` })
@@ -219,7 +221,7 @@ app.get('/api/settings/:username', async (req, res) => {
     const username = req.params.username;
 
     try {
-        const settings = await Settings.find({ username: username });
+        const settings = await Setting.find({ username: username });
 
         res.status(200).json(settings);
     } catch (e) {

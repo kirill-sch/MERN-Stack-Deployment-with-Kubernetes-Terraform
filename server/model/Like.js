@@ -3,7 +3,7 @@ const { Schema, model } = mongoose;
 
 const likeSchema = new Schema({
   likedBy: String,
-  likedCharachter: String,
+  likedCharacter: String,
   likedAt: Date
 });
 
