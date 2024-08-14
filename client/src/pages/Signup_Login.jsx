@@ -24,11 +24,11 @@ function Signup_Login({setIsLoggedin, setLoggedInUser}) {
             }
 
             {buttonClicked === "login" &&
-                <LoginForm setIsLoggedin={setIsLoggedin} setLoggedInUser={setLoggedInUser}/>
+                <LoginForm setIsLoggedin={setIsLoggedin} setLoggedInUser={setLoggedInUser} setButtonClicked={setButtonClicked}/>
             }
 
             {buttonClicked === "signup" &&
-                <RegistrationForm setLoggedInUser={setLoggedInUser}/>
+                <RegistrationForm setLoggedInUser={setLoggedInUser} setButtonClicked={setButtonClicked}/>
             }
 
         </>

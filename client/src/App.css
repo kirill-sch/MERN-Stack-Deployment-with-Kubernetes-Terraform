@@ -17,6 +17,18 @@ a:hover{
   background-color: yellowgreen;
 }
 
+
+input{
+  border-radius: 8px;
+  border: none;
+  padding: 10px;
+}
+
+label{
+  font-size: 1.2em;
+}
+
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -281,11 +293,14 @@ a:hover{
   flex-direction: column;
   align-items: center;
   overflow-y: scroll;
-  height: 300px;
   border: 2px solid black;
-  margin: 10px;
+  margin: 20px;
   border-radius: 8px;
-  gap: 20px
+  gap: 20px;
+  padding: 10px;
+  padding-left: 50px;
+  padding-right: 50px;
+  border: 2px solid black;
 }
 
 .profileimagesDiv img{
@@ -302,4 +317,50 @@ a:hover{
 
 .profileimagesDiv img.active{
   border: 3px solid magenta;
+}
+
+.regContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  border: 5px solid black;
+  width: 96vw;
+  border-radius: 8px;
+  height: 90vh;
+}
+
+.registrationForm{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 3px solid black;
+  gap: 20px;
+  padding: 20px;
+  padding-left: 50px;
+  padding-right: 50px;
+  margin: 20px;
+  border-radius: 8px;
+  border: 2px solid black;
+  overflow-y: scroll;
+  width: min-content;
+}
+
+.errorMessage{
+  position: absolute;
+  top: 40%;
+  background: blueviolet;
+  border-radius: 8px;
+  scale: 0.6;
+  transition: scale 0.3s;
+}
+
+.errorMessage.active{
+  scale: 1;
+}
+
+.goBackButton{
+  position: absolute;
+  height: fit-content;
+  top: 10%;
+  left: 5%;
 }
