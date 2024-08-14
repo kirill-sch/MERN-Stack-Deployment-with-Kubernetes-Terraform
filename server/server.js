@@ -64,6 +64,21 @@ app.post('/api/users', async (req, res) => {
     try {
         const { username, password, email, firstName, lastName, profilePicture } = req.body;
         const createdAt = Date.now();
+
+        const alreadyExistedUsers = user.find({})
+
+        alreadyExistedUsers.map(existingUser => {
+
+            if (username === existingUser.username) {
+                res.status(500).json({error_message: "Username already exists!"})
+                return;
+            } else if (email === existingUser.email) {
+                res.status(500).json({error_message: "Email address already registered!"})
+                return;
+            }
+        })
+
+
         const user = await new User({
             firstName,
             lastName,

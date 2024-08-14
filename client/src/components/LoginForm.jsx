@@ -1,7 +1,6 @@
 // Imports //
 
 import React, { useState, useEffect } from "react"
-import HomePage from "../pages/HomePage"
 
 // Global Variables //
 
@@ -11,6 +10,8 @@ function LoginForm({setIsLoggedin, setLoggedInUser}) {
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const [passwordInputType, setPasswordInputType] = useState("password")
+    const [showPasswordButtonTextContent, setShowPasswordButtonTextContent] = useState("Show password")
 
     // Handle Username Inputfield
     function handleUsernameChange(event) {
@@ -36,7 +37,7 @@ function LoginForm({setIsLoggedin, setLoggedInUser}) {
         }
         */
 
-        const data = 
+        const data =
         {
             username,
             password
@@ -63,15 +64,26 @@ function LoginForm({setIsLoggedin, setLoggedInUser}) {
         }
     }
 
+    // Handle Show Password (Show or Hide the password)
+    function handleShowPassword() {
+
+        if (passwordInputType === "password") {
+            setPasswordInputType("text")
+            setShowPasswordButtonTextContent("Hide password")
+        } else {
+            setPasswordInputType("password")
+            setShowPasswordButtonTextContent("Show password")
+        }
+    }
+
     function handleKeyDown(e) {
         if (e.key === "Enter") {
             handleLogin();
         }
     };
-    
+
     return (
         <>
-
                 <div className="login">
                     <label>
                         {"Username: "}
@@ -88,14 +100,21 @@ function LoginForm({setIsLoggedin, setLoggedInUser}) {
                     <label>
                         {"Password: "}
                         <input
-                            type="password"
+                            type={passwordInputType}
                             placeholder="type your password here..."
                             onChange={handlePasswordChange}
                             onKeyDown={handleKeyDown}
                         />
+
+                        <button
+                            type="button"
+                            onClick={handleShowPassword}
+                        >
+                        {showPasswordButtonTextContent}</button>
+
                     </label>
 
-                    <br/>
+                    <br />
 
                     <button
                         type="button"
