@@ -8,8 +8,8 @@ import data from '../../../server/db.json'
 function Preferences() {
 
     const [allRaces, setAllRaces] = useState([])
-    const [selectedGenders, setSelectedGenders] = useState(["Male"])
-    const [selectedRaces, setSelectedRaces] = useState(["Human"])
+    const [selectedGenders, setSelectedGenders] = useState(["Male", "Female"])
+    const [selectedRaces, setSelectedRaces] = useState(selectedRaces)
 
     useEffect(() =>{
         
@@ -24,6 +24,7 @@ function Preferences() {
             races = races.filter(race => race !== "??")
             console.log(races)
             setAllRaces(races)
+            setSelectedRaces(races)
         }
 
         createAllRaces()
