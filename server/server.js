@@ -59,11 +59,11 @@ app.post('/api/user', async (req, res) => {
         const { username, password, email, firstName, lastName} = req.body;
         const createdAt = Date.now();
         const user = await new User({
+            firstName,
+            lastName,
             username,
             password,
             email,
-            firstName,
-            lastName,
             createdAt
         }).save();
     
