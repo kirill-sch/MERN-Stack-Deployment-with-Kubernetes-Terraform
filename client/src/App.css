@@ -1,6 +1,7 @@
 #root {
   margin: 0 auto;
   text-align: center;
+  --scrollbar-color: black #f3ce1300
 }
 
 .logo {
@@ -62,12 +63,12 @@
   margin: 10px;
   border: 2px solid black;
   width: 39vw;
-  scrollbar-color: black #f3ce1300;
+  scrollbar-color: var(--scrollbar-color);
   scrollbar-width: 10px;
   height: 620px;
   max-height: 80%;
   width: 350px;
-  max-width: 70%;
+  max-width: 78%;
 }
 .profileImg{
   align-self: start;
@@ -193,4 +194,42 @@
 .dislikeButton:hover,
 .likeButton:hover{
   scale: 1.4;
+}
+
+
+.preferencesDiv{
+  display: flex;
+  flex-direction: column;
+  border: solid 2px black;
+  border-radius: 8px;
+  margin: 10px;
+  padding: 10px;
+  overflow-y: scroll;
+  scrollbar-color: var(--scrollbar-color);
+  width: max-content;
+}
+
+.gendersDiv{
+  border-top: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/*.gendersDiv label{
+  display: block;
+  margin-bottom: 5px;
+}*/
+
+.racesDiv{
+  border-top: 1px solid black;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.racesDiv label{
+  display: block;
+  margin-bottom: 5px;
 }
