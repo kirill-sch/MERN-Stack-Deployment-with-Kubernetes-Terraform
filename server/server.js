@@ -33,7 +33,7 @@ app.get('api/users', async (req, res) => {
     }
 });
 
-app.get('/api/user', async (req, res) => {
+app.post('/api/user', async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
 
@@ -54,7 +54,7 @@ app.get('/api/user', async (req, res) => {
     }
 })
 
-app.post('/api/user', async (req, res) => {
+app.post('/api/users', async (req, res) => {
     try {
         const { username, password, email, firstName, lastName} = req.body;
         const createdAt = Date.now();

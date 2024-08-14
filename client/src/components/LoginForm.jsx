@@ -1,11 +1,9 @@
 // Imports //
 
 import React, { useState, useEffect } from "react"
+import HomePage from "../pages/HomePage"
 
 // Global Variables //
-
-const validUsername = "sanyi"
-const validPassword = "asd"
 
 // Function //
 
@@ -28,19 +26,41 @@ function LoginForm() {
     }
 
     // Handle Login Button
-    function handleLogin() {
+    async function handleLogin() {
+        /*
         if (username.length === 0) {
             alert ("Please, type your username!")
         } else if (password.length === 0) {
             alert ("Please type your password!")
-        } else if (username !== validUsername || password !== validPassword) {
-            alert ("Incorrect username or password!")
         } else {
             setIsLoggedIn(true)
         }
+        */
+
+        const data = 
+        {
+            username,
+            password
+        }
+
+        const response = await fetch("/api/user", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+
+        const validation = await response.json()
+
+        if (validation.userFound && validation.succeeded) {
+            setIsLoggedIn(true)
+        } else if (!validation.userFound) {
+            alert("Incorrect username!")
+        } else if (!validation.succeeded && validation.userFound) {
+            alert("Incorrect password!")
+        }
     }
-
-
     
     return (
         <div>
@@ -76,7 +96,7 @@ function LoginForm() {
 
                 </div>
             ) : (
-                <p>Be vagy jelentkezve!</p>
+                <HomePage/>
             )}
 
         </div>
