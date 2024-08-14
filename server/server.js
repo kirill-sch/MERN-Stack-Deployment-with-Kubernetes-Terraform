@@ -6,6 +6,7 @@ import Charachter from "./model/Character.js";
 import Dislike from "./model/Dislike.js";
 import Like from "./model/Like.js";
 import Setting from "./model/Setting.js";
+import Match from './model/Match.js';
 
 dotenv.config({
     path: ['.env.local', '.env']
@@ -135,12 +136,12 @@ app.get('/api/likes/:username', async (req, res) => {
 
 app.post('/api/likes', async (req, res) => {
     try {
-        const { likedBy, likedCharacter } = req.body;
+        const { likedBy, likedCharacterId } = req.body;
         const likedAt = Date.now();
 
         const like = await new Like({
             likedBy,
-            likedCharacter,
+            likedCharacterId,
             likedAt
         }).save();
         res.status(201).json(like);
@@ -181,15 +182,15 @@ app.get('/api/dislikes/:username', async (req, res) => {
 
 app.post('/api/dislikes', async (req, res) => {
     try {
-        const { dislikedBy, dislikedCharacter } = req.body;
+        const { dislikedBy, dislikedCharacterId } = req.body;
         const dislikedAt = Date.now();
 
         const dislike = await new Dislike({
             dislikedBy,
-            dislikedCharacter,
+            dislikedCharacterId,
             dislikedAt
         }).save();
-        
+
         res.status(201).json(dislike);
     } catch (e) {
         res.status(500).json({ error: `An error occured while trying to save dislike.` })
@@ -262,26 +263,51 @@ app.delete('/api/settings/:username', async (req, res) => {
 })
 
 app.post('/api/settings', async (req, res) => {
-    const body = req.body;
-
     try {
-        const prefAge = body.prefAge;
-        const prefGender = body.prefGender;
-        const prefRace = body.prefRace;
-        const prefJob = body.prefJob;
-        const prefOrigin = body.prefOrigin;
+        const { prefAge, prefGender, prefRace, prefJob, prefOrigin } = req.body;
 
-        const setting = new Setting({
+        const setting = await new Setting({
             prefAge,
             prefGender,
             prefRace,
             prefJob,
             prefOrigin
-        })
-        await setting.save();
+        }).save();
+
         res.status(201).json(setting);
     } catch (e) {
         res.status(500).json({ error: `An error occured while trying to save settings.` })
+    }
+})
+
+// MATCHES
+
+app.get('/api/matches/:username', async (req, res) => {
+    const username = req.params.username;
+
+    try {
+        const matches = await Match.find({ username: username });
+
+        res.status(200).json(matches);
+    } catch (e) {
+        res.status(500).json({ error: `An error occured while trying to find the matches for: ${username}.` });
+    }
+})
+
+app.post('/api/matches', async (req, res) => {
+    try {
+        const { username, charactersId } = req.body;
+        const matchedAt = Date.now();
+
+        const match = await new Match({
+            username,
+            charactersId,
+            matchedAt
+        }).save();
+        
+        res.status(201).json(match);
+    } catch (e) {
+        res.status(500).json({ error: `An error occured while trying to save matches.` })
     }
 })
 
