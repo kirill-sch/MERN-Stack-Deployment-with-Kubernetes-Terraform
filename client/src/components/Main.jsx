@@ -10,7 +10,7 @@ const CHARACTERS_API = "https://www.moogleapi.com/api/v1/characters/"
 // Function //
 
 // We will need user info here to save username for like and dislike events. //
-function Main({loggedInUser}) {
+function Main({loggedInUser, setIsLoading}) {
 
     const [characters, setCharacters] = useState([])
     const [randomCharacter, setRandomCharacter] = useState(null)
@@ -50,6 +50,10 @@ function Main({loggedInUser}) {
                 const randomGeneratedCharacter = characters[randomIndex]
                 console.log(randomGeneratedCharacter)
                 setRandomCharacter(randomGeneratedCharacter)
+                
+                setTimeout(() => {
+                    setIsLoading(false)
+                }, 1600);
             }
         }
 

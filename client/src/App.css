@@ -64,6 +64,10 @@ label{
   -ms-user-select: none; /* For Internet Explorer and Edge */
 }
 
+.homepage.hidden{
+  display: none;
+}
+
 .homepage{
   display: grid;
   grid-template-rows: 1fr;
