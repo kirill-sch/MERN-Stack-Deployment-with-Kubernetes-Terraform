@@ -15,7 +15,6 @@ function Main() {
     const [characters, setCharacters] = useState([])
     const [randomCharacter, setRandomCharacter] = useState(null)
     const [isMoreDetailsVisible, setIsMoreDetailsVisible] = useState(false);
-    const [likeInfo, setLikeInfo] = useState([]);
 
     useEffect(() => {
 
