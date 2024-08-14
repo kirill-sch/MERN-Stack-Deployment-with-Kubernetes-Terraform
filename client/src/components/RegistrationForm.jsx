@@ -14,6 +14,9 @@ function RegistrationForm() {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [isSendButtonClicked, setIsSendButtonClicked] = useState(false)
+    const [passwordInputType, setPasswordInputType] = useState("password")
+    const [showPasswordButtonTextContent, setShowPasswordButtonTextContent] = useState("Show password")
+    const [alreadyExistsMessage, setAlreadyExistsMessage] = useState("")
 
 
 
@@ -22,7 +25,7 @@ function RegistrationForm() {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         return regex.test(emailAddress)
     }
-    
+
 
     // Handle Send Button
     async function handleSubmit(event) {
@@ -47,6 +50,7 @@ function RegistrationForm() {
             }
         }
 
+
         // Validate email format
         if (!validateEmail(emailAddress)) {
             alert("Invalid email format!")
@@ -57,8 +61,8 @@ function RegistrationForm() {
 
         const userData =
         {
-            firstname: firstname,
-            lastname: lastname,
+            firstName: firstname,
+            lastName: lastname,
             email: emailAddress,
             username: username,
             password: password
@@ -74,7 +78,19 @@ function RegistrationForm() {
             })
 
             if (!response.ok) {
-                throw new Error("Response is not ok in the body of handleSumbit()!")
+
+                const errorData = await response.json()
+                console.log(errorData)
+
+                if (errorData.error_message === "Username already exists!") {
+                    console.log("username already exists: ", userData.username)
+                    setAlreadyExistsMessage(errorData.error_message)
+                    alert(alreadyExistsMessage)
+                } else if (errorData.error_message === "Email address already registered!") {
+                    console.log("email address already exists: ", userData.email)
+                    setAlreadyExistsMessage(errorData.error_message)
+                    alert(alreadyExistsMessage)
+                }
             }
 
             console.log("Registration was successfull!")
@@ -82,6 +98,18 @@ function RegistrationForm() {
 
         } catch (error) {
             console.error("handleSubmit() catch error", error)
+        }
+    }
+
+    // Handle Show Password (Show or Hide the password)
+    function handleShowPassword() {
+
+        if (passwordInputType === "password") {
+            setPasswordInputType("text")
+            setShowPasswordButtonTextContent("Hide password")
+        } else {
+            setPasswordInputType("password")
+            setShowPasswordButtonTextContent("Show password")
         }
     }
 
@@ -145,11 +173,19 @@ function RegistrationForm() {
                         <label>
                             {"Password: "}
                             <input
-                                type="password"
+                                minLength="8"
+                                type={passwordInputType}
                                 placeholder="password..."
                                 value={password}
                                 onChange={(event) => setPassword(event.target.value)}
                             />
+
+                            <button
+                                type="button"
+                                onClick={handleShowPassword}
+                            >
+                                {showPasswordButtonTextContent}</button>
+
                         </label>
 
                         <br />
