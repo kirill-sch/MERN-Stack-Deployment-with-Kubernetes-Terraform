@@ -135,12 +135,12 @@ app.get('/api/likes/:username', async (req, res) => {
 
 app.post('/api/likes', async (req, res) => {
     try {
-        const { likedBy, likedCharacter } = req.body;
+        const { likedBy, likedCharacterId } = req.body;
         const likedAt = Date.now();
 
         const like = await new Like({
             likedBy,
-            likedCharacter,
+            likedCharacterId,
             likedAt
         }).save();
         res.status(201).json(like);
@@ -181,15 +181,15 @@ app.get('/api/dislikes/:username', async (req, res) => {
 
 app.post('/api/dislikes', async (req, res) => {
     try {
-        const { dislikedBy, dislikedCharacter } = req.body;
+        const { dislikedBy, dislikedCharacterId } = req.body;
         const dislikedAt = Date.now();
 
         const dislike = await new Dislike({
             dislikedBy,
-            dislikedCharacter,
+            dislikedCharacterId,
             dislikedAt
         }).save();
-        
+
         res.status(201).json(dislike);
     } catch (e) {
         res.status(500).json({ error: `An error occured while trying to save dislike.` })
