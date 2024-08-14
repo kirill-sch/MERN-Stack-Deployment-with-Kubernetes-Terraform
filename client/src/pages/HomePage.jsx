@@ -5,11 +5,14 @@ import Main from "../components/Main";
 function HomePage ({setIsLoggedin, loggedInUser}) {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const defaultPictureURL = "/assets/images/default_profiles/default.jpg";
+    const [isLoading, setIsLoading] = useState(true);
 
     return (
-        <div className="homepage">
+        <>
+        {isLoading && <div>Loading...</div>}
+        <div className={`homepage ${isLoading ? 'hidden' : ''}`}>
         <div className="messagesContainer">Messages</div>
-        <Main loggedInUser={loggedInUser}/>
+        <Main loggedInUser={loggedInUser} setIsLoading={setIsLoading}/>
 
         <div className="profileContainer">
         <img src={loggedInUser.profilePicture || defaultPictureURL} alt="Profile" className="profileImg" onClick={() => setIsModalVisible(!isModalVisible)}/>
@@ -19,6 +22,7 @@ function HomePage ({setIsLoggedin, loggedInUser}) {
             </div>}
         </div>
         </div>
+        </>
     )
 
 
