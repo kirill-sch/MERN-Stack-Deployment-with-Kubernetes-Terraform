@@ -9,7 +9,7 @@ function Preferences() {
 
     const [allRaces, setAllRaces] = useState([])
     const [selectedGenders, setSelectedGenders] = useState(["Male", "Female"])
-    const [selectedRaces, setSelectedRaces] = useState(selectedRaces)
+    const [selectedRaces, setSelectedRaces] = useState([""])
 
     useEffect(() =>{
         
@@ -66,10 +66,10 @@ function Preferences() {
     }
 
     return (
-        <div className="preference">
+        <div className="preferencesDiv">
 
-            <div>
-                <p>Gender</p>
+            <div className="gendersDiv">
+                <h4 style={{marginTop: '10px'}}>Genders</h4>
                 <label>
                     <input 
                         type="checkbox"
@@ -90,8 +90,8 @@ function Preferences() {
                 </label>
             </div>
 
-            <div>
-                <p>Races</p>
+            <div className="racesDiv">
+                <h4 style={{marginTop: '10px'}}>Races</h4>
                 {allRaces.map(race => (
                     <label key={race}>
                         <input
