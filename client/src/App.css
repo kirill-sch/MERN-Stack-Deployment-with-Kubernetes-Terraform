@@ -8,8 +8,14 @@ a {
   text-decoration: none;
   color: inherit;
   font-weight: 500;
+  border-radius: 8px;
+  transition: background-color 0.3s;
 }
 
+a:hover{
+  cursor: pointer;
+  background-color: yellowgreen;
+}
 
 .logo {
   height: 6em;
@@ -268,4 +274,32 @@ a {
   flex-direction: column;
   background-color: magenta;
   border-radius: 8px;
+}
+
+.profileimagesDiv{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: scroll;
+  height: 300px;
+  border: 2px solid black;
+  margin: 10px;
+  border-radius: 8px;
+  gap: 20px
+}
+
+.profileimagesDiv img{
+  width: 100px;
+  cursor: pointer;
+  transition: scale 0.2s, border-color 0.4s;
+  border-radius: 100%;
+  border: 3px solid rgba(0, 0, 0, 0);
+}
+
+.profileimagesDiv img:hover{
+ scale: 1.1;
+}
+
+.profileimagesDiv img.active{
+  border: 3px solid magenta;
 }

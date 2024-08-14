@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react"
 
 // Function //
 
-function RegistrationForm() {
+function RegistrationForm({ setLoggedInUser }) {
 
     const [firstname, setFirstname] = useState("")
     const [lastname, setLastname] = useState("")
@@ -14,15 +14,30 @@ function RegistrationForm() {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [isSendButtonClicked, setIsSendButtonClicked] = useState(false)
+    const [imageNames, setImageNames] = useState([]);
+    const [profilePictureURL, setProfilePictureURL] = useState("/assets/images/default_profiles/profile1.webp");
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    useEffect(() => {
+        fetch('/api/images')
+            .then(response => response.json())
+            .then(data => setImageNames(data))
+            .catch(error => console.error('Error fetching images:', error));
+    }, []);
 
 
+
+    const handleImageClick = (src) => {
+        setProfilePictureURL(src);
+        setSelectedImage(src);
+    };
 
     // Email validation if we have already an emailAddress
     function validateEmail(emailAddress) {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         return regex.test(emailAddress)
     }
-    
+
 
     // Handle Send Button
     async function handleSubmit(event) {
@@ -57,12 +72,15 @@ function RegistrationForm() {
 
         const userData =
         {
-            firstname: firstname,
-            lastname: lastname,
+            firstName: firstname,
+            lastName: lastname,
             email: emailAddress,
             username: username,
-            password: password
+            password: password,
+            profilePicture: profilePictureURL
         }
+
+        console.log(userData);
 
         try {
             const response = await fetch("/api/users", {
@@ -79,6 +97,7 @@ function RegistrationForm() {
 
             console.log("Registration was successfull!")
             console.log(userData)
+            setLoggedInUser(userData);
 
         } catch (error) {
             console.error("handleSubmit() catch error", error)
@@ -151,6 +170,23 @@ function RegistrationForm() {
                                 onChange={(event) => setPassword(event.target.value)}
                             />
                         </label>
+                        {imageNames && <div className="profileimagesDiv">
+                            <a style={{ margin: '10px' }}>Choose a profile picture:</a>
+                            {imageNames.map((imageName, index) => {
+                                const src = `/assets/images/default_profiles/${imageName}`
+                                const isSelected = src === selectedImage;
+
+                                return (
+                                    <img
+                                        key={index}
+                                        src={src}
+                                        alt={`Profile ${index + 1}`}
+                                        onClick={() => handleImageClick(src)}
+                                        className={ isSelected ? 'active' : ''}
+                                    />
+                                )
+                            })}
+                        </div>}
 
                         <br />
 

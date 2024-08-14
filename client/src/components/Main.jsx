@@ -10,7 +10,7 @@ const CHARACTERS_API = "https://www.moogleapi.com/api/v1/characters/"
 // Function //
 
 // We will need user info here to save username for like and dislike events. //
-function Main() {
+function Main({loggedInUser}) {
 
     const [characters, setCharacters] = useState([])
     const [randomCharacter, setRandomCharacter] = useState(null)
@@ -58,14 +58,14 @@ function Main() {
     }, [characters])
 
     const handleLike = async () => {
-        const likedCharacter = randomCharacter.id;
-        // const likedBy = userInfo.username;
-        // const data = { likedBy, likedCharacterId } 
+        const likedCharacterId = randomCharacter.id;
+        const likedBy = loggedInUser.username;
+        const data = { likedBy, likedCharacterId } 
         try {
             const response = await fetch('/api/likes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(/*data*/)
+                body: JSON.stringify(data)
             }) 
 
             console.log(await response.json())
@@ -76,14 +76,14 @@ function Main() {
     }
 
     const handleDislike = async () => {
-        const dislikedCharacter = randomCharacter.id;
-        // const dislikedBy = userInfo.username;
-        // const data = { dislikedBy, dislikedCharacterId } 
+        dislikedCharacterId = randomCharacter.id;
+        const dislikedBy = loggedInUser.username;
+        const data = { dislikedBy, dislikedCharacterId } 
         try {
             const response = await fetch('/api/dislikes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(/*data*/)
+                body: JSON.stringify(data)
             }) 
 
             console.log(await response.json())
