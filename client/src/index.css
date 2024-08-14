@@ -35,8 +35,15 @@ button {
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s background-color 0.3s, scale 0.3s;
 }
+
+button:hover{
+  background-color: magenta;
+  scale: 1.2;
+}
+
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
