@@ -364,3 +364,17 @@ label{
   top: 10%;
   left: 5%;
 }
+
+.loginContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 5px solid black;
+  border-radius: 8px;
+  padding: 20px;
+  padding-left: 100px;
+  padding-right: 100px;
+  width: min-content;
+  gap: 20px;
+}
