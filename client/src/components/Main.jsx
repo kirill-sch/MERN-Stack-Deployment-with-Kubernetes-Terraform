@@ -73,10 +73,11 @@ function Main({ loggedInUser, setIsLoading, setMatched, setUserUpdates }) {
                 console.log("fetchedCharacters: ", fetchedCharacters)
 
                 const lastFrontCardOnline = loggedInUser.lastFrontCard;
+                console.log("Lastfrontcardonline", lastFrontCardOnline);
 
                 const lastFrontCardLocal = JSON.parse(localStorage.getItem('lastFrontCard'));
 
-                if (lastFrontCardOnline) {
+                if (lastFrontCardOnline._id) {
                     //Save to local storage only
                     setFrontRandomCharacter(lastFrontCardOnline)
                     localStorage.setItem("lastFrontCard", JSON.stringify(lastFrontCardOnline));
