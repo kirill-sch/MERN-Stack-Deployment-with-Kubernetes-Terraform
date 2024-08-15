@@ -134,7 +134,7 @@ label {
   border: 3px solid magenta;
 }
 
-.messagesContainer {
+.matchesContainer {
   width: 100%;
   height: 100%;
   display: flex;
@@ -147,6 +147,40 @@ label {
   grid-row: 1 / 3;
   border-radius: 14px;
   border-right: 2px solid black;
+  overflow-y: scroll;
+  overflow-x: clip;
+  gap: 10px;
+}
+
+.match{
+  display: flex;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  width: -moz-available;
+  flex-direction: column;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+.match:hover{
+  cursor: pointer;
+  background-color: tomato;
+}
+
+.topHalf{
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 10px;
+  gap: 10px;
+  margin-left: 10px;
+}
+
+.match img{
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  background-color: rgb(125, 125, 125);
 }
 
 .imageContainer {
