@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 const { Schema, model } = mongoose;
 
 const characterSchema = new Schema({
+  id: String,
   name: String,
   age: String,
   gender: String,

@@ -159,44 +159,41 @@ app.post('/api/characters/:num', async (req, res) => {
     const num = parseInt(req.params.num);
 
     try {
+        // Retrieve characters and user's likes/dislikes
         const results = await Character.find({ gender: { $in: gender }, race: { $in: races }});
-        const liked = await Like.find({ username: username })
-        const disliked = await Dislike.find({ username: username});
+        const liked = await Like.find({ likedBy: username });
+        const disliked = await Dislike.find({ dislikedBy: username });
 
         const toSend = [];
 
         while (toSend.length !== num && results.length > 0) {
-          const randomIndex = Math.floor(Math.random() * results.length);
+            const randomIndex = Math.floor(Math.random() * results.length);
+            const selectedCharacter = results[randomIndex];
 
-          const alreadySeenInLiked = liked.reduce((found, like) => {
-            return found || like.likedCharacterId === results[randomIndex].id;
-          }, false);
-          const alreadySeenInDisliked = disliked.reduce((found, dislike) => {
-            return (
-              found || dislike.dislikedCharacterId === results[randomIndex].id
-            );
-          }, false);
 
-          if (alreadySeenInLiked || alreadySeenInDisliked) {
-            results.splice(randomIndex, 1);
-            continue;
-          } else if (
-            results[randomIndex].age === "??" || parseInt(results[randomIndex].age) >= 18) {
-            toSend.push(results[randomIndex]);
-            results.splice(randomIndex, 1);
-          }
+            const alreadySeenInLiked = liked.some(like => like.likedCharacterId === selectedCharacter.id);
+            const alreadySeenInDisliked = disliked.some(dislike => dislike.dislikedCharacterId === selectedCharacter.id);
+            const alreadyInToSend = toSend.some(character => character.id === selectedCharacter.id);
+
+            if (alreadySeenInLiked || alreadySeenInDisliked || alreadyInToSend) {
+                results.splice(randomIndex, 1);
+                continue;
+            } else if (selectedCharacter.age === "??" || parseInt(selectedCharacter.age) >= 18) {
+                toSend.push(selectedCharacter);
+                results.splice(randomIndex, 1);
+            }
         }
 
         if (toSend.length < num) {
-            res.status(206).json(toSend);
-            console.warn('Not enough characters to meet the requested number.')
+            console.warn('Not enough characters to meet the requested number.');
+            return res.status(206).json(toSend);
         }
-        
+
         res.status(200).json(toSend);
     } catch (e) {
-        res.status(500).json({ error: 'An error occured while trying to find characters by preferences.'})
+        res.status(500).json({ error: 'An error occurred while trying to find characters by preferences.' });
     }
-})
+});
 
 // LIKES
 
