@@ -60,9 +60,9 @@ app.post('/api/user', async (req, res) => {
     }
 })
 
-app.post('/api/users', async (req, res) => {
+app.post('/api/register', async (req, res) => {
     try {
-        const { username, password, email, firstName, lastName, profilePicture } = req.body;
+        const { username, password, email, firstName, lastName, profilePicture, userPreferences, baseStat} = req.body;
         const createdAt = Date.now();
 
         const alreadyExistedUsers = await User.find({});
@@ -89,6 +89,8 @@ app.post('/api/users', async (req, res) => {
             password,
             email,
             profilePicture,
+            userPreferences,
+            baseStat,
             createdAt
         }).save();
 
@@ -368,8 +370,8 @@ app.post('/api/matches', async (req, res) => {
 })
 
 
-//GET endpoint to list all available profile pictures
-app.get('/api/images', (req, res) => {
+//GET endpoint to send all available profile pictures
+app.get('/api/images/profiles', (req, res) => {
     const imagesDir = path.join(__dirname, '../client/public/assets/images/default_profiles');
     fs.readdir(imagesDir, (err, files) => {
         if (err) {
@@ -378,6 +380,22 @@ app.get('/api/images', (req, res) => {
         // Filter for image files only
         const imageFiles = files.filter(file => /\.(webp|png|jpg|jpeg)$/.test(file));
         res.json(imageFiles);
+    });
+});
+
+
+//GET endpoint to send all available welcome pictures
+app.get('/api/images/welcome', (req, res) => {
+    const imagesDir = path.join(__dirname, '../client/public/assets/images/welcome_screens');
+    fs.readdir(imagesDir, (err, files) => {
+        if (err) {
+            return res.status(500).json({ error: 'Unable to scan directory' });
+        }
+        // Filter for image files only
+        const imageFiles = files.filter(file => /\.(webp|png|jpg|jpeg)$/.test(file));
+        const imageUrls = imageFiles.map(file => `/assets/images/welcome_screens/${file}`);
+        
+        res.json(imageUrls);
     });
 });
 
