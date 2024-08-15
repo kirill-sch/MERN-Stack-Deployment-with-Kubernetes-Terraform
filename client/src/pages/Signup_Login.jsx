@@ -6,17 +6,12 @@ import RegistrationForm from "../components/RegistrationForm";
 
 // Function //
 
-function Signup_Login({ setIsLoggedin, setLoggedInUser }) {
+function Signup_Login({ setIsLoggedin, setLoggedInUser , playFeedbackSound, playClickSound}) {
 
     const [buttonClicked, setButtonClicked] = useState("")
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [fade, setFade] = useState(false);
     const [welcomeImages, setWelcomeImages] = useState([]);
-
-    const hoverSoundRef = useRef(null)
-    const clickSoundRef = useRef(null)
-    const backSoundRef = useRef(null)
-
 
     useEffect(() => {
         fetch('/api/images/welcome')
@@ -40,44 +35,8 @@ function Signup_Login({ setIsLoggedin, setLoggedInUser }) {
     }, [currentImageIndex, welcomeImages.length]);
 
 
-
-    // Play the sound effects
-    function playHoverSound() {
-        if (hoverSoundRef.current) {
-            hoverSoundRef.current.currentTime = 0
-            hoverSoundRef.current.play().catch((error) => {
-                console.error("Play failed:", error)
-            })
-        }
-    }
-
-    function playClickSound() {
-        if (clickSoundRef.current) {
-            clickSoundRef.current.currentTime = 0
-            clickSoundRef.current.play().catch((error) => {
-                console.error("Play failed:", error)
-            })
-        }
-    }
-
-    function playBackSound() {
-        if (backSoundRef.current) {
-            backSoundRef.current.currentTime = 0
-            backSoundRef.current.play().catch((error) => {
-                console.error("Play failed:", error)
-            })
-        }
-    }
-
-
-
     return (
         <>
-
-            <audio ref={hoverSoundRef} src="/assets/sounds/soundeffect5.mp3" />
-            <audio ref={clickSoundRef} src="/assets/sounds/soundeffect2.mp3" />
-            <audio ref={backSoundRef} src="/assets/sounds/soundeffect3.mp3" />
-
 
             {buttonClicked === "" &&
             <div className="welcomeContainer">
@@ -88,11 +47,9 @@ function Signup_Login({ setIsLoggedin, setLoggedInUser }) {
 
                         <button
                             onClick={() => setButtonClicked("signup")}
-                            onMouseOver={playHoverSound}
                         >Sign up</button>
                         <button
                             onClick={() => setButtonClicked("login")}
-                            onMouseOver={playHoverSound}
                         >Log in</button>
                     </div>
                     <div
@@ -107,11 +64,11 @@ function Signup_Login({ setIsLoggedin, setLoggedInUser }) {
             }
 
             {buttonClicked === "login" &&
-                <LoginForm setIsLoggedin={setIsLoggedin} setLoggedInUser={setLoggedInUser} setButtonClicked={setButtonClicked} />
+                <LoginForm setIsLoggedin={setIsLoggedin} setLoggedInUser={setLoggedInUser} setButtonClicked={setButtonClicked} playFeedbackSound={playFeedbackSound}/>
             }
 
             {buttonClicked === "signup" &&
-                <RegistrationForm setButtonClicked={setButtonClicked} />
+                <RegistrationForm setButtonClicked={setButtonClicked} playFeedbackSound={playFeedbackSound} playClickSound={playClickSound}/>
             }
 
         </>
