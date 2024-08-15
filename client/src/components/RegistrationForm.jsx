@@ -77,6 +77,8 @@ function RegistrationForm({ setButtonClicked }) {
 
         const baseStat = (Math.floor(Math.random() * (35 - 15 + 1)) + 15);
 
+        const updatedUserPreferences = {...userPreferences, gender: ["Male", "Female", "??"]};
+
         const userData =
         {
             firstName: firstname,
@@ -87,7 +89,7 @@ function RegistrationForm({ setButtonClicked }) {
             profilePicture: profilePictureURL,
             baseStat: baseStat,
             lastFrontCard: {null: null},
-            userPreferences: userPreferences
+            userPreferences: updatedUserPreferences
         }
 
         console.log(userData);
