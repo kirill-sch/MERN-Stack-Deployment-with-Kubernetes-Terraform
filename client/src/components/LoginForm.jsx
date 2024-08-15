@@ -127,6 +127,7 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
                 <button
                     type="button"
                     onClick={handleLogin}
+                    style={{fontSize:"1.2em", width:"100%"}}
                 >Login</button>
 
 

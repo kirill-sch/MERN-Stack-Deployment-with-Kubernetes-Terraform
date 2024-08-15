@@ -9,7 +9,7 @@ import ArrowIcon from "./ArrowIcon"
 
 // Function //
 
-function Main({loggedInUser, setIsLoading, setMatched}) {
+function Main({ loggedInUser, setIsLoading, setMatched }) {
 
     const [characters, setCharacters] = useState([])
     const [backRandomCharacter, setBackRandomCharacter] = useState(null);
@@ -17,14 +17,15 @@ function Main({loggedInUser, setIsLoading, setMatched}) {
     const [isMoreDetailsVisible, setIsMoreDetailsVisible] = useState(false);
     const [matchBonus, setMatchBonus] = useState(0)
     const [penalty, setPenalty] = useState(0);
+    const [] = useState();
 
     useEffect(() => {
 
         async function fetchCharacters() {
             try {
-                const response = await fetch('/api/characters/3', {
+                const response = await fetch('/api/characters/4', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(loggedInUser)
                 })
 
@@ -33,8 +34,56 @@ function Main({loggedInUser, setIsLoading, setMatched}) {
                 }
 
                 const fetchedCharacters = await response.json();
+
+                if (fetchedCharacters.length < 2) {
+
+                    //Don't try to fill backRandomCharacter, when there is only one character left.
+                    //Also, make GAME OVER card when there aren't any characters left.
+
+                    const gameOver = {
+                        _id: "",
+                        age: "",
+                        description: "No more characters :(",
+                        gender: "",
+                        height: "",
+                        id: "",
+                        japaneseName: "",
+                        job: "",
+                        name: "Game Over",
+                        origin: "",
+                        pictures: [{ url: "/assets/images/gameover.png" }],
+                        race: "",
+                        stats: [],
+                        weight: ""
+
+                    }
+
+                    if (fetchedCharacters.length < 1) {
+
+                        setFrontRandomCharacter(gameOver)
+                        return
+                    };
+
+                    setFrontRandomCharacter(fetchedCharacters[0])
+                    setBackRandomCharacter(gameOver)
+                    return
+                }
+
                 console.log("fetchedCharacters: ", fetchedCharacters)
-                setFrontRandomCharacter(fetchedCharacters[0])
+
+                const lastFrontCard = JSON.parse(localStorage.getItem('lastFrontCard'));
+
+                if (lastFrontCard) {
+                    setFrontRandomCharacter(lastFrontCard)
+                }
+
+                else {
+                    setFrontRandomCharacter(fetchedCharacters[0])
+                    //Save last card to local storage.
+                localStorage.setItem("lastFrontCard", JSON.stringify(fetchedCharacters[0]));
+                }
+
+
                 setBackRandomCharacter(fetchedCharacters[1])
                 setCharacters(fetchedCharacters.slice(2))
 
@@ -54,26 +103,32 @@ function Main({loggedInUser, setIsLoading, setMatched}) {
     }, [])
 
     const putCharactersInStates = async () => {
+
+
         setFrontRandomCharacter(backRandomCharacter);
+
+        //Save last card to local storage.
+        localStorage.setItem("lastFrontCard", JSON.stringify(backRandomCharacter));
+
         setBackRandomCharacter(characters[0]);
         setCharacters(characters.slice(1));
 
         try {
-        const response = await fetch('/api/characters/1', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json'},
-                    body: JSON.stringify(loggedInUser)
-                })
+            const response = await fetch('/api/characters/1', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(loggedInUser)
+            })
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch new character.')
-                }
-                const newCharacter = await response.json();
-
-                setCharacters(prevCharacters => [...prevCharacters, ...newCharacter])
-            } catch (e) {
-                console.error('Error with fetch() in putCharactersInStates.');
+            if (!response.ok) {
+                throw new Error('Failed to fetch new character.')
             }
+            const newCharacter = await response.json();
+
+            setCharacters(prevCharacters => [...prevCharacters, ...newCharacter])
+        } catch (e) {
+            console.error('Error with fetch() in putCharactersInStates.');
+        }
     }
 
 
@@ -100,13 +155,13 @@ function Main({loggedInUser, setIsLoading, setMatched}) {
     const handleLike = async () => {
         const likedCharacterId = frontRandomCharacter.id;
         const likedBy = loggedInUser.username;
-        const data = { likedBy, likedCharacterId }; 
+        const data = { likedBy, likedCharacterId };
         try {
             const response = await fetch('/api/likes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
-            }) 
+            })
 
             //setFrontRandomCharacter(null);
             const matchProbability = (Math.floor(Math.random() * (35 - 15 + 1)) + 15) / 100;
@@ -123,13 +178,13 @@ function Main({loggedInUser, setIsLoading, setMatched}) {
     const handleDislike = async () => {
         const dislikedCharacterId = frontRandomCharacter.id;
         const dislikedBy = loggedInUser.username;
-        const data = { dislikedBy, dislikedCharacterId } 
+        const data = { dislikedBy, dislikedCharacterId }
         try {
             const response = await fetch('/api/dislikes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
-            }) 
+            })
 
             console.log(await response.json())
             putCharactersInStates();
@@ -139,39 +194,39 @@ function Main({loggedInUser, setIsLoading, setMatched}) {
     }
 
     const matchHappened = async () => {
-      alert("You have a match!");
-      setMatchBonus(0);
-      setPenalty(penalty + 3);
-      
-
-      const username = loggedInUser.username;
-      const charactersId = frontRandomCharacter.id;
-      const charactersName = frontRandomCharacter.name;
-      const characterImg = frontRandomCharacter.pictures[0] === undefined ? '/assets/images/default_profiles/default.jpg' : frontRandomCharacter.pictures[0].url;
-      const data = { username, charactersName, charactersId, characterImg};
-      try {
-        const response = await fetch("/api/matches", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        });
-
-        setMatched(true);
-
-        setTimeout(() => {
-            setMatched(false)
-        }, 1600);
+        alert("You have a match!");
+        setMatchBonus(0);
+        setPenalty(penalty + 3);
 
 
+        const username = loggedInUser.username;
+        const charactersId = frontRandomCharacter.id;
+        const charactersName = frontRandomCharacter.name;
+        const characterImg = frontRandomCharacter.pictures[0] === undefined ? '/assets/images/default_profiles/default.jpg' : frontRandomCharacter.pictures[0].url;
+        const data = { username, charactersName, charactersId, characterImg };
+        try {
+            const response = await fetch("/api/matches", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
 
-        console.log(await response.json());
-      } catch (e) {
-        console.error(e);
-      }
-    }; 
-        
-    
-    
+            setMatched(true);
+
+            setTimeout(() => {
+                setMatched(false)
+            }, 1600);
+
+
+
+            console.log(await response.json());
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+
+
 
 
 

@@ -208,7 +208,7 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
                         >
                             {passwordInputType === "password" ? "Show password" : "Hide password"}</button>
 
-                        <button type="submit">Register</button>
+                        <button type="submit" style={{fontSize:"1.2em" ,width:"100%"}}>Register</button>
 
                     </form>
 
@@ -240,12 +240,14 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
 
             ) : (
 
-                <div>
+                <div className="welcomeDiv">
 
-                    <h6>Thank you for your registration!</h6>
-                    <button className="goToTheHomePageButton" onClick={() => setButtonClicked("")}>Go to the home page</button>
-                    <br />
-                    <button className="goToTheLoginFormButton" onClick={() => setButtonClicked("login")}>Go to the login page</button>
+                    <h1>Thank you for your registration!</h1>
+                    <div className="buttonWrapper">
+
+                    <button style={{fontSize:"2em"}} onClick={() => setButtonClicked("login")}>Click here to login!</button>
+                    </div>
+  
 
                 </div>
 
