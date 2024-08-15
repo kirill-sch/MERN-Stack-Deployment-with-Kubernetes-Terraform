@@ -1,7 +1,8 @@
 // Imports //
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import ArrowIcon from "./ArrowIcon"
+import MatchNotification from "./MatchNotification"
 
 // Global Variables //
 
@@ -9,7 +10,7 @@ import ArrowIcon from "./ArrowIcon"
 
 // Function //
 
-function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUserUpdates }) {
+function Main({  setLoggedInUser, loggedInUser, setIsLoading, setMatched , setUserUpdates }) {
 
     const [characters, setCharacters] = useState([])
     const [backRandomCharacter, setBackRandomCharacter] = useState(null);
@@ -17,6 +18,14 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
     const [isMoreDetailsVisible, setIsMoreDetailsVisible] = useState(false);
     const [matchBonus, setMatchBonus] = useState(0)
     const [penalty, setPenalty] = useState(0);
+    const [isMatchNotificationVisible, setIsMatchNotificationVisible] = useState(false)
+    const [isButtonDisable, setIsButtonDisable] = useState(false)
+
+    const hoverSoundRef = useRef(null)
+    const clickSoundRef = useRef(null)
+    const dislikeSoundRef = useRef(null)
+    const likeSoundRef = useRef(null)
+    const matchSoundRef = useRef(null)
     const [gameOver, setGameOver] = useState(false);
 
     useEffect(() => {
@@ -25,7 +34,7 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
             try {
                 const response = await fetch('/api/characters/4', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json'  },
                     body: JSON.stringify(loggedInUser)
                 })
 
@@ -136,24 +145,22 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
             setBackRandomCharacter(characters[0]);
             setCharacters(characters.slice(1));
 
-            try {
-                const response = await fetch('/api/characters/1', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(loggedInUser)
-                })
+        try {
+            const response = await fetch('/api/characters/1', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(loggedInUser)
+            })
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch new character.')
-                }
-                const newCharacter = await response.json();
-
-                setCharacters(prevCharacters => [...prevCharacters, ...newCharacter])
-            } catch (e) {
-                console.error('Error with fetch() in putCharactersInStates.');
+            if (!response.ok) {
+                throw new Error('Failed to fetch new character.')
             }
-        }
+            const newCharacter = await response.json();
 
+            setCharacters(prevCharacters => [...prevCharacters, ...newCharacter])
+        } catch (e) {
+            console.error('Error with fetch() in putCharactersInStates.');
+        }
     }
 
 
@@ -198,6 +205,8 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
         } catch (e) {
             console.error(e);
         }
+
+        //playLikeSound()
     }
 
     const handleDislike = async () => {
@@ -216,10 +225,15 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
         } catch (e) {
             console.error(e);
         }
+
+        //playDislikeSound()
     }
 
     const matchHappened = async () => {
-        alert("You have a match!");
+        playMatchSoundRef()
+        //alert("You have a match!");
+        setIsMatchNotificationVisible(true)
+        setIsButtonDisable(true)
         setMatchBonus(0);
         setPenalty(penalty + 3);
 
@@ -252,12 +266,70 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
 
 
 
+    // Play the sound effects
+    function playHoverSound() {
+        if (hoverSoundRef.current) {
+            hoverSoundRef.current.currentTime = 0
+            hoverSoundRef.current.play().catch((error) => {
+                console.error("Play failed:", error)
+            })
+        }
+    }
 
+    function playClickSound() {
+        if (clickSoundRef.current) {
+            clickSoundRef.current.currentTime = 0
+            clickSoundRef.current.play().catch((error) => {
+                console.error("Play failed:", error)
+            })
+        }
+    }
 
+    function playDislikeSound() {
+        if (dislikeSoundRef.current) {
+            dislikeSoundRef.current.currentTime = 0
+            dislikeSoundRef.current.play().catch((error) => {
+                console.error("Play failed:", error)
+            })
+        }
+    }
+
+    function playLikeSound() {
+        if (likeSoundRef.current) {
+            likeSoundRef.current.currentTime = 0
+            likeSoundRef.current.play().catch((error) => {
+                console.error("Play failed:", error)
+            })
+        }
+    }
+
+    function playMatchSoundRef() {
+        if (matchSoundRef.current) {
+            matchSoundRef.current.currentTime = 0
+            matchSoundRef.current.play().catch((error) => {
+                console.error("Play failed:", error)
+            })
+        }
+    }
+
+    // Handle Notification Close
+    function handleNotificationClose() {
+        setIsMatchNotificationVisible(false)
+        setIsButtonDisable(false)
+    }
+    
 
     return (
 
         <div className="main">
+
+            <audio ref={hoverSoundRef} src="/assets/sounds/soundeffect5.mp3" />
+            <audio ref={clickSoundRef} src="/assets/sounds/soundeffect1.mp3" />
+            <audio ref={dislikeSoundRef} src="/assets/sounds/soundeffect2.mp3" />
+            <audio ref={likeSoundRef} src="/assets/sounds/soundeffect3.mp3" />
+            <audio ref={matchSoundRef} src="/assets/sounds/soundeffect6.mp3" />
+
+            {isMatchNotificationVisible && <MatchNotification onClose={handleNotificationClose}/>}
 
             {!frontRandomCharacter ? (
                 <p></p>
@@ -317,8 +389,8 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
                     {frontRandomCharacter.origin === "??" || frontRandomCharacter.origin === null ? "" : <p className="origin">Origin: {frontRandomCharacter.origin}</p>}
 
                     <div className="buttonWrapper">
-                        <button className="dislikeButton" onClick={handleDislike} disabled={gameOver ? 'true' : ''}>👎</button>
-                        <button className="likeButton" onClick={handleLike} disabled={gameOver ? 'true' : ''}>❤️</button>
+                        <button className="dislikeButton" onClick={handleDislike} onMouseOver={playHoverSound} disabled={isButtonDisable} disabled={gameOver ? 'true' : ''}>👎</button>
+                        <button className="likeButton" onClick={handleLike} onMouseOver={playHoverSound} disabled={isButtonDisable} disabled={gameOver ? 'true' : ''}>❤️</button>
                     </div>
 
 

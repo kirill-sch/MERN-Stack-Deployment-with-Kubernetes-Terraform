@@ -14,6 +14,8 @@ function Signup_Login({ setIsLoggedin, setLoggedInUser }) {
     const [welcomeImages, setWelcomeImages] = useState([]);
 
     const hoverSoundRef = useRef(null)
+    const clickSoundRef = useRef(null)
+    const backSoundRef = useRef(null)
 
 
     useEffect(() => {
@@ -39,22 +41,43 @@ function Signup_Login({ setIsLoggedin, setLoggedInUser }) {
 
 
 
-    // Play the sound effect
-    const playHoverSound = () => {
+    // Play the sound effects
+    function playHoverSound() {
         if (hoverSoundRef.current) {
-            hoverSoundRef.current.currentTime = 0;
+            hoverSoundRef.current.currentTime = 0
             hoverSoundRef.current.play().catch((error) => {
-                console.error("Play failed:", error);
-            });
+                console.error("Play failed:", error)
+            })
         }
-    };
+    }
+
+    function playClickSound() {
+        if (clickSoundRef.current) {
+            clickSoundRef.current.currentTime = 0
+            clickSoundRef.current.play().catch((error) => {
+                console.error("Play failed:", error)
+            })
+        }
+    }
+
+    function playBackSound() {
+        if (backSoundRef.current) {
+            backSoundRef.current.currentTime = 0
+            backSoundRef.current.play().catch((error) => {
+                console.error("Play failed:", error)
+            })
+        }
+    }
 
 
 
     return (
         <>
 
-            <audio ref={hoverSoundRef} src="/assets/sounds/sound1.mp3" />
+            <audio ref={hoverSoundRef} src="/assets/sounds/soundeffect5.mp3" />
+            <audio ref={clickSoundRef} src="/assets/sounds/soundeffect2.mp3" />
+            <audio ref={backSoundRef} src="/assets/sounds/soundeffect3.mp3" />
+
 
             {buttonClicked === "" &&
             <div className="welcomeContainer">

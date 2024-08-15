@@ -1,6 +1,6 @@
 // Imports //
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import CryptoJS from "crypto-js";
 import Preferences from './Preferences'
 
@@ -23,6 +23,11 @@ function RegistrationForm({ setButtonClicked }) {
     const [errorMessage, setErrorMessage] = useState("")
     const [userPreferences, setUserPreferences] = useState({});
 
+    const hoverSoundRef = useRef(null)
+    const clickSoundRef = useRef(null)
+    const backSoundRef = useRef(null)
+    const profilePictureSoundRef = useRef(null)
+
     useEffect(() => {
         fetch('/api/images/profiles')
             .then(response => response.json())
@@ -34,6 +39,7 @@ function RegistrationForm({ setButtonClicked }) {
     const handleImageClick = (src) => {
         setProfilePictureURL(src);
         setSelectedImage(src);
+        playClickSound()
     };
 
     // Email validation if we have already an emailAddress
@@ -142,17 +148,64 @@ function RegistrationForm({ setButtonClicked }) {
         } else {
             setPasswordInputType("password")
         }
+
+        playClickSound()
     }
+
+
+    // Play the sound effects
+    function playHoverSound() {
+        if (hoverSoundRef.current) {
+            hoverSoundRef.current.currentTime = 0
+            hoverSoundRef.current.play().catch((error) => {
+                console.error("Play failed:", error)
+            })
+        }
+    }
+
+    function playClickSound() {
+        if (clickSoundRef.current) {
+            clickSoundRef.current.currentTime = 0
+            clickSoundRef.current.play().catch((error) => {
+                console.error("Play failed:", error)
+            })
+        }
+    }
+
+    function playBackSound() {
+        if (backSoundRef.current) {
+            backSoundRef.current.currentTime = 0
+            backSoundRef.current.play().catch((error) => {
+                console.error("Play failed:", error)
+            })
+        }
+    }
+
+    function playProfilePictureSound() {
+        if (profilePictureSoundRef.current) {
+            profilePictureSoundRef.current.currentTime = 0
+            profilePictureSoundRef.current.play().catch((error) => {
+                console.error("Play failed:", error)
+            })
+        }
+    }
+
+
 
     return (
 
         <>
 
+            <audio ref={hoverSoundRef} src="/assets/sounds/soundeffect5.mp3" />
+            <audio ref={clickSoundRef} src="/assets/sounds/soundeffect1.mp3" />
+            <audio ref={backSoundRef} src="/assets/sounds/soundeffect3.mp3" />
+            <audio ref={profilePictureSoundRef} src="/assets/sounds/soundeffect3.mp3"/>
+
 
             {!isSendButtonClicked ? (
 
                 <div className="regContainer">
-                    <button className="goBackButton" onClick={() => setButtonClicked("")}>Go back</button>
+                    <button className="goBackButton" onClick={() => setButtonClicked("")} onMouseOver={playHoverSound}>Go back</button>
                     <form className="registrationForm" onSubmit={handleSubmit}>
                         <label>
                             {"First Name: "}
@@ -211,14 +264,15 @@ function RegistrationForm({ setButtonClicked }) {
                         <button
                             type="button"
                             onClick={handleShowPassword}
+                            onMouseOver={playHoverSound}
                         >
                             {passwordInputType === "password" ? "Show password" : "Hide password"}</button>
 
-                        <button type="submit" style={{fontSize:"1.2em" ,width:"100%"}}>Register</button>
+                        <button type="submit" onMouseOver={playHoverSound} style={{fontSize:"1.2em" ,width:"100%"}}>Register</button>
 
                     </form>
 
-                    <Preferences setUserPreferences={setUserPreferences}/>
+                    <Preferences setUserPreferences={setUserPreferences} />
 
                     {profileImageNames && <div className="profileimagesDiv">
                         <a style={{ margin: '10px' }}>Choose a profile picture:</a>
@@ -233,14 +287,15 @@ function RegistrationForm({ setButtonClicked }) {
                                     alt={`Profile ${index + 1}`}
                                     onClick={() => handleImageClick(src)}
                                     className={isSelected ? 'active' : ''}
+                                    onMouseOver={playProfilePictureSound}
                                 />
                             )
                         })}
                     </div>}
 
                     <div className={`errorMessage ${errorMessage === "" ? 'hidden' : 'active'}`}>
-                            <h2>{errorMessage}</h2>
-                        </div>
+                        <h2>{errorMessage}</h2>
+                    </div>
 
                 </div>
 
