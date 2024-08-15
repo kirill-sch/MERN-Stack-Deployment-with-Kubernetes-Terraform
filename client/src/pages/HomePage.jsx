@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Main from "../components/Main";
+import Messages from "../components/Messages";
 
 
 function HomePage ({setIsLoggedin, loggedInUser}) {
@@ -11,7 +12,9 @@ function HomePage ({setIsLoggedin, loggedInUser}) {
         <>
         {isLoading && <div>Loading...</div>}
         <div className={`homepage ${isLoading ? 'hidden' : ''}`}>
-        <div className="messagesContainer">Messages</div>
+        <div className="messagesContainer">Messages
+        <Messages loggedInUser={loggedInUser} />
+        </div>
         <Main loggedInUser={loggedInUser} setIsLoading={setIsLoading}/>
 
         <div className="profileContainer">
