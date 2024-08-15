@@ -53,7 +53,7 @@ function HomePage ({setLoggedInUser, setIsLoggedin, loggedInUser, playMatchSound
         <img src={loggedInUser.profilePicture || defaultPictureURL} alt="Profile" className="profileImg" onClick={() => setIsModalVisible(!isModalVisible)}/>
         {isModalVisible && <div className="profileImgModal">
             <a href="">Settings</a>
-            <a onClick={() => { setIsLoggedin(false) }}>Logout</a>
+            <a onClick={() => { setLoggedInUser(null) }}>Logout</a>
             </div>}
         </div>
         </div>
