@@ -89,7 +89,7 @@ function RegistrationForm({ setButtonClicked }) {
             profilePicture: profilePictureURL,
             baseStat: baseStat,
             lastFrontCard: {null: null},
-            userPreferences: updatedUserPreferences
+            userPreferences: userPreferences
         }
 
         console.log(userData);
