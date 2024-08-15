@@ -13,7 +13,8 @@ const CHARACTERS_API = "https://www.moogleapi.com/api/v1/characters/"
 function Main({loggedInUser, setIsLoading}) {
 
     const [characters, setCharacters] = useState([])
-    const [randomCharacter, setRandomCharacter] = useState(null)
+    const [backRandomCharacter, setBackRandomCharacter] = useState(null);
+    const [frontRandomCharacter, setFrontRandomCharacter] = useState(null)
     const [isMoreDetailsVisible, setIsMoreDetailsVisible] = useState(false);
 
     useEffect(() => {
@@ -49,7 +50,7 @@ function Main({loggedInUser, setIsLoading}) {
                 const randomIndex = Math.floor(Math.random() * characters.length)
                 const randomGeneratedCharacter = characters[randomIndex]
                 console.log(randomGeneratedCharacter)
-                setRandomCharacter(randomGeneratedCharacter)
+                setFrontRandomCharacter(randomGeneratedCharacter)
                 
                 setTimeout(() => {
                     setIsLoading(false)
@@ -62,7 +63,7 @@ function Main({loggedInUser, setIsLoading}) {
     }, [characters])
 
     const handleLike = async () => {
-        const likedCharacterId = randomCharacter.id;
+        const likedCharacterId = frontRandomCharacter.id;
         const likedBy = loggedInUser.username;
         const data = { likedBy, likedCharacterId } 
         try {
@@ -73,14 +74,14 @@ function Main({loggedInUser, setIsLoading}) {
             }) 
 
             console.log(await response.json())
-            setRandomCharacter(null);
+            setFrontRandomCharacter(null);
         } catch (e) {
             console.error(e);
         }
     }
 
     const handleDislike = async () => {
-        dislikedCharacterId = randomCharacter.id;
+        dislikedCharacterId = frontRandomCharacter.id;
         const dislikedBy = loggedInUser.username;
         const data = { dislikedBy, dislikedCharacterId } 
         try {
@@ -91,7 +92,7 @@ function Main({loggedInUser, setIsLoading}) {
             }) 
 
             console.log(await response.json())
-            setRandomCharacter(null);
+            setFrontRandomCharacter(null);
         } catch (e) {
             console.error(e);
         }
@@ -104,24 +105,24 @@ function Main({loggedInUser, setIsLoading}) {
 
         <div className="main">
 
-            {!randomCharacter ? (
+            {!frontRandomCharacter ? (
                 <p></p>
             ) : (
                 <>
-                    <div className="imageContainer" key={randomCharacter.id}>
+                    <div className="imageContainer" key={frontRandomCharacter.id}>
                         <img
-                            src={randomCharacter.pictures[0] === undefined ? '/assets/images/default_profiles/default.jpg' : randomCharacter.pictures[0].url}
-                            alt={randomCharacter.name}
+                            src={frontRandomCharacter.pictures[0] === undefined ? '/assets/images/default_profiles/default.jpg' : frontRandomCharacter.pictures[0].url}
+                            alt={frontRandomCharacter.name}
                         />
                     </div>
                     <div className="characterDetails">
                         <div className="quickDetails">
-                            <h3>{randomCharacter.name}{randomCharacter.race === "??" || randomCharacter.race === null ? "" : `, ${randomCharacter.race}`} </h3>
-                            {randomCharacter.age === "??" || randomCharacter.age === null ? "" : <h3>{randomCharacter.age} years old</h3>}
+                            <h3>{frontRandomCharacter.name}{frontRandomCharacter.race === "??" || frontRandomCharacter.race === null ? "" : `, ${frontRandomCharacter.race}`} </h3>
+                            {frontRandomCharacter.age === "??" || frontRandomCharacter.age === null ? "" : <h3>{frontRandomCharacter.age} years old</h3>}
 
                         </div>
 
-                        {randomCharacter.job === "??" || randomCharacter.job === null ? "" : <h5 className="job">{randomCharacter.job}</h5>}
+                        {frontRandomCharacter.job === "??" || frontRandomCharacter.job === null ? "" : <h5 className="job">{frontRandomCharacter.job}</h5>}
 
                         <div id="arrowDiv"
                             onMouseOver={() => setIsMoreDetailsVisible(true)}
@@ -133,16 +134,16 @@ function Main({loggedInUser, setIsLoading}) {
                         {
                             isMoreDetailsVisible && (
                                 <> <h5 className="moreDetails">More details:</h5>
-                                    {randomCharacter.gender !== "??" && randomCharacter.gender !== null && (
+                                    {frontRandomCharacter.gender !== "??" && frontRandomCharacter.gender !== null && (
                                         <h6 className="moreDetails">
-                                            {randomCharacter.gender === "Female" ? "Gender: Female ♀️" : "Gender: Male ♂️"}
+                                            {frontRandomCharacter.gender === "Female" ? "Gender: Female ♀️" : "Gender: Male ♂️"}
                                         </h6>
                                     )}
-                                    {randomCharacter.height !== "??" && randomCharacter.height !== null && (
-                                        <h6 className="moreDetails">Height: {randomCharacter.height} 🧍↕</h6>
+                                    {frontRandomCharacter.height !== "??" && frontRandomCharacter.height !== null && (
+                                        <h6 className="moreDetails">Height: {frontRandomCharacter.height} 🧍↕</h6>
                                     )}
-                                    {randomCharacter.weight !== "??" && randomCharacter.weight !== null && (
-                                        <h6 className="moreDetails">Weight: {randomCharacter.weight} 🪶</h6>
+                                    {frontRandomCharacter.weight !== "??" && frontRandomCharacter.weight !== null && (
+                                        <h6 className="moreDetails">Weight: {frontRandomCharacter.weight} 🪶</h6>
                                     )}
                                 </>
                             )
@@ -155,11 +156,11 @@ function Main({loggedInUser, setIsLoading}) {
 
                     <div className="characterDesc">
 
-                        {randomCharacter.description === "??" || randomCharacter.description === null ? "" : <p>{randomCharacter.description}</p>}
+                        {frontRandomCharacter.description === "??" || frontRandomCharacter.description === null ? "" : <p>{frontRandomCharacter.description}</p>}
 
                     </div>
 
-                    {randomCharacter.origin === "??" || randomCharacter.origin === null ? "" : <p className="origin">Origin: {randomCharacter.origin}</p>}
+                    {frontRandomCharacter.origin === "??" || frontRandomCharacter.origin === null ? "" : <p className="origin">Origin: {frontRandomCharacter.origin}</p>}
 
                     <div className="buttonWrapper">
                         <button className="dislikeButton" onClick={handleDislike}>👎</button>
