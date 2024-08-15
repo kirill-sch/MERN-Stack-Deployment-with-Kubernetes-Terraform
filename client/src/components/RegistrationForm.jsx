@@ -8,7 +8,7 @@ import Preferences from './Preferences'
 
 // Function //
 
-function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
+function RegistrationForm({ setButtonClicked }) {
 
     const [firstname, setFirstname] = useState("")
     const [lastname, setLastname] = useState("")
@@ -79,9 +79,11 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
             return
         }
         */
-        const encryptedPassword = CryptoJS.AES.encrypt(password, 'nagyontitkos').toString();
+        const encryptedPassword = CryptoJS.AES.encrypt(password,'>+KtIM"?t#71m1rtIbF>').toString();
 
         const baseStat = (Math.floor(Math.random() * (35 - 15 + 1)) + 15);
+
+        userPreferences.gender.push("??");
 
         const userData =
         {
@@ -92,7 +94,8 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
             password: encryptedPassword,
             profilePicture: profilePictureURL,
             baseStat: baseStat,
-            userPreferences: userPreferences
+            lastFrontCard: {null: null},
+            userPreferences: updatedUserPreferences
         }
 
         console.log(userData);
@@ -124,8 +127,11 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
             }
 
             console.log("Registration was successfull!")
-            console.log(userData)
-            setLoggedInUser(userData);
+
+            delete userData.password;
+            console.log(userData);
+
+
             setIsSendButtonClicked(true);
 
         } catch (error) {
@@ -262,7 +268,7 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
                         >
                             {passwordInputType === "password" ? "Show password" : "Hide password"}</button>
 
-                        <button type="submit" onMouseOver={playHoverSound}>Register</button>
+                        <button type="submit" onMouseOver={playHoverSound} style={{fontSize:"1.2em" ,width:"100%"}}>Register</button>
 
                     </form>
 
@@ -295,12 +301,14 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
 
             ) : (
 
-                <div>
+                <div className="welcomeDiv">
 
-                    <h6>Thank you for your registration!</h6>
-                    <button className="goToTheHomePageButton" onClick={() => setButtonClicked("")}>Go to the home page</button>
-                    <br />
-                    <button className="goToTheLoginFormButton" onClick={() => setButtonClicked("login")}>Go to the login page</button>
+                    <h1>Thank you for your registration!</h1>
+                    <div className="buttonWrapper">
+
+                    <button style={{fontSize:"2em"}} onClick={() => setButtonClicked("login")}>Click here to login!</button>
+                    </div>
+  
 
                 </div>
 

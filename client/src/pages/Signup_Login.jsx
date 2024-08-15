@@ -22,7 +22,6 @@ function Signup_Login({ setIsLoggedin, setLoggedInUser }) {
         fetch('/api/images/welcome')
             .then(response => response.json())
             .then(data => {
-                console.log(data); // Log to check if the URLs are correct
                 setWelcomeImages(data);
             })
             .catch(error => console.error('Error fetching images:', error));
@@ -112,7 +111,7 @@ function Signup_Login({ setIsLoggedin, setLoggedInUser }) {
             }
 
             {buttonClicked === "signup" &&
-                <RegistrationForm setLoggedInUser={setLoggedInUser} setButtonClicked={setButtonClicked} />
+                <RegistrationForm setButtonClicked={setButtonClicked} />
             }
 
         </>

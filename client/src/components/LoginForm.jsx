@@ -42,8 +42,8 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
             setIsLoggedin(true)
         }
         */
-
-        const encryptedPassword = CryptoJS.AES.encrypt(password, 'nagyontitkos').toString()
+       
+        const encryptedPassword = CryptoJS.AES.encrypt(password,'>+KtIM"?t#71m1rtIbF>').toString()
 
 
         const data =
@@ -64,9 +64,14 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
         const validation = await response.json()
 
         if (validation.userFound && validation.succeeded) {
+
+            delete validation.user.password;
+            delete validation.user.email;
+
             console.log("Logged in: ", validation.user);
             setLoggedInUser(validation.user);
             setIsLoggedin(true)
+
         } else if (!validation.userFound) {
             setLoginError("Incorrect username!")
             setTimeout(() => {
@@ -175,6 +180,7 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
                     type="button"
                     onClick={handleLogin}
                     onMouseOver={playHoverSound}
+                    style={{fontSize:"1.2em", width:"100%"}}
                 >Login</button>
 
 

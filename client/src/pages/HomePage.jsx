@@ -3,26 +3,57 @@ import Main from "../components/Main";
 import Messages from "../components/Messages";
 
 
-function HomePage ({setIsLoggedin, loggedInUser}) {
-    const [isModalVisible, setIsModalVisible] = useState(false);
+function HomePage ({setLoggedInUser, setIsLoggedin, loggedInUser}) {
     const defaultPictureURL = "/assets/images/default_profiles/default.jpg";
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [matched, setMatched] = useState(false);
+    const [userUpdates, setUserUpdates] = useState({});
+
+
+    useEffect(() => {
+
+        async function updateUserPrefs () {
+
+        try {
+            const response = await fetch(`/api/user/${loggedInUser._id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userUpdates)
+            })
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch new character.')
+            }
+
+            const updates = await response.json();
+            console.log(updates);
+
+        } catch (error) {
+
+            console.log(error);
+        }
+
+    }
+
+    updateUserPrefs();
+
+    }, [userUpdates]);
 
     return (
         <>
-        {isLoading && <div>Loading...</div>}
+        {isLoading && <h1>Loading...</h1>}
         <div className={`homepage ${isLoading ? 'hidden' : ''}`}>
 
         <Messages loggedInUser={loggedInUser} matched={matched}/>
 
-        <Main loggedInUser={loggedInUser} setIsLoading={setIsLoading} setMatched={setMatched}/>
+        <Main loggedInUser={loggedInUser} setIsLoading={setIsLoading} setMatched={setMatched} setUserUpdates={setUserUpdates} setLoggedInUser={setLoggedInUser}/>
 
         <div className="profileContainer">
         <img src={loggedInUser.profilePicture || defaultPictureURL} alt="Profile" className="profileImg" onClick={() => setIsModalVisible(!isModalVisible)}/>
         {isModalVisible && <div className="profileImgModal">
             <a href="">Settings</a>
-            <a href={null} onClick={() => setIsLoggedin(false)}>Logout</a>
+            <a onClick={() => { setIsLoggedin(false) }}>Logout</a>
             </div>}
         </div>
         </div>

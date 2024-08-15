@@ -52,8 +52,8 @@ app.post('/api/user', async (req, res) => {
             return res.json({ userFound: false, succeeded: false })
         }
         
-        const decryptedPassword = CryptoJS.AES.decrypt(password,'nagyontitkos').toString();
-        const decryptedUserPassword = CryptoJS.AES.decrypt(user.password,'nagyontitkos').toString();
+        const decryptedPassword = CryptoJS.AES.decrypt(password,'>+KtIM"?t#71m1rtIbF>').toString();
+        const decryptedUserPassword = CryptoJS.AES.decrypt(user.password,'>+KtIM"?t#71m1rtIbF>').toString();
 
         if (decryptedUserPassword === decryptedPassword) {
             res.json({ userFound: true, succeeded: true, user: user })
@@ -67,7 +67,7 @@ app.post('/api/user', async (req, res) => {
 
 app.post('/api/register', async (req, res) => {
     try {
-        const { username, password, email, firstName, lastName, profilePicture, userPreferences, baseStat} = req.body;
+        const { username, password, email, firstName, lastName, profilePicture, userPreferences, baseStat, lastFrontCard} = req.body;
         const createdAt = Date.now();
 
         const alreadyExistedUsers = await User.find({});
@@ -96,6 +96,7 @@ app.post('/api/register', async (req, res) => {
             profilePicture,
             userPreferences,
             baseStat,
+            lastFrontCard,
             createdAt
         }).save();
 
@@ -129,7 +130,7 @@ app.put('/api/user/:user_id', async (req, res) => {
         const updatedUserDocument = await User.findByIdAndUpdate(userId, { $set: updates }, { new: true });
 
         if (updatedUserDocument) {
-            res.status(200).json({ message: `Updated user: ${updatedUserDocument}` })
+            res.status(200).json({ message: 'Updated user',  updatedUser: updatedUserDocument })
         } else {
             res.status(404).json({ error: `User not found with id: ${userId}.` });
         }
@@ -154,19 +155,41 @@ app.get('/api/characters/races', async (req, res) => {
 
 app.post('/api/characters/:num', async (req, res) => {
     const { gender, races } = req.body.userPreferences;
+    const { username } = req.body;
     const num = parseInt(req.params.num);
 
     try {
-        const results = await Character.find({ gender: { $in: gender }, race: { $in: races}});
+        const results = await Character.find({ gender: { $in: gender }, race: { $in: races }});
+        const liked = await Like.find({ username: username })
+        const disliked = await Dislike.find({ username: username});
+
         const toSend = [];
 
-        while (toSend.length !== num) {
-            const randomIndex = Math.floor(Math.random() * results.length);
+        while (toSend.length !== num && results.length > 0) {
+          const randomIndex = Math.floor(Math.random() * results.length);
 
-            if (results[randomIndex].age === '??' || results[randomIndex].age >= 18) {
-                toSend.push(results[randomIndex]);
-                results.splice(randomIndex, 1);
-            }
+          const alreadySeenInLiked = liked.reduce((found, like) => {
+            return found || like.likedCharacterId === results[randomIndex].id;
+          }, false);
+          const alreadySeenInDisliked = disliked.reduce((found, dislike) => {
+            return (
+              found || dislike.dislikedCharacterId === results[randomIndex].id
+            );
+          }, false);
+
+          if (alreadySeenInLiked || alreadySeenInDisliked) {
+            results.splice(randomIndex, 1);
+            continue;
+          } else if (
+            results[randomIndex].age === "??" || parseInt(results[randomIndex].age) >= 18) {
+            toSend.push(results[randomIndex]);
+            results.splice(randomIndex, 1);
+          }
+        }
+
+        if (toSend.length < num) {
+            res.status(206).json(toSend);
+            console.warn('Not enough characters to meet the requested number.')
         }
         
         res.status(200).json(toSend);
