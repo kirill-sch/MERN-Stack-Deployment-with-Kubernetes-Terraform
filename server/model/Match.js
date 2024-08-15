@@ -5,6 +5,7 @@ const matchSchema = new Schema ({
     username: String,
     charactersName: String,
     charactersId: String,
+    characterImg: String,
     matchedAt: Date
 });
 

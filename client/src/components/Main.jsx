@@ -112,7 +112,8 @@ function Main({loggedInUser, setIsLoading, setMatched}) {
       const username = loggedInUser.username;
       const charactersId = frontRandomCharacter.id;
       const charactersName = frontRandomCharacter.name;
-      const data = { username, charactersName, charactersId };
+      const characterImg = frontRandomCharacter.pictures[0] === undefined ? '/assets/images/default_profiles/default.jpg' : frontRandomCharacter.pictures[0].url;
+      const data = { username, charactersName, charactersId, characterImg};
       try {
         const response = await fetch("/api/matches", {
           method: "POST",
