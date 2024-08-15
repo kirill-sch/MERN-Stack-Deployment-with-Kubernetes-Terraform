@@ -191,7 +191,7 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
                                 minLength="8"
                                 type={passwordInputType}
                                 value={password}
-                                onChange={(event) => setPassword(event.target.value)}
+                                onChange={(event) => setPassword(CryptoJS.AES.encrypt(event.target.value,'nagyontitkos').toString())}
                             />
                         </label>
 
