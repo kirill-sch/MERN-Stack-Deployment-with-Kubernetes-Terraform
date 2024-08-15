@@ -13,9 +13,9 @@ function HomePage ({setIsLoggedin, loggedInUser}) {
         <>
         {isLoading && <div>Loading...</div>}
         <div className={`homepage ${isLoading ? 'hidden' : ''}`}>
-        <div className="messagesContainer">Messages
+
         <Messages loggedInUser={loggedInUser} matched={matched}/>
-        </div>
+
         <Main loggedInUser={loggedInUser} setIsLoading={setIsLoading} setMatched={setMatched}/>
 
         <div className="profileContainer">

@@ -358,13 +358,14 @@ app.get('/api/matches/:username', async (req, res) => {
 
 app.post('/api/matches', async (req, res) => {
     try {
-        const { username, charactersName, charactersId } = req.body;
+        const { username, charactersName, charactersId, characterImg } = req.body;
         const matchedAt = Date.now();
 
         const match = await new Match({
             username,
             charactersName,
             charactersId,
+            characterImg,
             matchedAt
         }).save();
 
