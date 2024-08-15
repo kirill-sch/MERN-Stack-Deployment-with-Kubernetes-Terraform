@@ -16,7 +16,7 @@ function RegistrationForm({ setLoggedInUser , setButtonClicked}) {
     const [password, setPassword] = useState("")
     const [isSendButtonClicked, setIsSendButtonClicked] = useState(false)
     const [profileImageNames, setProfileImageNames] = useState([]);
-    const [profilePictureURL, setProfilePictureURL] = useState("/assets/images/default_profiles/profile1.webp");
+    const [profilePictureURL, setProfilePictureURL] = useState("/assets/images/default_profiles/default.jpg");
     const [selectedImage, setSelectedImage] = useState(null);
     const [passwordInputType, setPasswordInputType] = useState("password")
     const [errorMessage, setErrorMessage] = useState("")
