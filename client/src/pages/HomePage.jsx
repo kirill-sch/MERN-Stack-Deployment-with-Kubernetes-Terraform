@@ -23,11 +23,12 @@ function HomePage ({setLoggedInUser, setIsLoggedin, loggedInUser, playMatchSound
             })
 
             if (!response.ok) {
-                throw new Error('Failed to fetch new character.')
+                throw new Error('Failed to update user preferences.')
             }
 
             const updates = await response.json();
-            console.log(updates);
+            delete updates.updatedUser.password;
+            console.log("updates", updates);
 
         } catch (error) {
 

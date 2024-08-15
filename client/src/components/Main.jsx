@@ -10,7 +10,7 @@ import MatchNotification from "./MatchNotification"
 
 // Function //
 
-function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUserUpdates , playMatchSound}) {
+function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUserUpdates, playMatchSound }) {
 
     const [characters, setCharacters] = useState([])
     const [backRandomCharacter, setBackRandomCharacter] = useState(null);
@@ -21,7 +21,26 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
     const [isMatchNotificationVisible, setIsMatchNotificationVisible] = useState(false)
     const [isButtonDisabled, setIsButtonDisabled] = useState(false)
 
-    const [gameOver, setGameOver] = useState(false);
+    const [isGameOver, setIsGameOver] = useState(false);
+
+    const gameOver = {
+        _id: "",
+        age: "??",
+        description: "No more characters :(",
+        gender: "",
+        height: "",
+        id: "",
+        japaneseName: "",
+        job: "",
+        name: "Game Over",
+        origin: "??",
+        pictures: [{ url: "/assets/images/gameover.png" }],
+        race: "??",
+        stats: [],
+        weight: ""
+
+    }
+
 
     useEffect(() => {
 
@@ -41,31 +60,18 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
 
                 if (fetchedCharacters.length < 2) {
 
+                    setTimeout(() => {
+                        setIsLoading(false)
+                    }, 1600);
+
                     //Don't try to fill backRandomCharacter, when there is only one character left.
                     //Also, make GAME OVER card when there aren't any characters left.
 
-                    const gameOver = {
-                        _id: "",
-                        age: "",
-                        description: "No more characters :(",
-                        gender: "",
-                        height: "",
-                        id: "",
-                        japaneseName: "",
-                        job: "",
-                        name: "Game Over",
-                        origin: "",
-                        pictures: [{ url: "/assets/images/gameover.png" }],
-                        race: "",
-                        stats: [],
-                        weight: ""
-
-                    }
 
                     if (fetchedCharacters.length < 1) {
 
                         setFrontRandomCharacter(gameOver)
-                        setGameOver(true)
+                        setIsGameOver(true)
                         return
                     };
 
@@ -123,39 +129,80 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
 
     const putCharactersInStates = async () => {
 
+        if (characters.length < 1) {
+
+            setFrontRandomCharacter(gameOver)
+            setCharacters(gameOver);
+            return;
+        }
+
+        else {
 
         setFrontRandomCharacter(backRandomCharacter);
+
+        console.log("front character:", frontRandomCharacter);
+        console.log("back character: ", backRandomCharacter);
+        console.log("characters:", characters);
 
         //Save to DB and local storage
         setUserUpdates({ ...loggedInUser, lastFrontCard: backRandomCharacter });
         setLoggedInUser({ ...loggedInUser, lastFrontCard: backRandomCharacter });
 
-        if (characters.length < 1) {
-            setBackRandomCharacter(null)
-            setCharacters(null);
-        }
+   
 
-        else {
+      
 
             setBackRandomCharacter(characters[0]);
             setCharacters(characters.slice(1));
+            let newCharacter = null;
+            let attempts = 0;
 
-            try {
-                const response = await fetch('/api/characters/1', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(loggedInUser)
-                })
+            while (attempts < 10) {
+                attempts += 1;
+                console.log(attempts);
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch new character.')
+                try {
+                    const response = await fetch('/api/characters/1', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(loggedInUser)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch new character.');
+                    }
+
+                    newCharacter = await response.json();
+                    newCharacter = newCharacter[0];
+                    console.log("newCharacter:", newCharacter);
+
+                    // Assuming that each character has a unique "id" property
+                    const isDuplicateInCharacters = characters.some(character => character.id === newCharacter.id);
+                    const isDuplicateInBackRandom = backRandomCharacter && backRandomCharacter.id === newCharacter.id;
+                    const isDuplicateInFrontRandom = frontRandomCharacter && frontRandomCharacter.id === newCharacter.id;
+
+                    if (!isDuplicateInCharacters && !isDuplicateInBackRandom && !isDuplicateInFrontRandom) {
+                        break;  // Exit the loop if the character is unique across all states
+                    }
+
+                    else{
+                        console.log("Duplicate character found, retrying...");
+                    }
+
+                } catch (error) {
+                    console.error('Error fetching character:', error);
+                    return; // Exit if an error occurs to prevent an infinite loop
                 }
-                const newCharacter = await response.json();
 
-                setCharacters(prevCharacters => [...prevCharacters, ...newCharacter])
-            } catch (e) {
-                console.error('Error with fetch() in putCharactersInStates.');
-            }
+                if (attempts === 10) {
+                    console.log("No unique characters found after max attempts.");
+                    return;
+                }
+
+            };
+
+            // Add the new, unique character to the state
+            setCharacters(prevCharacters => [...prevCharacters, newCharacter]);
         }
     }
 
@@ -330,8 +377,8 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
                     {frontRandomCharacter.origin === "??" || frontRandomCharacter.origin === null ? "" : <p className="origin">Origin: {frontRandomCharacter.origin}</p>}
 
                     <div className="buttonWrapper">
-                        <button className="dislikeButton" onClick={handleDislike} disabled={isButtonDisabled  ? 'true' : '' || gameOver ? 'true' : ''} >👎</button>
-                        <button className="likeButton" onClick={handleLike} disabled={isButtonDisabled  ? 'true' : '' || gameOver ? 'true' : ''}>❤️</button>
+                        <button className="dislikeButton" onClick={handleDislike} disabled={isButtonDisabled ? 'true' : '' || isGameOver ? 'true' : ''} >👎</button>
+                        <button className="likeButton" onClick={handleLike} disabled={isButtonDisabled ? 'true' : '' || isGameOver ? 'true' : ''}>❤️</button>
                     </div>
 
 
