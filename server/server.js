@@ -52,8 +52,8 @@ app.post('/api/user', async (req, res) => {
             return res.json({ userFound: false, succeeded: false })
         }
         
-        const decryptedPassword = CryptoJS.AES.decrypt(password,'nagyontitkos').toString();
-        const decryptedUserPassword = CryptoJS.AES.decrypt(user.password,'nagyontitkos').toString();
+        const decryptedPassword = CryptoJS.AES.decrypt(password,'>+KtIM"?t#71m1rtIbF>').toString();
+        const decryptedUserPassword = CryptoJS.AES.decrypt(user.password,'>+KtIM"?t#71m1rtIbF>').toString();
 
         if (decryptedUserPassword === decryptedPassword) {
             res.json({ userFound: true, succeeded: true, user: user })
