@@ -11,28 +11,30 @@ function Signup_Login({ setIsLoggedin, setLoggedInUser }) {
     const [buttonClicked, setButtonClicked] = useState("")
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [fade, setFade] = useState(false);
+    const [welcomeImages, setWelcomeImages] = useState([]);
 
-    const images = [
-        '/assets/images/welcome_screens/welcome1.jpg',
-        '/assets/images/welcome_screens/welcome2.jpg',
-        '/assets/images/welcome_screens/welcome3.jpg',
-        '/assets/images/welcome_screens/welcome4.jpg',
-        '/assets/images/welcome_screens/welcome5.jpg',
-        '/assets/images/welcome_screens/welcome6.jpg'
-    ];
 
+    useEffect(() => {
+        fetch('/api/images/welcome')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Log to check if the URLs are correct
+                setWelcomeImages(data);
+            })
+            .catch(error => console.error('Error fetching images:', error));
+    }, []);
 
     useEffect(() => {
         const interval = setInterval(() => {
             setFade(true);
             setTimeout(() => {
-                setCurrentImageIndex((currentImageIndex + 1) % images.length);
+                setCurrentImageIndex((currentImageIndex + 1) % welcomeImages.length);
                 setFade(false);
             }, 2000); // 2 seconds for fade out
         }, 5000); // Change image every 5 seconds
 
         return () => clearInterval(interval);
-    }, [currentImageIndex, images.length]);
+    }, [currentImageIndex, welcomeImages.length]);
 
     return (
         <>
@@ -53,7 +55,7 @@ function Signup_Login({ setIsLoggedin, setLoggedInUser }) {
                     <div
                         className="background-layer"
                         style={{
-                            backgroundImage: `url(${images[currentImageIndex]})`,
+                            backgroundImage: `url(${welcomeImages[currentImageIndex]})`,
                             opacity: fade ? 0 : 1,
                         }}
                     />
