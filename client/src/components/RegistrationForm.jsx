@@ -73,7 +73,7 @@ function RegistrationForm({ setButtonClicked }) {
             return
         }
         */
-        const encryptedPassword = CryptoJS.AES.encrypt(password,'nagyontitkos').toString();
+        const encryptedPassword = CryptoJS.AES.encrypt(password,'>+KtIM"?t#71m1rtIbF>').toString();
 
         const baseStat = (Math.floor(Math.random() * (35 - 15 + 1)) + 15);
 

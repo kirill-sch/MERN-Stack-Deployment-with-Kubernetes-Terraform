@@ -39,7 +39,7 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
         }
         */
        
-        const encryptedPassword = CryptoJS.AES.encrypt(password,'nagyontitkos').toString()
+        const encryptedPassword = CryptoJS.AES.encrypt(password,'>+KtIM"?t#71m1rtIbF>').toString()
 
         
         const data =
