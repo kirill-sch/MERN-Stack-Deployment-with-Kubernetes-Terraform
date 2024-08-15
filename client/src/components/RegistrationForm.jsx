@@ -77,7 +77,7 @@ function RegistrationForm({ setButtonClicked }) {
 
         const baseStat = (Math.floor(Math.random() * (35 - 15 + 1)) + 15);
 
-        const updatedUserPreferences = {...userPreferences, gender: ["Male", "Female", "??"]};
+        userPreferences.gender.push("??");
 
         const userData =
         {
