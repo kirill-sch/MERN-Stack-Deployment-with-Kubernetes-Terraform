@@ -20,12 +20,20 @@ const Messages = (props) => {
     }, [matched])
 
     return (
-        <div className="matchedWith">
+        <div className="matchesContainer">
+            <h3 style={{alignSelf:"center"}}>Matches</h3>
             {matches.map(match => (
+
                 <div className='match' key={match.matchedAt}>
+                    <div className="topHalf">
+                    <img src={match.characterImg} alt={match.charactersName} />
                     <h3>{match.charactersName}</h3>
-                    {/*Picture of the character and additional info could come here.*/}
+                    </div>
+                    <div className="bottomHalf">
+                    <p style={{fontSize:"0.7em"}}>{match.matchedAt.slice(0, 10)}</p>
+                    </div>
                 </div>
+
             ))}
         </div>
     )
