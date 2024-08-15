@@ -1,6 +1,7 @@
 // Imports //
 
 import React, { useState, useEffect } from "react"
+import CryptoJS from "crypto-js";
 
 // Global Variables //
 
@@ -8,10 +9,10 @@ import React, { useState, useEffect } from "react"
 
 function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
 
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
-    const [passwordInputType, setPasswordInputType] = useState("password")
-    const [showPasswordButtonTextContent, setShowPasswordButtonTextContent] = useState("Show password")
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordInputType, setPasswordInputType] = useState("password");
+    const [showPasswordButtonTextContent, setShowPasswordButtonTextContent] = useState("Show password");
     const [loginError, setLoginError] = useState("");
 
     // Handle Username Inputfield
@@ -37,7 +38,10 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
             setIsLoggedin(true)
         }
         */
-        const encryptedPassword= CryptoJS.AES.encrypt(password,'nagyontitkos').toString()
+       
+        const encryptedPassword = CryptoJS.AES.encrypt(password,'nagyontitkos').toString()
+
+        
         const data =
         {
             username,
