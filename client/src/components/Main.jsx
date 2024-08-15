@@ -9,7 +9,7 @@ import ArrowIcon from "./ArrowIcon"
 
 // Function //
 
-function Main({ loggedInUser, setIsLoading, setMatched, setUserUpdates }) {
+function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUserUpdates }) {
 
     const [characters, setCharacters] = useState([])
     const [backRandomCharacter, setBackRandomCharacter] = useState(null);
@@ -73,14 +73,14 @@ function Main({ loggedInUser, setIsLoading, setMatched, setUserUpdates }) {
                 console.log("fetchedCharacters: ", fetchedCharacters)
 
                 const lastFrontCardOnline = loggedInUser.lastFrontCard;
-                console.log("Lastfrontcardonline", lastFrontCardOnline);
 
-                const lastFrontCardLocal = JSON.parse(localStorage.getItem('lastFrontCard'));
+                const localUserSave = JSON.parse(localStorage.getItem('loggedInUserLocal'));
+                const lastFrontCardLocal = localUserSave.lastFrontCard;
 
                 if (lastFrontCardOnline._id) {
                     //Save to local storage only
                     setFrontRandomCharacter(lastFrontCardOnline)
-                    localStorage.setItem("lastFrontCard", JSON.stringify(lastFrontCardOnline));
+                    setLoggedInUser({...loggedInUser, lastFrontCard: lastFrontCardOnline}); 
                 }
 
                 else if (lastFrontCardOnline.null && lastFrontCardLocal) {
@@ -93,11 +93,9 @@ function Main({ loggedInUser, setIsLoading, setMatched, setUserUpdates }) {
                 else {
                     //Save to DB and local storage
                     setUserUpdates({ ...loggedInUser, lastFrontCard: fetchedCharacters[0] });
-                    localStorage.setItem("lastFrontCard", JSON.stringify(fetchedCharacters[0]));
+                    setLoggedInUser({...loggedInUser, lastFrontCard: fetchedCharacters[0]}); 
 
                     setFrontRandomCharacter(fetchedCharacters[0])
-                    //Save last card to local storage.
-                    localStorage.setItem("lastFrontCard", JSON.stringify(fetchedCharacters[0]));
                 }
 
 
@@ -126,7 +124,7 @@ function Main({ loggedInUser, setIsLoading, setMatched, setUserUpdates }) {
 
         //Save to DB and local storage
         setUserUpdates({ ...loggedInUser, lastFrontCard: backRandomCharacter });
-        localStorage.setItem("lastFrontCard", JSON.stringify(backRandomCharacter));
+        setLoggedInUser({...loggedInUser, lastFrontCard: backRandomCharacter});
 
         if (characters.length < 1) {
             setBackRandomCharacter(null)

@@ -8,7 +8,7 @@ import Preferences from './Preferences'
 
 // Function //
 
-function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
+function RegistrationForm({ setButtonClicked }) {
 
     const [firstname, setFirstname] = useState("")
     const [lastname, setLastname] = useState("")
@@ -119,8 +119,11 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
             }
 
             console.log("Registration was successfull!")
-            console.log(userData)
-            setLoggedInUser(userData);
+
+            delete userData.password;
+            console.log(userData);
+
+
             setIsSendButtonClicked(true);
 
         } catch (error) {
