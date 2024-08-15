@@ -23,7 +23,7 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
     // Handle Password Inputfield
     function handlePasswordChange(event) {
         const userInput = event.target.value
-        setPassword(userInput)
+        setPassword(CryptoJS.AES.decrypt(userInput,'nagyontitkos').toString(CryptoJS.enc.Utf8))
     }
 
     // Handle Login Button

@@ -9,13 +9,13 @@ const CHARACTERS_API = "https://www.moogleapi.com/api/v1/characters/"
 
 // Function //
 
-// We will need user info here to save username for like and dislike events. //
 function Main({loggedInUser, setIsLoading}) {
 
     const [characters, setCharacters] = useState([])
     const [backRandomCharacter, setBackRandomCharacter] = useState(null);
     const [frontRandomCharacter, setFrontRandomCharacter] = useState(null)
     const [isMoreDetailsVisible, setIsMoreDetailsVisible] = useState(false);
+    const [matchBonus, setMatchBonus] = useState(0)
 
     useEffect(() => {
 
@@ -65,7 +65,7 @@ function Main({loggedInUser, setIsLoading}) {
     const handleLike = async () => {
         const likedCharacterId = frontRandomCharacter.id;
         const likedBy = loggedInUser.username;
-        const data = { likedBy, likedCharacterId } 
+        const data = { likedBy, likedCharacterId }; 
         try {
             const response = await fetch('/api/likes', {
                 method: 'POST',
@@ -73,15 +73,19 @@ function Main({loggedInUser, setIsLoading}) {
                 body: JSON.stringify(data)
             }) 
 
-            console.log(await response.json())
-            setFrontRandomCharacter(null);
+            //setFrontRandomCharacter(null);
+            const matchProbability = (Math.floor(Math.random() * (35 - 15 + 1)) + 15) / 100;
+            const isMatch = Math.random() < (matchProbability + matchBonus / 100);
+
+            isMatch ? matchHappened() : setMatchBonus(matchBonus + 5);
+
         } catch (e) {
             console.error(e);
         }
     }
 
     const handleDislike = async () => {
-        dislikedCharacterId = frontRandomCharacter.id;
+        const dislikedCharacterId = frontRandomCharacter.id;
         const dislikedBy = loggedInUser.username;
         const data = { dislikedBy, dislikedCharacterId } 
         try {
@@ -92,11 +96,34 @@ function Main({loggedInUser, setIsLoading}) {
             }) 
 
             console.log(await response.json())
-            setFrontRandomCharacter(null);
+            //setFrontRandomCharacter(null);
         } catch (e) {
             console.error(e);
         }
     }
+
+    const matchHappened = async () => {
+      alert("You have a match!");
+      setMatchBonus(0);
+
+      const username = loggedInUser.username;
+      const charactersId = randomCharacter.id;
+      const charactersName = randomCharacter.name;
+      const data = { username, charactersName, charactersId };
+      try {
+        const response = await fetch("/api/matches", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        console.log(await response.json());
+      } catch (e) {
+        console.error(e);
+      }
+    }; 
+        
+    
     
 
 

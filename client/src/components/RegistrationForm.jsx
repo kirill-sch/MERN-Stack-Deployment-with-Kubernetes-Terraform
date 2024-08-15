@@ -7,7 +7,7 @@ import Preferences from './Preferences'
 
 // Function //
 
-function RegistrationForm({ setLoggedInUser , setButtonClicked}) {
+function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
 
     const [firstname, setFirstname] = useState("")
     const [lastname, setLastname] = useState("")
@@ -65,12 +65,13 @@ function RegistrationForm({ setLoggedInUser , setButtonClicked}) {
             }
         }
 
-
+        /*
         // Validate email format
         if (!validateEmail(emailAddress)) {
             alert("Invalid email format!")
             return
         }
+        */
 
         const userData =
         {
@@ -141,7 +142,7 @@ function RegistrationForm({ setLoggedInUser , setButtonClicked}) {
             {!isSendButtonClicked ? (
 
                 <div className="regContainer">
-                                <button className="goBackButton" onClick={() => setButtonClicked("")}>Go back</button>
+                    <button className="goBackButton" onClick={() => setButtonClicked("")}>Go back</button>
                     <form className="registrationForm" onSubmit={handleSubmit}>
                         <label>
                             {"First Name: "}
@@ -193,7 +194,7 @@ function RegistrationForm({ setLoggedInUser , setButtonClicked}) {
                                 minLength="8"
                                 type={passwordInputType}
                                 value={password}
-                                onChange={(event) => setPassword(event.target.value)}
+                                onChange={(event) => setPassword(CryptoJS.AES.encrypt(event.target.value,'nagyontitkos').toString())}
                             />
                         </label>
 
@@ -234,7 +235,16 @@ function RegistrationForm({ setLoggedInUser , setButtonClicked}) {
                 </div>
 
             ) : (
-                <p>Regisztráció elküldve!</p>
+
+                <div>
+
+                    <h6>Thank you for your registration!</h6>
+                    <button className="goToTheHomePageButton" onClick={() => setButtonClicked("")}>Go to the home page</button>
+                    <br />
+                    <button className="goToTheLoginFormButton" onClick={() => setButtonClicked("login")}>Go to the login page</button>
+
+                </div>
+
             )}
 
         </>
