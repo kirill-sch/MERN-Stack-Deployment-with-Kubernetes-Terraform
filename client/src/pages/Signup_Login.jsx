@@ -1,6 +1,6 @@
 // Imports //
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import LoginForm from "../components/LoginForm"
 import RegistrationForm from "../components/RegistrationForm";
 
@@ -12,6 +12,8 @@ function Signup_Login({ setIsLoggedin, setLoggedInUser }) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [fade, setFade] = useState(false);
     const [welcomeImages, setWelcomeImages] = useState([]);
+
+    const hoverSoundRef = useRef(null)
 
 
     useEffect(() => {
@@ -36,8 +38,25 @@ function Signup_Login({ setIsLoggedin, setLoggedInUser }) {
         return () => clearInterval(interval);
     }, [currentImageIndex, welcomeImages.length]);
 
+
+
+    // Play the sound effect
+    const playHoverSound = () => {
+        if (hoverSoundRef.current) {
+            hoverSoundRef.current.currentTime = 0;
+            hoverSoundRef.current.play().catch((error) => {
+                console.error("Play failed:", error);
+            });
+        }
+    };
+
+
+
     return (
         <>
+
+            <audio ref={hoverSoundRef} src="/assets/sounds/sound1.mp3" />
+
             {buttonClicked === "" &&
             <div className="welcomeContainer">
                 <div className="welcomeDiv">
@@ -47,9 +66,11 @@ function Signup_Login({ setIsLoggedin, setLoggedInUser }) {
 
                         <button
                             onClick={() => setButtonClicked("signup")}
+                            onMouseOver={playHoverSound}
                         >Sign up</button>
                         <button
                             onClick={() => setButtonClicked("login")}
+                            onMouseOver={playHoverSound}
                         >Log in</button>
                     </div>
                     <div
