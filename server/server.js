@@ -163,7 +163,7 @@ app.post('/api/characters/:num', async (req, res) => {
         while (toSend.length !== num) {
             const randomIndex = Math.floor(Math.random() * results.length);
 
-            if (results[randomIndex].age === '??' || results[randomIndex].age >= 18) {
+            if (results[randomIndex].age === '??' || parseInt(results[randomIndex].age) >= 18) {
                 toSend.push(results[randomIndex]);
                 results.splice(randomIndex, 1);
             }
