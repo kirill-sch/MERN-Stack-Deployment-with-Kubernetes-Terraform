@@ -180,8 +180,9 @@ app.post('/api/characters/:num', async (req, res) => {
                 continue;
             } else if (selectedCharacter.age === "??" || parseInt(selectedCharacter.age) >= 18) {
                 toSend.push(selectedCharacter);
-                results.splice(randomIndex, 1);
             }
+            results.splice(randomIndex, 1);
+            console.log("loop");
         }
 
         if (toSend.length < num) {
