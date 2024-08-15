@@ -157,22 +157,15 @@ app.post('/api/characters/:num', async (req, res) => {
     const num = parseInt(req.params.num);
 
     try {
-        const filteredByGender = await Character.find({ gender: { $in: gender }});
-        const filteredByRace = await Character.find({ race: { $in: races }});
-
-        const results = [...filteredByGender, ...filteredByRace];
-
-        let uniqueArray = results.filter((item, index, self) => index === self.findIndex((t) => t._id.toString() === item._id.toString()));
-
+        const results = await Character.find({ gender: { $in: gender }, race: { $in: races}});
         const toSend = [];
 
         while (toSend.length !== num) {
-            const randomIndex = Math.floor(Math.random() * uniqueArray.lnegth);
+            const randomIndex = Math.floor(Math.random() * results.length);
 
-            if (uniqueArray[randomIndex].age === '??' || uniqueArray[randomIndex].age >= 18) {
-                toSend.push(uniqueArray[randomIndex]);
-            } else {
-                continue;
+            if (results[randomIndex].age === '??' || results[randomIndex].age >= 18) {
+                toSend.push(results[randomIndex]);
+                results.splice(randomIndex, 1);
             }
         }
         

@@ -5,7 +5,7 @@ import ArrowIcon from "./ArrowIcon"
 
 // Global Variables //
 
-const CHARACTERS_API = "https://www.moogleapi.com/api/v1/characters/"
+//const CHARACTERS_API = "https://www.moogleapi.com/api/v1/characters/"
 
 // Function //
 
@@ -22,15 +22,26 @@ function Main({loggedInUser, setIsLoading, setMatched}) {
 
         async function fetchCharacters() {
             try {
-                const response = await fetch(CHARACTERS_API)
+                const response = await fetch('/api/characters/3', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json'},
+                    body: JSON.stringify(loggedInUser)
+                })
 
                 if (!response.ok) {
                     throw new Error("Response is not ok in the body of the fetchCharacters()!")
                 }
 
-                const fetchedCharacters = await response.json()
-                console.log(fetchedCharacters)
-                setCharacters(fetchedCharacters)
+                const fetchedCharacters = await response.json();
+                console.log("fetchedCharacters: ", fetchedCharacters)
+                setFrontRandomCharacter(fetchedCharacters[0])
+                setBackRandomCharacter(fetchedCharacters[1])
+                setCharacters(fetchedCharacters.slice(2))
+
+                setTimeout(() => {
+                    setIsLoading(false)
+                }, 1600);
+
                 console.log("Characters fetched successfully!")
 
             } catch (error) {
@@ -42,8 +53,31 @@ function Main({loggedInUser, setIsLoading, setMatched}) {
 
     }, [])
 
+    const putCharactersInStates = async () => {
+        setFrontRandomCharacter(backRandomCharacter);
+        setBackRandomCharacter(characters[0]);
+        setCharacters(characters.slice(1));
 
-    useEffect(() => {
+        try {
+        const response = await fetch('/api/characters/1', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json'},
+                    body: JSON.stringify(loggedInUser)
+                })
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch new character.')
+                }
+                const newCharacter = await response.json();
+
+                setCharacters(prevCharacters => [...prevCharacters, ...newCharacter])
+            } catch (e) {
+                console.error('Error with fetch() in putCharactersInStates.');
+            }
+    }
+
+
+    /* useEffect(() => {
 
         function getRandomIndex() {
 
@@ -61,7 +95,7 @@ function Main({loggedInUser, setIsLoading, setMatched}) {
 
         getRandomIndex()
 
-    }, [characters])
+    }, [characters]) */
 
     const handleLike = async () => {
         const likedCharacterId = frontRandomCharacter.id;
@@ -79,6 +113,7 @@ function Main({loggedInUser, setIsLoading, setMatched}) {
             const isMatch = Math.random() < ((loggedInUser.baseStat - penalty) + matchBonus) / 100;
             // penalty needed
             isMatch ? matchHappened() : setMatchBonus(matchBonus + 5);
+            putCharactersInStates();
 
         } catch (e) {
             console.error(e);
@@ -97,7 +132,7 @@ function Main({loggedInUser, setIsLoading, setMatched}) {
             }) 
 
             console.log(await response.json())
-            //setFrontRandomCharacter(null);
+            putCharactersInStates();
         } catch (e) {
             console.error(e);
         }
@@ -121,6 +156,13 @@ function Main({loggedInUser, setIsLoading, setMatched}) {
         });
 
         setMatched(true);
+
+        setTimeout(() => {
+            setMatched(false)
+        }, 1600);
+
+
+
         console.log(await response.json());
       } catch (e) {
         console.error(e);
