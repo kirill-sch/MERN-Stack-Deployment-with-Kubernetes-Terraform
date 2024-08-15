@@ -71,14 +71,14 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
             return
         }
         */
-
+        const encryptedPassword= CryptoJS.AES.encrypt(password,'nagyontitkos').toString()
         const userData =
         {
             firstName: firstname,
             lastName: lastname,
             email: emailAddress,
             username: username,
-            password: password,
+            password: encryptedPassword,
             profilePicture: profilePictureURL
         }
 
@@ -191,7 +191,7 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
                                 minLength="8"
                                 type={passwordInputType}
                                 value={password}
-                                onChange={(event) => setPassword(CryptoJS.AES.encrypt(event.target.value,'nagyontitkos').toString())}
+                                onChange={(event) => setPassword(event.target.value)}
                             />
                         </label>
 
