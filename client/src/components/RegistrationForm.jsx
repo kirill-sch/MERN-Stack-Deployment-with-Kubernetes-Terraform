@@ -1,6 +1,7 @@
 // Imports //
 
 import React, { useState, useEffect } from "react"
+import Preferences from './Preferences'
 
 // Global Variables //
 
@@ -14,17 +15,17 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [isSendButtonClicked, setIsSendButtonClicked] = useState(false)
-    const [imageNames, setImageNames] = useState([]);
-    const [profilePictureURL, setProfilePictureURL] = useState("/assets/images/default_profiles/profile1.webp");
+    const [profileImageNames, setProfileImageNames] = useState([]);
+    const [profilePictureURL, setProfilePictureURL] = useState("/assets/images/default_profiles/default.jpg");
     const [selectedImage, setSelectedImage] = useState(null);
     const [passwordInputType, setPasswordInputType] = useState("password")
     const [errorMessage, setErrorMessage] = useState("")
-
+    const [userPreferences, setUserPreferences] = useState({});
 
     useEffect(() => {
-        fetch('/api/images')
+        fetch('/api/images/profiles')
             .then(response => response.json())
-            .then(data => setImageNames(data))
+            .then(data => setProfileImageNames(data))
             .catch(error => console.error('Error fetching images:', error));
     }, []);
 
@@ -79,13 +80,15 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
             email: emailAddress,
             username: username,
             password: password,
-            profilePicture: profilePictureURL
+            profilePicture: profilePictureURL,
+            baseStat: baseStat,
+            userPreferences: userPreferences
         }
 
         console.log(userData);
 
         try {
-            const response = await fetch("/api/users", {
+            const response = await fetch("/api/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -205,9 +208,11 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
 
                     </form>
 
-                    {imageNames && <div className="profileimagesDiv">
+                    <Preferences setUserPreferences={setUserPreferences}/>
+
+                    {profileImageNames && <div className="profileimagesDiv">
                         <a style={{ margin: '10px' }}>Choose a profile picture:</a>
-                        {imageNames.map((imageName, index) => {
+                        {profileImageNames.map((imageName, index) => {
                             const src = `/assets/images/default_profiles/${imageName}`
                             const isSelected = src === selectedImage;
 
@@ -224,8 +229,8 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
                     </div>}
 
                     <div className={`errorMessage ${errorMessage === "" ? 'hidden' : 'active'}`}>
-                        <h1>{errorMessage}</h1>
-                    </div>
+                            <h2>{errorMessage}</h2>
+                        </div>
 
                 </div>
 
