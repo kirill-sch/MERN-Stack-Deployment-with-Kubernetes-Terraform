@@ -8,6 +8,8 @@ const userSchema = new Schema({
   password: String,
   email: String,
   profilePicture: String,
+  userPreferences: Object,
+  baseStat, Number,
   createdAt: Date
 });
 
