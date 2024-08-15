@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import CryptoJS from "crypto-js";
 import User from "./model/User.js";
 import Dislike from "./model/Dislike.js";
 import Like from "./model/Like.js";
@@ -41,7 +42,8 @@ app.get('api/users', async (req, res) => {
 
 app.post('/api/user', async (req, res) => {
     const username = req.body.username;
-    const password = req.body.password;
+    const password = req.body.encryptedPassword
+    ;
 
     try {
         const user = await User.findOne({ username: username })
@@ -49,8 +51,11 @@ app.post('/api/user', async (req, res) => {
         if (!user) {
             return res.json({ userFound: false, succeeded: false })
         }
+        
+        const decryptedPassword = CryptoJS.AES.decrypt(password,'nagyontitkos').toString();
+        const decryptedUserPassword = CryptoJS.AES.decrypt(user.password,'nagyontitkos').toString();
 
-        if (user.password === password) {
+        if (decryptedUserPassword === decryptedPassword) {
             res.json({ userFound: true, succeeded: true, user: user })
         } else {
             res.json({ userFound: true, succeeded: false })
