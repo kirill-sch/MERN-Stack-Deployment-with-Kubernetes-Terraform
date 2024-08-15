@@ -80,6 +80,7 @@ function RegistrationForm({ setLoggedInUser , setButtonClicked}) {
             username: username,
             password: password,
             profilePicture: profilePictureURL,
+            baseStat: baseStat,
             userPreferences: userPreferences
         }
 

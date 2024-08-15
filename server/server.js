@@ -62,7 +62,7 @@ app.post('/api/user', async (req, res) => {
 
 app.post('/api/register', async (req, res) => {
     try {
-        const { username, password, email, firstName, lastName, profilePicture, userPreferences } = req.body;
+        const { username, password, email, firstName, lastName, profilePicture, userPreferences, baseStat} = req.body;
         const createdAt = Date.now();
 
         const alreadyExistedUsers = await User.find({});
@@ -90,6 +90,7 @@ app.post('/api/register', async (req, res) => {
             email,
             profilePicture,
             userPreferences,
+            baseStat,
             createdAt
         }).save();
 

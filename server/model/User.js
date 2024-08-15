@@ -9,6 +9,7 @@ const userSchema = new Schema({
   email: String,
   profilePicture: String,
   userPreferences: Object,
+  baseStat, Number,
   createdAt: Date
 });
 
