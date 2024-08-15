@@ -5,7 +5,7 @@ import data from '../../../server/db.json'      //Make an endpoint for this.
 
 // Function //
 
-function Preferences({ setUserPreferences }) {
+function Preferences({ setUserPreferences , playClickSound}) {
 
     const [allRaces, setAllRaces] = useState([])
     const [selectedGenders, setSelectedGenders] = useState(["Male", "Female"])
@@ -46,6 +46,7 @@ function Preferences({ setUserPreferences }) {
 
     // Handle genderchanges
     function handleGenderChange(event) {
+        playClickSound();
         setSelectedGenders(prevSelectedGenres => {
             const isAlreadySelected = prevSelectedGenres.includes(event.target.value)
 
@@ -63,6 +64,7 @@ function Preferences({ setUserPreferences }) {
 
     // Handle racechanges
     function handleRaceChange(event) {
+        playClickSound();
         setSelectedRaces(prevSelectedRaces => {
             const isAlreadySelected = prevSelectedRaces.includes(event.target.value)
 
