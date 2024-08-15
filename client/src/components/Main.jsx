@@ -110,8 +110,8 @@ function Main({loggedInUser, setIsLoading, setMatched}) {
       
 
       const username = loggedInUser.username;
-      const charactersId = randomCharacter.id;
-      const charactersName = randomCharacter.name;
+      const charactersId = frontRandomCharacter.id;
+      const charactersName = frontRandomCharacter.name;
       const data = { username, charactersName, charactersId };
       try {
         const response = await fetch("/api/matches", {

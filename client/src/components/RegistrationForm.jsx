@@ -1,6 +1,7 @@
 // Imports //
 
 import React, { useState, useEffect } from "react"
+import CryptoJS from "crypto-js";
 import Preferences from './Preferences'
 
 // Global Variables //
@@ -72,14 +73,17 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
             return
         }
         */
-        const encryptedPassword= CryptoJS.AES.encrypt(password,'nagyontitkos').toString()
+        const encryptedPassword = CryptoJS.AES.encrypt(password,'nagyontitkos').toString();
+
+        const baseStat = (Math.floor(Math.random() * (35 - 15 + 1)) + 15);
+
         const userData =
         {
             firstName: firstname,
             lastName: lastname,
             email: emailAddress,
             username: username,
-            password: password,
+            password: encryptedPassword,
             profilePicture: profilePictureURL,
             baseStat: baseStat,
             userPreferences: userPreferences
