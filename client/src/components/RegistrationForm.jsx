@@ -14,16 +14,16 @@ function RegistrationForm({ setLoggedInUser , setButtonClicked}) {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [isSendButtonClicked, setIsSendButtonClicked] = useState(false)
-    const [imageNames, setImageNames] = useState([]);
+    const [profileImageNames, setProfileImageNames] = useState([]);
     const [profilePictureURL, setProfilePictureURL] = useState("/assets/images/default_profiles/profile1.webp");
     const [selectedImage, setSelectedImage] = useState(null);
     const [passwordInputType, setPasswordInputType] = useState("password")
     const [errorMessage, setErrorMessage] = useState("")
 
     useEffect(() => {
-        fetch('/api/images')
+        fetch('/api/images/profiles')
             .then(response => response.json())
-            .then(data => setImageNames(data))
+            .then(data => setProfileImageNames(data))
             .catch(error => console.error('Error fetching images:', error));
     }, []);
 
@@ -203,9 +203,9 @@ function RegistrationForm({ setLoggedInUser , setButtonClicked}) {
 
                     </form>
 
-                    {imageNames && <div className="profileimagesDiv">
+                    {profileImageNames && <div className="profileimagesDiv">
                         <a style={{ margin: '10px' }}>Choose a profile picture:</a>
-                        {imageNames.map((imageName, index) => {
+                        {profileImageNames.map((imageName, index) => {
                             const src = `/assets/images/default_profiles/${imageName}`
                             const isSelected = src === selectedImage;
 
@@ -222,7 +222,7 @@ function RegistrationForm({ setLoggedInUser , setButtonClicked}) {
                     </div>}
 
                     <div className={`errorMessage ${errorMessage === "" ? 'hidden' : 'active'}`}>
-                            <h1>{errorMessage}</h1>
+                            <h2>{errorMessage}</h2>
                         </div>
 
                 </div>

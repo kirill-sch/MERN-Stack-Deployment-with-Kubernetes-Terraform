@@ -366,6 +366,7 @@ label {
 }
 
 .errorMessage.active {
+  padding: 10px;
   scale: 1;
 }
 
