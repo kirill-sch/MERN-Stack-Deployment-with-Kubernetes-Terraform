@@ -7,17 +7,13 @@ import CryptoJS from "crypto-js";
 
 // Function //
 
-function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
+function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked , playFeedbackSound}) {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [passwordInputType, setPasswordInputType] = useState("password");
     const [showPasswordButtonTextContent, setShowPasswordButtonTextContent] = useState("Show password");
     const [loginError, setLoginError] = useState("");
-
-    const hoverSoundRef = useRef(null)
-    const clickSoundRef = useRef(null)
-    const backSoundRef = useRef(null)
 
     // Handle Username Inputfield
     function handleUsernameChange(event) {
@@ -70,6 +66,7 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
 
             console.log("Logged in: ", validation.user);
             setLoggedInUser(validation.user);
+            playFeedbackSound();
             setIsLoggedin(true)
 
         } else if (!validation.userFound) {
@@ -84,7 +81,6 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
             }, 2300);
         }
 
-        playClickSound()
     }
 
     // Handle Show Password (Show or Hide the password)
@@ -97,8 +93,6 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
             setPasswordInputType("password")
             setShowPasswordButtonTextContent("Show password")
         }
-
-        playClickSound()
     }
 
     function handleKeyDown(e) {
@@ -107,48 +101,13 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
         }
     };
 
-    
-
-
-    // Play the sound effects
-    function playHoverSound() {
-        if (hoverSoundRef.current) {
-            hoverSoundRef.current.currentTime = 0
-            hoverSoundRef.current.play().catch((error) => {
-                console.error("Play failed:", error)
-            })
-        }
-    }
-
-    function playClickSound() {
-        if (clickSoundRef.current) {
-            clickSoundRef.current.currentTime = 0
-            clickSoundRef.current.play().catch((error) => {
-                console.error("Play failed:", error)
-            })
-        }
-    }
-
-    function playBackSound() {
-        if (backSoundRef.current) {
-            backSoundRef.current.currentTime = 0
-            backSoundRef.current.play().catch((error) => {
-                console.error("Play failed:", error)
-            })
-        }
-    }
-
 
 
     return (
         <>
 
-            <audio ref={hoverSoundRef} src="/assets/sounds/soundeffect5.mp3" />
-            <audio ref={clickSoundRef} src="/assets/sounds/soundeffect1.mp3" />
-            <audio ref={backSoundRef} src="/assets/sounds/soundeffect3.mp3" />
-
             <div className="loginContainer">
-                <button className="goBackButton" onClick={() => setButtonClicked("")} onMouseOver={playHoverSound}>Go back</button>
+                <button className="goBackButton" onClick={() => setButtonClicked("")}>Go back</button>
                 <label>
                     {"Username: "}
                     <input
@@ -172,14 +131,12 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
                 <button
                     type="button"
                     onClick={handleShowPassword}
-                    onMouseOver={playHoverSound}
                 >
                     {showPasswordButtonTextContent}</button>
 
                 <button
                     type="button"
                     onClick={handleLogin}
-                    onMouseOver={playHoverSound}
                     style={{fontSize:"1.2em", width:"100%"}}
                 >Login</button>
 

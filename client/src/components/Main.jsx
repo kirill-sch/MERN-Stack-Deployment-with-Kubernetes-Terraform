@@ -10,7 +10,7 @@ import MatchNotification from "./MatchNotification"
 
 // Function //
 
-function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUserUpdates }) {
+function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUserUpdates , playMatchSound}) {
 
     const [characters, setCharacters] = useState([])
     const [backRandomCharacter, setBackRandomCharacter] = useState(null);
@@ -19,13 +19,8 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
     const [matchBonus, setMatchBonus] = useState(0)
     const [penalty, setPenalty] = useState(0);
     const [isMatchNotificationVisible, setIsMatchNotificationVisible] = useState(false)
-    const [isButtonDisable, setIsButtonDisable] = useState(false)
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false)
 
-    const hoverSoundRef = useRef(null)
-    const clickSoundRef = useRef(null)
-    const dislikeSoundRef = useRef(null)
-    const likeSoundRef = useRef(null)
-    const matchSoundRef = useRef(null)
     const [gameOver, setGameOver] = useState(false);
 
     useEffect(() => {
@@ -196,10 +191,9 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
                 body: JSON.stringify(data)
             })
 
-            //setFrontRandomCharacter(null);
-            const matchProbability = (Math.floor(Math.random() * (35 - 15 + 1)) + 15) / 100;
+
             const isMatch = Math.random() < ((loggedInUser.baseStat - penalty) + matchBonus) / 100;
-            // penalty needed
+
             isMatch ? matchHappened() : setMatchBonus(matchBonus + 5);
             putCharactersInStates();
 
@@ -231,10 +225,10 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
     }
 
     const matchHappened = async () => {
-        playMatchSoundRef()
+        playMatchSound()
         //alert("You have a match!");
         setIsMatchNotificationVisible(true)
-        setIsButtonDisable(true)
+        setIsButtonDisabled(true)
         setMatchBonus(0);
         setPenalty(penalty + 3);
 
@@ -265,58 +259,10 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
         }
     };
 
-
-
-    // Play the sound effects
-    function playHoverSound() {
-        if (hoverSoundRef.current) {
-            hoverSoundRef.current.currentTime = 0
-            hoverSoundRef.current.play().catch((error) => {
-                console.error("Play failed:", error)
-            })
-        }
-    }
-
-    function playClickSound() {
-        if (clickSoundRef.current) {
-            clickSoundRef.current.currentTime = 0
-            clickSoundRef.current.play().catch((error) => {
-                console.error("Play failed:", error)
-            })
-        }
-    }
-
-    function playDislikeSound() {
-        if (dislikeSoundRef.current) {
-            dislikeSoundRef.current.currentTime = 0
-            dislikeSoundRef.current.play().catch((error) => {
-                console.error("Play failed:", error)
-            })
-        }
-    }
-
-    function playLikeSound() {
-        if (likeSoundRef.current) {
-            likeSoundRef.current.currentTime = 0
-            likeSoundRef.current.play().catch((error) => {
-                console.error("Play failed:", error)
-            })
-        }
-    }
-
-    function playMatchSoundRef() {
-        if (matchSoundRef.current) {
-            matchSoundRef.current.currentTime = 0
-            matchSoundRef.current.play().catch((error) => {
-                console.error("Play failed:", error)
-            })
-        }
-    }
-
     // Handle Notification Close
     function handleNotificationClose() {
         setIsMatchNotificationVisible(false)
-        setIsButtonDisable(false)
+        setIsButtonDisabled(false)
     }
 
 
@@ -324,16 +270,10 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
 
         <div className="main">
 
-            <audio ref={hoverSoundRef} src="/assets/sounds/soundeffect5.mp3" />
-            <audio ref={clickSoundRef} src="/assets/sounds/soundeffect1.mp3" />
-            <audio ref={dislikeSoundRef} src="/assets/sounds/soundeffect2.mp3" />
-            <audio ref={likeSoundRef} src="/assets/sounds/soundeffect3.mp3" />
-            <audio ref={matchSoundRef} src="/assets/sounds/soundeffect6.mp3" />
-
             {isMatchNotificationVisible && <MatchNotification onClose={handleNotificationClose} />}
 
             {!frontRandomCharacter ? (
-                <p></p>
+                <p>Loading...</p>
             ) : (
                 <>
                     <div className="imageContainer" key={frontRandomCharacter.id}>
@@ -390,8 +330,8 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
                     {frontRandomCharacter.origin === "??" || frontRandomCharacter.origin === null ? "" : <p className="origin">Origin: {frontRandomCharacter.origin}</p>}
 
                     <div className="buttonWrapper">
-                        <button className="dislikeButton" onClick={handleDislike} onMouseOver={playHoverSound} disabled={isButtonDisable  ? 'true' : '' || gameOver ? 'true' : ''} >👎</button>
-                        <button className="likeButton" onClick={handleLike} onMouseOver={playHoverSound} disabled={isButtonDisable  ? 'true' : '' || gameOver ? 'true' : ''}>❤️</button>
+                        <button className="dislikeButton" onClick={handleDislike} disabled={isButtonDisabled  ? 'true' : '' || gameOver ? 'true' : ''} >👎</button>
+                        <button className="likeButton" onClick={handleLike} disabled={isButtonDisabled  ? 'true' : '' || gameOver ? 'true' : ''}>❤️</button>
                     </div>
 
 
