@@ -86,6 +86,7 @@ function RegistrationForm({ setLoggedInUser, setButtonClicked }) {
             password: encryptedPassword,
             profilePicture: profilePictureURL,
             baseStat: baseStat,
+            lastFrontCard: {null: null},
             userPreferences: userPreferences
         }
 

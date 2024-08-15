@@ -4,10 +4,41 @@ import Messages from "../components/Messages";
 
 
 function HomePage ({setIsLoggedin, loggedInUser}) {
-    const [isModalVisible, setIsModalVisible] = useState(false);
     const defaultPictureURL = "/assets/images/default_profiles/default.jpg";
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [matched, setMatched] = useState(false);
+    const [userUpdates, setUserUpdates] = useState({});
+
+
+    useEffect(() => {
+
+        async function updateUserPrefs () {
+
+        try {
+            const response = await fetch(`/api/user/${loggedInUser._id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userUpdates)
+            })
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch new character.')
+            }
+
+            const updates = await response.json();
+            console.log(updates);
+
+        } catch (error) {
+
+            console.log(error);
+        }
+
+    }
+
+    updateUserPrefs();
+
+    }, [userUpdates]);
 
     return (
         <>
@@ -16,7 +47,7 @@ function HomePage ({setIsLoggedin, loggedInUser}) {
 
         <Messages loggedInUser={loggedInUser} matched={matched}/>
 
-        <Main loggedInUser={loggedInUser} setIsLoading={setIsLoading} setMatched={setMatched}/>
+        <Main loggedInUser={loggedInUser} setIsLoading={setIsLoading} setMatched={setMatched} setUserUpdates={setUserUpdates}/>
 
         <div className="profileContainer">
         <img src={loggedInUser.profilePicture || defaultPictureURL} alt="Profile" className="profileImg" onClick={() => setIsModalVisible(!isModalVisible)}/>
