@@ -23,7 +23,7 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
     // Handle Password Inputfield
     function handlePasswordChange(event) {
         const userInput = event.target.value
-        setPassword(CryptoJS.AES.decrypt(userInput,'nagyontitkos').toString(CryptoJS.enc.Utf8))
+        setPassword(userInput)
     }
 
     // Handle Login Button
@@ -37,11 +37,12 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
             setIsLoggedin(true)
         }
         */
-
+        const encryptedPassword= CryptoJS.AES.encrypt(password,'nagyontitkos').toString()
         const data =
         {
             username,
-            password
+            encryptedPassword
+    
         }
 
         const response = await fetch("/api/user", {
