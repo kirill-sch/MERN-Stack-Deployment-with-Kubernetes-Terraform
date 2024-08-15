@@ -10,7 +10,7 @@ import MatchNotification from "./MatchNotification"
 
 // Function //
 
-function Main({ loggedInUser, setIsLoading, setMatched }) {
+function Main({  setLoggedInUser, loggedInUser, setIsLoading, setMatched , setUserUpdates }) {
 
     const [characters, setCharacters] = useState([])
     const [backRandomCharacter, setBackRandomCharacter] = useState(null);
@@ -26,14 +26,15 @@ function Main({ loggedInUser, setIsLoading, setMatched }) {
     const dislikeSoundRef = useRef(null)
     const likeSoundRef = useRef(null)
     const matchSoundRef = useRef(null)
+    const [gameOver, setGameOver] = useState(false);
 
     useEffect(() => {
 
         async function fetchCharacters() {
             try {
-                const response = await fetch('/api/characters/3', {
+                const response = await fetch('/api/characters/4', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json'  },
                     body: JSON.stringify(loggedInUser)
                 })
 
@@ -42,8 +43,71 @@ function Main({ loggedInUser, setIsLoading, setMatched }) {
                 }
 
                 const fetchedCharacters = await response.json();
+
+                if (fetchedCharacters.length < 2) {
+
+                    //Don't try to fill backRandomCharacter, when there is only one character left.
+                    //Also, make GAME OVER card when there aren't any characters left.
+
+                    const gameOver = {
+                        _id: "",
+                        age: "",
+                        description: "No more characters :(",
+                        gender: "",
+                        height: "",
+                        id: "",
+                        japaneseName: "",
+                        job: "",
+                        name: "Game Over",
+                        origin: "",
+                        pictures: [{ url: "/assets/images/gameover.png" }],
+                        race: "",
+                        stats: [],
+                        weight: ""
+
+                    }
+
+                    if (fetchedCharacters.length < 1) {
+
+                        setFrontRandomCharacter(gameOver)
+                        setGameOver(true)
+                        return
+                    };
+
+                    setFrontRandomCharacter(fetchedCharacters[0])
+                    setBackRandomCharacter(gameOver)
+                    return
+                }
+
                 console.log("fetchedCharacters: ", fetchedCharacters)
-                setFrontRandomCharacter(fetchedCharacters[0])
+
+                const lastFrontCardOnline = loggedInUser.lastFrontCard;
+
+                const localUserSave = JSON.parse(localStorage.getItem('loggedInUserLocal'));
+                const lastFrontCardLocal = localUserSave.lastFrontCard;
+
+                if (lastFrontCardOnline._id) {
+                    //Save to local storage only
+                    setFrontRandomCharacter(lastFrontCardOnline)
+                    setLoggedInUser({...loggedInUser, lastFrontCard: lastFrontCardOnline}); 
+                }
+
+                else if (lastFrontCardOnline.null && lastFrontCardLocal) {
+                    //Save to DB only
+                    setFrontRandomCharacter(lastFrontCardLocal);
+                    setUserUpdates({ ...loggedInUser, lastFrontCard: lastFrontCardLocal })
+
+                }
+
+                else {
+                    //Save to DB and local storage
+                    setUserUpdates({ ...loggedInUser, lastFrontCard: fetchedCharacters[0] });
+                    setLoggedInUser({...loggedInUser, lastFrontCard: fetchedCharacters[0]}); 
+
+                    setFrontRandomCharacter(fetchedCharacters[0])
+                }
+
+
                 setBackRandomCharacter(fetchedCharacters[1])
                 setCharacters(fetchedCharacters.slice(2))
 
@@ -63,9 +127,23 @@ function Main({ loggedInUser, setIsLoading, setMatched }) {
     }, [])
 
     const putCharactersInStates = async () => {
+
+
         setFrontRandomCharacter(backRandomCharacter);
-        setBackRandomCharacter(characters[0]);
-        setCharacters(characters.slice(1));
+
+        //Save to DB and local storage
+        setUserUpdates({ ...loggedInUser, lastFrontCard: backRandomCharacter });
+        setLoggedInUser({...loggedInUser, lastFrontCard: backRandomCharacter});
+
+        if (characters.length < 1) {
+            setBackRandomCharacter(null)
+            setCharacters(null);
+        }
+
+        else {
+
+            setBackRandomCharacter(characters[0]);
+            setCharacters(characters.slice(1));
 
         try {
             const response = await fetch('/api/characters/1', {
@@ -311,8 +389,8 @@ function Main({ loggedInUser, setIsLoading, setMatched }) {
                     {frontRandomCharacter.origin === "??" || frontRandomCharacter.origin === null ? "" : <p className="origin">Origin: {frontRandomCharacter.origin}</p>}
 
                     <div className="buttonWrapper">
-                        <button className="dislikeButton" onClick={handleDislike} onMouseOver={playHoverSound} disabled={isButtonDisable}>👎</button>
-                        <button className="likeButton" onClick={handleLike} onMouseOver={playHoverSound} disabled={isButtonDisable}>❤️</button>
+                        <button className="dislikeButton" onClick={handleDislike} onMouseOver={playHoverSound} disabled={isButtonDisable} disabled={gameOver ? 'true' : ''}>👎</button>
+                        <button className="likeButton" onClick={handleLike} onMouseOver={playHoverSound} disabled={isButtonDisable} disabled={gameOver ? 'true' : ''}>❤️</button>
                     </div>
 
 

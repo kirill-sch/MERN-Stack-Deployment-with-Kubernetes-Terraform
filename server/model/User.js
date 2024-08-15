@@ -10,6 +10,7 @@ const userSchema = new Schema({
   profilePicture: String,
   userPreferences: Object,
   baseStat: Number,
+  lastFrontCard: Object,
   createdAt: Date
 });
 
