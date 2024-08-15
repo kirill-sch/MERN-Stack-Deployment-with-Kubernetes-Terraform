@@ -9,7 +9,7 @@ import ArrowIcon from "./ArrowIcon"
 
 // Function //
 
-function Main({ loggedInUser, setIsLoading, setMatched }) {
+function Main({ loggedInUser, setIsLoading, setMatched, setUserUpdates }) {
 
     const [characters, setCharacters] = useState([])
     const [backRandomCharacter, setBackRandomCharacter] = useState(null);
@@ -17,7 +17,7 @@ function Main({ loggedInUser, setIsLoading, setMatched }) {
     const [isMoreDetailsVisible, setIsMoreDetailsVisible] = useState(false);
     const [matchBonus, setMatchBonus] = useState(0)
     const [penalty, setPenalty] = useState(0);
-    const [] = useState();
+    const [gameOver, setGameOver] = useState(false);
 
     useEffect(() => {
 
@@ -61,6 +61,7 @@ function Main({ loggedInUser, setIsLoading, setMatched }) {
                     if (fetchedCharacters.length < 1) {
 
                         setFrontRandomCharacter(gameOver)
+                        setGameOver(true)
                         return
                     };
 
@@ -71,16 +72,31 @@ function Main({ loggedInUser, setIsLoading, setMatched }) {
 
                 console.log("fetchedCharacters: ", fetchedCharacters)
 
-                const lastFrontCard = JSON.parse(localStorage.getItem('lastFrontCard'));
+                const lastFrontCardOnline = loggedInUser.lastFrontCard;
 
-                if (lastFrontCard) {
-                    setFrontRandomCharacter(lastFrontCard)
+                const lastFrontCardLocal = JSON.parse(localStorage.getItem('lastFrontCard'));
+
+                if (lastFrontCardOnline) {
+                    //Save to local storage only
+                    setFrontRandomCharacter(lastFrontCardOnline)
+                    localStorage.setItem("lastFrontCard", JSON.stringify(lastFrontCardOnline));
+                }
+
+                else if (lastFrontCardOnline.null && lastFrontCardLocal) {
+                    //Save to DB only
+                    setFrontRandomCharacter(lastFrontCardLocal);
+                    setUserUpdates({ ...loggedInUser, lastFrontCard: lastFrontCardLocal })
+
                 }
 
                 else {
+                    //Save to DB and local storage
+                    setUserUpdates({ ...loggedInUser, lastFrontCard: fetchedCharacters[0] });
+                    localStorage.setItem("lastFrontCard", JSON.stringify(fetchedCharacters[0]));
+
                     setFrontRandomCharacter(fetchedCharacters[0])
                     //Save last card to local storage.
-                localStorage.setItem("lastFrontCard", JSON.stringify(fetchedCharacters[0]));
+                    localStorage.setItem("lastFrontCard", JSON.stringify(fetchedCharacters[0]));
                 }
 
 
@@ -107,28 +123,38 @@ function Main({ loggedInUser, setIsLoading, setMatched }) {
 
         setFrontRandomCharacter(backRandomCharacter);
 
-        //Save last card to local storage.
+        //Save to DB and local storage
+        setUserUpdates({ ...loggedInUser, lastFrontCard: backRandomCharacter });
         localStorage.setItem("lastFrontCard", JSON.stringify(backRandomCharacter));
 
-        setBackRandomCharacter(characters[0]);
-        setCharacters(characters.slice(1));
-
-        try {
-            const response = await fetch('/api/characters/1', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(loggedInUser)
-            })
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch new character.')
-            }
-            const newCharacter = await response.json();
-
-            setCharacters(prevCharacters => [...prevCharacters, ...newCharacter])
-        } catch (e) {
-            console.error('Error with fetch() in putCharactersInStates.');
+        if (characters.length < 1) {
+            setBackRandomCharacter(null)
+            setCharacters(null);
         }
+
+        else {
+
+            setBackRandomCharacter(characters[0]);
+            setCharacters(characters.slice(1));
+
+            try {
+                const response = await fetch('/api/characters/1', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(loggedInUser)
+                })
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch new character.')
+                }
+                const newCharacter = await response.json();
+
+                setCharacters(prevCharacters => [...prevCharacters, ...newCharacter])
+            } catch (e) {
+                console.error('Error with fetch() in putCharactersInStates.');
+            }
+        }
+
     }
 
 
@@ -292,8 +318,8 @@ function Main({ loggedInUser, setIsLoading, setMatched }) {
                     {frontRandomCharacter.origin === "??" || frontRandomCharacter.origin === null ? "" : <p className="origin">Origin: {frontRandomCharacter.origin}</p>}
 
                     <div className="buttonWrapper">
-                        <button className="dislikeButton" onClick={handleDislike}>👎</button>
-                        <button className="likeButton" onClick={handleLike}>❤️</button>
+                        <button className="dislikeButton" onClick={handleDislike} disabled={gameOver ? 'true' : ''}>👎</button>
+                        <button className="likeButton" onClick={handleLike} disabled={gameOver ? 'true' : ''}>❤️</button>
                     </div>
 
 

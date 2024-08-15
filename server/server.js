@@ -67,7 +67,7 @@ app.post('/api/user', async (req, res) => {
 
 app.post('/api/register', async (req, res) => {
     try {
-        const { username, password, email, firstName, lastName, profilePicture, userPreferences, baseStat} = req.body;
+        const { username, password, email, firstName, lastName, profilePicture, userPreferences, baseStat, lastFrontCard} = req.body;
         const createdAt = Date.now();
 
         const alreadyExistedUsers = await User.find({});
@@ -96,6 +96,7 @@ app.post('/api/register', async (req, res) => {
             profilePicture,
             userPreferences,
             baseStat,
+            lastFrontCard,
             createdAt
         }).save();
 
@@ -129,7 +130,7 @@ app.put('/api/user/:user_id', async (req, res) => {
         const updatedUserDocument = await User.findByIdAndUpdate(userId, { $set: updates }, { new: true });
 
         if (updatedUserDocument) {
-            res.status(200).json({ message: `Updated user: ${updatedUserDocument}` })
+            res.status(200).json({ message: 'Updated user',  updatedUser: updatedUserDocument })
         } else {
             res.status(404).json({ error: `User not found with id: ${userId}.` });
         }
