@@ -1,20 +1,20 @@
 // Imports //
 
 import React, { useState, useEffect } from "react"
-import data from '../../../server/db.json'
+import data from '../../../server/db.json'      //Make an endpoint for this.
 
 // Function //
 
-function Preferences() {
+function Preferences({ setUserPreferences }) {
 
     const [allRaces, setAllRaces] = useState([])
     const [selectedGenders, setSelectedGenders] = useState(["Male", "Female"])
-    const [selectedRaces, setSelectedRaces] = useState([""])
+    const [selectedRaces, setSelectedRaces] = useState([])
 
-    useEffect(() =>{
-        
+    useEffect(() => {
+
         function createAllRaces() {
-            
+
             let races = []
             for (let i = 0; i < data.length; i++) {
                 if (!races.includes(data[i].race)) {
@@ -25,11 +25,24 @@ function Preferences() {
             console.log(races)
             setAllRaces(races)
             setSelectedRaces(races)
+
         }
 
         createAllRaces()
 
     }, [])
+
+    useEffect(() => {
+
+        if (selectedGenders && selectedRaces) {
+            const userPref = {
+                gender: selectedGenders,
+                races: selectedRaces
+            }
+
+            setUserPreferences(userPref)
+        }
+    }, [selectedGenders, selectedRaces])
 
     // Handle genderchanges
     function handleGenderChange(event) {
@@ -69,9 +82,9 @@ function Preferences() {
         <div className="preferencesDiv">
 
             <div className="gendersDiv">
-                <h4 style={{marginTop: '10px'}}>Genders</h4>
+                <h4 style={{ marginTop: '10px', alignSelf: "center" }}>Genders</h4>
                 <label>
-                    <input 
+                    <input
                         type="checkbox"
                         value="Male"
                         checked={selectedGenders.includes("Male")}
@@ -91,7 +104,7 @@ function Preferences() {
             </div>
 
             <div className="racesDiv">
-                <h4 style={{marginTop: '10px'}}>Races</h4>
+                <h4 style={{ marginTop: '10px', alignSelf: "center" }}>Races</h4>
                 {allRaces.map(race => (
                     <label key={race}>
                         <input

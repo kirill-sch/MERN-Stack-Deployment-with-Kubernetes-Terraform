@@ -1,6 +1,7 @@
 // Imports //
 
 import React, { useState, useEffect } from "react"
+import Preferences from './Preferences'
 
 // Global Variables //
 
@@ -19,6 +20,7 @@ function RegistrationForm({ setLoggedInUser , setButtonClicked}) {
     const [selectedImage, setSelectedImage] = useState(null);
     const [passwordInputType, setPasswordInputType] = useState("password")
     const [errorMessage, setErrorMessage] = useState("")
+    const [userPreferences, setUserPreferences] = useState({});
 
     useEffect(() => {
         fetch('/api/images/profiles')
@@ -77,13 +79,14 @@ function RegistrationForm({ setLoggedInUser , setButtonClicked}) {
             email: emailAddress,
             username: username,
             password: password,
-            profilePicture: profilePictureURL
+            profilePicture: profilePictureURL,
+            userPreferences: userPreferences
         }
 
         console.log(userData);
 
         try {
-            const response = await fetch("/api/users", {
+            const response = await fetch("/api/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -202,6 +205,8 @@ function RegistrationForm({ setLoggedInUser , setButtonClicked}) {
                         <button type="submit">Register</button>
 
                     </form>
+
+                    <Preferences setUserPreferences={setUserPreferences}/>
 
                     {profileImageNames && <div className="profileimagesDiv">
                         <a style={{ margin: '10px' }}>Choose a profile picture:</a>
