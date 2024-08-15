@@ -285,6 +285,12 @@ label {
   transition: scale 0.2s !important;
 }
 
+.likeButton:disabled,
+.dislikeButton:disabled{
+  background-color: grey !important;
+  cursor: not-allowed;
+}
+
 .dislikeButton:hover,
 .likeButton:hover {
   scale: 1.4 !important;

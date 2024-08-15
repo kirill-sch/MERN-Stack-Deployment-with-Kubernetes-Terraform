@@ -10,7 +10,7 @@ import MatchNotification from "./MatchNotification"
 
 // Function //
 
-function Main({  setLoggedInUser, loggedInUser, setIsLoading, setMatched , setUserUpdates }) {
+function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUserUpdates }) {
 
     const [characters, setCharacters] = useState([])
     const [backRandomCharacter, setBackRandomCharacter] = useState(null);
@@ -34,7 +34,7 @@ function Main({  setLoggedInUser, loggedInUser, setIsLoading, setMatched , setUs
             try {
                 const response = await fetch('/api/characters/4', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json'  },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(loggedInUser)
                 })
 
@@ -89,7 +89,7 @@ function Main({  setLoggedInUser, loggedInUser, setIsLoading, setMatched , setUs
                 if (lastFrontCardOnline._id) {
                     //Save to local storage only
                     setFrontRandomCharacter(lastFrontCardOnline)
-                    setLoggedInUser({...loggedInUser, lastFrontCard: lastFrontCardOnline}); 
+                    setLoggedInUser({ ...loggedInUser, lastFrontCard: lastFrontCardOnline });
                 }
 
                 else if (lastFrontCardOnline.null && lastFrontCardLocal) {
@@ -102,7 +102,7 @@ function Main({  setLoggedInUser, loggedInUser, setIsLoading, setMatched , setUs
                 else {
                     //Save to DB and local storage
                     setUserUpdates({ ...loggedInUser, lastFrontCard: fetchedCharacters[0] });
-                    setLoggedInUser({...loggedInUser, lastFrontCard: fetchedCharacters[0]}); 
+                    setLoggedInUser({ ...loggedInUser, lastFrontCard: fetchedCharacters[0] });
 
                     setFrontRandomCharacter(fetchedCharacters[0])
                 }
@@ -133,7 +133,7 @@ function Main({  setLoggedInUser, loggedInUser, setIsLoading, setMatched , setUs
 
         //Save to DB and local storage
         setUserUpdates({ ...loggedInUser, lastFrontCard: backRandomCharacter });
-        setLoggedInUser({...loggedInUser, lastFrontCard: backRandomCharacter});
+        setLoggedInUser({ ...loggedInUser, lastFrontCard: backRandomCharacter });
 
         if (characters.length < 1) {
             setBackRandomCharacter(null)
@@ -145,21 +145,22 @@ function Main({  setLoggedInUser, loggedInUser, setIsLoading, setMatched , setUs
             setBackRandomCharacter(characters[0]);
             setCharacters(characters.slice(1));
 
-        try {
-            const response = await fetch('/api/characters/1', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(loggedInUser)
-            })
+            try {
+                const response = await fetch('/api/characters/1', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(loggedInUser)
+                })
 
-            if (!response.ok) {
-                throw new Error('Failed to fetch new character.')
+                if (!response.ok) {
+                    throw new Error('Failed to fetch new character.')
+                }
+                const newCharacter = await response.json();
+
+                setCharacters(prevCharacters => [...prevCharacters, ...newCharacter])
+            } catch (e) {
+                console.error('Error with fetch() in putCharactersInStates.');
             }
-            const newCharacter = await response.json();
-
-            setCharacters(prevCharacters => [...prevCharacters, ...newCharacter])
-        } catch (e) {
-            console.error('Error with fetch() in putCharactersInStates.');
         }
     }
 
@@ -317,7 +318,7 @@ function Main({  setLoggedInUser, loggedInUser, setIsLoading, setMatched , setUs
         setIsMatchNotificationVisible(false)
         setIsButtonDisable(false)
     }
-    
+
 
     return (
 
@@ -329,7 +330,7 @@ function Main({  setLoggedInUser, loggedInUser, setIsLoading, setMatched , setUs
             <audio ref={likeSoundRef} src="/assets/sounds/soundeffect3.mp3" />
             <audio ref={matchSoundRef} src="/assets/sounds/soundeffect6.mp3" />
 
-            {isMatchNotificationVisible && <MatchNotification onClose={handleNotificationClose}/>}
+            {isMatchNotificationVisible && <MatchNotification onClose={handleNotificationClose} />}
 
             {!frontRandomCharacter ? (
                 <p></p>
@@ -389,8 +390,8 @@ function Main({  setLoggedInUser, loggedInUser, setIsLoading, setMatched , setUs
                     {frontRandomCharacter.origin === "??" || frontRandomCharacter.origin === null ? "" : <p className="origin">Origin: {frontRandomCharacter.origin}</p>}
 
                     <div className="buttonWrapper">
-                        <button className="dislikeButton" onClick={handleDislike} onMouseOver={playHoverSound} disabled={isButtonDisable} disabled={gameOver ? 'true' : ''}>👎</button>
-                        <button className="likeButton" onClick={handleLike} onMouseOver={playHoverSound} disabled={isButtonDisable} disabled={gameOver ? 'true' : ''}>❤️</button>
+                        <button className="dislikeButton" onClick={handleDislike} onMouseOver={playHoverSound} disabled={isButtonDisable  ? 'true' : '' || gameOver ? 'true' : ''} >👎</button>
+                        <button className="likeButton" onClick={handleLike} onMouseOver={playHoverSound} disabled={isButtonDisable  ? 'true' : '' || gameOver ? 'true' : ''}>❤️</button>
                     </div>
 
 
