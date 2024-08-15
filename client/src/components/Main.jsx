@@ -9,12 +9,13 @@ const CHARACTERS_API = "https://www.moogleapi.com/api/v1/characters/"
 
 // Function //
 
-function Main({loggedInUser, setIsLoading}) {
+function Main({loggedInUser, setIsLoading, setMatched}) {
 
     const [characters, setCharacters] = useState([])
     const [randomCharacter, setRandomCharacter] = useState(null)
     const [isMoreDetailsVisible, setIsMoreDetailsVisible] = useState(false);
     const [matchBonus, setMatchBonus] = useState(0)
+    const [penalty, setPenalty] = useState(0);
 
     useEffect(() => {
 
@@ -74,8 +75,8 @@ function Main({loggedInUser, setIsLoading}) {
 
             //setRandomCharacter(null);
             const matchProbability = (Math.floor(Math.random() * (35 - 15 + 1)) + 15) / 100;
-            const isMatch = Math.random() < (matchProbability + matchBonus / 100);
-
+            const isMatch = Math.random() < ((loggedInUser.baseStat - penalty) + matchBonus) / 100;
+            // penalty needed
             isMatch ? matchHappened() : setMatchBonus(matchBonus + 5);
 
         } catch (e) {
@@ -103,6 +104,8 @@ function Main({loggedInUser, setIsLoading}) {
     const matchHappened = async () => {
       alert("You have a match!");
       setMatchBonus(0);
+      setPenalty(penalty + 3);
+      
 
       const username = loggedInUser.username;
       const charactersId = randomCharacter.id;
@@ -115,6 +118,7 @@ function Main({loggedInUser, setIsLoading}) {
           body: JSON.stringify(data),
         });
 
+        setMatched(true);
         console.log(await response.json());
       } catch (e) {
         console.error(e);

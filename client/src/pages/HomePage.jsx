@@ -7,15 +7,16 @@ function HomePage ({setIsLoggedin, loggedInUser}) {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const defaultPictureURL = "/assets/images/default_profiles/default.jpg";
     const [isLoading, setIsLoading] = useState(true);
+    const [matched, setMatched] = useState(false);
 
     return (
         <>
         {isLoading && <div>Loading...</div>}
         <div className={`homepage ${isLoading ? 'hidden' : ''}`}>
         <div className="messagesContainer">Messages
-        <Messages loggedInUser={loggedInUser} />
+        <Messages loggedInUser={loggedInUser} matched={matched}/>
         </div>
-        <Main loggedInUser={loggedInUser} setIsLoading={setIsLoading}/>
+        <Main loggedInUser={loggedInUser} setIsLoading={setIsLoading} setMatched={setMatched}/>
 
         <div className="profileContainer">
         <img src={loggedInUser.profilePicture || defaultPictureURL} alt="Profile" className="profileImg" onClick={() => setIsModalVisible(!isModalVisible)}/>

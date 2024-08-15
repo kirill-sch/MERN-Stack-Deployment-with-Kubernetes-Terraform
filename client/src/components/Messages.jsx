@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 
 const Messages = (props) => {
-    const {loggedInUser} = props;
+    const {loggedInUser, matched} = props;
     
     const [matches, setMatches] = useState([]);
 
@@ -17,7 +17,7 @@ const Messages = (props) => {
         }
 
         fetchMatches()
-    }, [/*Need to update this useEffect when there was a match*/])
+    }, [matched])
 
     return (
         <div className="matchedWith">
