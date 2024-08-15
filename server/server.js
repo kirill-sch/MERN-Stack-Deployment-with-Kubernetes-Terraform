@@ -5,11 +5,11 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import User from "./model/User.js";
-import Charachter from "./model/Character.js";
 import Dislike from "./model/Dislike.js";
 import Like from "./model/Like.js";
 import Setting from "./model/Setting.js";
 import Match from './model/Match.js';
+import Character from './model/Character.js';
 
 dotenv.config({
     path: ['.env.local', '.env']
@@ -137,11 +137,41 @@ app.get('/api/characters/races', async (req, res) => {
     const userPreferences = req.body.preferences;
 
     try {
-        const filteredCharacters = await Charachter.find({ race: { $in: userPreferences } });
+        const filteredCharacters = await Character.find({ race: { $in: userPreferences } });
 
         res.status(200).json(filteredCharacters)
     } catch (e) {
         res.status(500).json({ error: `An error occured while trying to find characters by preferences: ${userPreferences}.` });
+    }
+})
+
+app.post('/api/characters/:num', async (req, res) => {
+    const { gender, races } = req.body.userPreferences;
+    const num = parseInt(req.params.num);
+
+    try {
+        const filteredByGender = await Character.find({ gender: { $in: gender }});
+        const filteredByRace = await Character.find({ race: { $in: races }});
+
+        const results = [...filteredByGender, ...filteredByRace];
+
+        let uniqueArray = results.filter((item, index, self) => index === self.findIndex((t) => t._id.toString() === item._id.toString()));
+
+        const toSend = [];
+
+        while (toSend.length !== num) {
+            const randomIndex = Math.floor(Math.random() * uniqueArray.lnegth);
+
+            if (uniqueArray[randomIndex].age === '??' || uniqueArray[randomIndex].age >= 18) {
+                toSend.push(uniqueArray[randomIndex]);
+            } else {
+                continue;
+            }
+        }
+        
+        res.status(200).json(toSend);
+    } catch (e) {
+        res.status(500).json({ error: 'An error occured while trying to find characters by preferences.'})
     }
 })
 
