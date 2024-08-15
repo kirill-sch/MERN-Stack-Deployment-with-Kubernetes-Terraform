@@ -102,7 +102,7 @@ function App() {
       <audio ref={feedbackSoundRef} src="/assets/sounds/soundeffect3.mp3" />
       <audio ref={matchSoundRef} src="/assets/sounds/soundeffect6.mp3" />
 
-      {isLoggedin ? <HomePage setIsLoggedin={setIsLoggedin} loggedInUser={loggedInUser} setLoggedInUser={setLoggedInUser} playMatchSound={playMatchSound}/> : <Signup_Login setIsLoggedin={setIsLoggedin} setLoggedInUser={setLoggedInUser} playFeedbackSound={playFeedbackSound} playClickSound={playClickSound}/>}
+      {isLoggedin && loggedInUser ? <HomePage setIsLoggedin={setIsLoggedin} loggedInUser={loggedInUser} setLoggedInUser={setLoggedInUser} playMatchSound={playMatchSound}/> : <Signup_Login setIsLoggedin={setIsLoggedin} setLoggedInUser={setLoggedInUser} playFeedbackSound={playFeedbackSound} playClickSound={playClickSound}/>}
     </>
   )
 }
