@@ -5,11 +5,11 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import User from "./model/User.js";
-import Charachter from "./model/Character.js";
 import Dislike from "./model/Dislike.js";
 import Like from "./model/Like.js";
 import Setting from "./model/Setting.js";
 import Match from './model/Match.js';
+import Character from './model/Character.js';
 
 dotenv.config({
     path: ['.env.local', '.env']
@@ -60,9 +60,9 @@ app.post('/api/user', async (req, res) => {
     }
 })
 
-app.post('/api/users', async (req, res) => {
+app.post('/api/register', async (req, res) => {
     try {
-        const { username, password, email, firstName, lastName, profilePicture } = req.body;
+        const { username, password, email, firstName, lastName, profilePicture, userPreferences, baseStat} = req.body;
         const createdAt = Date.now();
 
         const alreadyExistedUsers = await User.find({});
@@ -89,6 +89,8 @@ app.post('/api/users', async (req, res) => {
             password,
             email,
             profilePicture,
+            userPreferences,
+            baseStat,
             createdAt
         }).save();
 
@@ -137,11 +139,41 @@ app.get('/api/characters/races', async (req, res) => {
     const userPreferences = req.body.preferences;
 
     try {
-        const filteredCharacters = await Charachter.find({ race: { $in: userPreferences } });
+        const filteredCharacters = await Character.find({ race: { $in: userPreferences } });
 
         res.status(200).json(filteredCharacters)
     } catch (e) {
         res.status(500).json({ error: `An error occured while trying to find characters by preferences: ${userPreferences}.` });
+    }
+})
+
+app.post('/api/characters/:num', async (req, res) => {
+    const { gender, races } = req.body.userPreferences;
+    const num = parseInt(req.params.num);
+
+    try {
+        const filteredByGender = await Character.find({ gender: { $in: gender }});
+        const filteredByRace = await Character.find({ race: { $in: races }});
+
+        const results = [...filteredByGender, ...filteredByRace];
+
+        let uniqueArray = results.filter((item, index, self) => index === self.findIndex((t) => t._id.toString() === item._id.toString()));
+
+        const toSend = [];
+
+        while (toSend.length !== num) {
+            const randomIndex = Math.floor(Math.random() * uniqueArray.lnegth);
+
+            if (uniqueArray[randomIndex].age === '??' || uniqueArray[randomIndex].age >= 18) {
+                toSend.push(uniqueArray[randomIndex]);
+            } else {
+                continue;
+            }
+        }
+        
+        res.status(200).json(toSend);
+    } catch (e) {
+        res.status(500).json({ error: 'An error occured while trying to find characters by preferences.'})
     }
 })
 
@@ -321,11 +353,12 @@ app.get('/api/matches/:username', async (req, res) => {
 
 app.post('/api/matches', async (req, res) => {
     try {
-        const { username, charactersId } = req.body;
+        const { username, charactersName, charactersId } = req.body;
         const matchedAt = Date.now();
 
         const match = await new Match({
             username,
+            charactersName,
             charactersId,
             matchedAt
         }).save();
@@ -337,8 +370,8 @@ app.post('/api/matches', async (req, res) => {
 })
 
 
-//GET endpoint to list all available profile pictures
-app.get('/api/images', (req, res) => {
+//GET endpoint to send all available profile pictures
+app.get('/api/images/profiles', (req, res) => {
     const imagesDir = path.join(__dirname, '../client/public/assets/images/default_profiles');
     fs.readdir(imagesDir, (err, files) => {
         if (err) {
@@ -347,6 +380,22 @@ app.get('/api/images', (req, res) => {
         // Filter for image files only
         const imageFiles = files.filter(file => /\.(webp|png|jpg|jpeg)$/.test(file));
         res.json(imageFiles);
+    });
+});
+
+
+//GET endpoint to send all available welcome pictures
+app.get('/api/images/welcome', (req, res) => {
+    const imagesDir = path.join(__dirname, '../client/public/assets/images/welcome_screens');
+    fs.readdir(imagesDir, (err, files) => {
+        if (err) {
+            return res.status(500).json({ error: 'Unable to scan directory' });
+        }
+        // Filter for image files only
+        const imageFiles = files.filter(file => /\.(webp|png|jpg|jpeg)$/.test(file));
+        const imageUrls = imageFiles.map(file => `/assets/images/welcome_screens/${file}`);
+        
+        res.json(imageUrls);
     });
 });
 

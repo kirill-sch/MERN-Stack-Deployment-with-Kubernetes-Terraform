@@ -127,7 +127,7 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
 
 
                 <div className={`errorMessage ${loginError === "" ? 'hidden' : 'active'}`}>
-                    <h1>{loginError}</h1>
+                    <h2>{loginError}</h2>
                 </div>
 
             </div>
