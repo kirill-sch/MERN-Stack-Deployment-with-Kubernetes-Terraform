@@ -321,11 +321,12 @@ app.get('/api/matches/:username', async (req, res) => {
 
 app.post('/api/matches', async (req, res) => {
     try {
-        const { username, charactersId } = req.body;
+        const { username, charactersName, charactersId } = req.body;
         const matchedAt = Date.now();
 
         const match = await new Match({
             username,
+            charactersName,
             charactersId,
             matchedAt
         }).save();
