@@ -60,9 +60,14 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked }) {
         const validation = await response.json()
 
         if (validation.userFound && validation.succeeded) {
+
+            delete validation.user.password;
+            delete validation.user.email;
+
             console.log("Logged in: ", validation.user);
             setLoggedInUser(validation.user);
             setIsLoggedin(true)
+
         } else if (!validation.userFound) {
             setLoginError("Incorrect username!")
             setTimeout(() => {

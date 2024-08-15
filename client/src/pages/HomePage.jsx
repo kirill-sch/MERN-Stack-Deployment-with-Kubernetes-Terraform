@@ -3,7 +3,7 @@ import Main from "../components/Main";
 import Messages from "../components/Messages";
 
 
-function HomePage ({setIsLoggedin, loggedInUser}) {
+function HomePage ({setLoggedInUser, setIsLoggedin, loggedInUser}) {
     const defaultPictureURL = "/assets/images/default_profiles/default.jpg";
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -47,13 +47,13 @@ function HomePage ({setIsLoggedin, loggedInUser}) {
 
         <Messages loggedInUser={loggedInUser} matched={matched}/>
 
-        <Main loggedInUser={loggedInUser} setIsLoading={setIsLoading} setMatched={setMatched} setUserUpdates={setUserUpdates}/>
+        <Main loggedInUser={loggedInUser} setIsLoading={setIsLoading} setMatched={setMatched} setUserUpdates={setUserUpdates} setLoggedInUser={setLoggedInUser}/>
 
         <div className="profileContainer">
         <img src={loggedInUser.profilePicture || defaultPictureURL} alt="Profile" className="profileImg" onClick={() => setIsModalVisible(!isModalVisible)}/>
         {isModalVisible && <div className="profileImgModal">
             <a href="">Settings</a>
-            <a href={null} onClick={() => setIsLoggedin(false)}>Logout</a>
+            <a onClick={() => { setIsLoggedin(false) }}>Logout</a>
             </div>}
         </div>
         </div>
