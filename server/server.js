@@ -399,7 +399,8 @@ app.get('/api/images/profiles', (req, res) => {
         }
         // Filter for image files only
         const imageFiles = files.filter(file => /\.(webp|png|jpg|jpeg)$/.test(file));
-        res.json(imageFiles);
+        const imageUrls = imageFiles.map(file => `/assets/images/default_profiles/${file}`);
+        res.json(imageUrls);
     });
 });
 

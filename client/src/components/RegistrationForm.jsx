@@ -69,13 +69,13 @@ function RegistrationForm({ setButtonClicked , playClickSound, playFeedbackSound
             }
         }
 
-        /*
+        
         // Validate email format
         if (!validateEmail(emailAddress)) {
             alert("Invalid email format!")
             return
         }
-        */
+        
         const encryptedPassword = CryptoJS.AES.encrypt(password,'>+KtIM"?t#71m1rtIbF>').toString();
 
         const baseStat = (Math.floor(Math.random() * (35 - 15 + 1)) + 15);
@@ -185,9 +185,10 @@ function RegistrationForm({ setButtonClicked , playClickSound, playFeedbackSound
                         <label>
                             {"Email Address: "}
                             <input
-                                type="text"
+                                type="email"
                                 value={emailAddress}
                                 onChange={(event) => setEmailAddress(event.target.value)}
+                              //  pattern={/^[^\s@]+@[^\s@]+\.[^\s@]+$/}      //Fix regex.
                             />
                         </label>
 
@@ -229,7 +230,7 @@ function RegistrationForm({ setButtonClicked , playClickSound, playFeedbackSound
                     {profileImageNames && <div className="profileimagesDiv">
                         <a style={{ margin: '10px' }}>Choose a profile picture:</a>
                         {profileImageNames.map((imageName, index) => {
-                            const src = `/assets/images/default_profiles/${imageName}`
+                            const src = `${imageName}`
                             const isSelected = src === selectedImage;
 
                             return (
