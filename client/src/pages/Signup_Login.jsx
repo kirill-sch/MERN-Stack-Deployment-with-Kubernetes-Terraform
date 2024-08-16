@@ -6,7 +6,7 @@ import RegistrationForm from "../components/RegistrationForm";
 
 // Function //
 
-function Signup_Login({ setIsLoggedin, setLoggedInUser , playFeedbackSound, playClickSound}) {
+function Signup_Login({ setLoggedInUserId , playFeedbackSound, playClickSound}) {
 
     const [buttonClicked, setButtonClicked] = useState("")
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -64,7 +64,7 @@ function Signup_Login({ setIsLoggedin, setLoggedInUser , playFeedbackSound, play
             }
 
             {buttonClicked === "login" &&
-                <LoginForm setIsLoggedin={setIsLoggedin} setLoggedInUser={setLoggedInUser} setButtonClicked={setButtonClicked} playFeedbackSound={playFeedbackSound}/>
+                <LoginForm setLoggedInUserId={setLoggedInUserId} setButtonClicked={setButtonClicked} playFeedbackSound={playFeedbackSound}/>
             }
 
             {buttonClicked === "signup" &&

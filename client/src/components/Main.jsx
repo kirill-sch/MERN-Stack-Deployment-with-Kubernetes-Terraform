@@ -10,20 +10,21 @@ import MatchNotification from "./MatchNotification"
 
 // Function //
 
-function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUserUpdates, playMatchSound }) {
+function Main({ loggedInUser, setIsLoading, setMatched, playMatchSound, updateUserPrefs }) {
 
     const [characters, setCharacters] = useState([])
     const [backRandomCharacter, setBackRandomCharacter] = useState(null);
     const [frontRandomCharacter, setFrontRandomCharacter] = useState(null)
     const [isMoreDetailsVisible, setIsMoreDetailsVisible] = useState(false);
-    const [matchBonus, setMatchBonus] = useState(0)
-    const [penalty, setPenalty] = useState(0);
+    const [noMatchBonus, setNoMatchBonus] = useState(0)
+    const [matchPenalty, setMatchPenalty] = useState(0);
     const [isMatchNotificationVisible, setIsMatchNotificationVisible] = useState(false)
     const [isButtonDisabled, setIsButtonDisabled] = useState(false)
 
+
     const [isGameOver, setIsGameOver] = useState(false);
 
-    const gameOver = {
+    const gameOverObj = {
         _id: "",
         age: "??",
         description: "No more characters :(",
@@ -45,82 +46,116 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
     useEffect(() => {
 
         async function fetchCharacters() {
-            try {
-                const response = await fetch('/api/characters/4', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(loggedInUser)
-                })
+            if (loggedInUser) {
+                try {
+                    const response = await fetch('/api/characters/4', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(loggedInUser)
+                    })
 
-                if (!response.ok) {
-                    throw new Error("Response is not ok in the body of the fetchCharacters()!")
-                }
+                    const fetchedCharacters = await response.json();
 
-                const fetchedCharacters = await response.json();
+                    if (!response.ok) {
+                        throw new Error("Response is not ok in the body of the fetchCharacters()!")
+                    }
 
-                if (fetchedCharacters.length < 2) {
+
+                    const lastFrontCardOnline = loggedInUser.lastFrontCard;
+
+                    if (fetchedCharacters.length > 3) {
+
+                        if (loggedInUser.isFirstLoad) {
+                            setFrontRandomCharacter(fetchedCharacters[0]);
+                            setBackRandomCharacter(fetchedCharacters[1]);
+                            setCharacters(fetchedCharacters.slice(2));
+
+                            updateUserPrefs({
+                                ...loggedInUser,
+                                lastFrontCard: fetchedCharacters[0],
+                                isFirstLoad: false
+                            });
+                        }
+
+                        else {
+                            setFrontRandomCharacter(lastFrontCardOnline);
+                            setBackRandomCharacter(fetchedCharacters[0]);
+                            setCharacters(fetchedCharacters.slice(2));
+                        }
+
+
+
+                    }
+
+                    if (fetchedCharacters.length === 3) {
+
+                        setFrontRandomCharacter(lastFrontCardOnline);
+                        setBackRandomCharacter(fetchedCharacters[0]);
+                        setCharacters(fetchedCharacters.slice(1))
+
+
+                    }
+
+                    if (fetchedCharacters.length === 2) {
+                        setFrontRandomCharacter(lastFrontCardOnline);
+                        setBackRandomCharacter(fetchedCharacters[0]);
+                        setCharacters(fetchedCharacters.slice(1))
+
+                        setCharacters(prevCharacters => [...prevCharacters, gameOverObj]);
+
+                    }
+
+                    if (fetchedCharacters.length === 1) {
+                        setFrontRandomCharacter(lastFrontCardOnline);
+                        setBackRandomCharacter(fetchedCharacters[0]);
+                        setCharacters(fetchedCharacters.slice(1))
+                        setCharacters(gameOverObj);
+
+                    }
+
+                    if (fetchedCharacters.length === 0) {
+
+                        if (lastFrontCardOnline.name === "Game Over") {
+                            setFrontRandomCharacter(lastFrontCardOnline);
+                            setIsGameOver(true);
+                            setBackRandomCharacter(null);
+                            setCharacters(null);
+
+                        }
+
+                        else {
+
+
+                            setFrontRandomCharacter(lastFrontCardOnline);
+                            setBackRandomCharacter(gameOverObj)
+                            setCharacters(null);
+
+                        }
+
+
+                    }
+
+                    console.log("fetchedCharacters: ", fetchedCharacters)
+
+
+                    console.log("LoggedInUser's stats: ", loggedInUser.userStats);
+
+                    //Set modifiers
+                    setMatchPenalty(loggedInUser.userStats.matchPenalty);
+                    setNoMatchBonus(loggedInUser.userStats.noMatchBonus);
 
                     setTimeout(() => {
                         setIsLoading(false)
                     }, 1600);
 
-                    //Don't try to fill backRandomCharacter, when there is only one character left.
-                    //Also, make GAME OVER card when there aren't any characters left.
+                    console.log("Characters fetched successfully!")
 
-
-                    if (fetchedCharacters.length < 1) {
-
-                        setFrontRandomCharacter(gameOver)
-                        setIsGameOver(true)
-                        return
-                    };
-
-                    setFrontRandomCharacter(fetchedCharacters[0])
-                    setBackRandomCharacter(gameOver)
-                    return
+                } catch (error) {
+                    console.error("fetchCharacters() fetch error", error)
                 }
-
-                console.log("fetchedCharacters: ", fetchedCharacters)
-
-                const lastFrontCardOnline = loggedInUser.lastFrontCard;
-
-                const localUserSave = JSON.parse(localStorage.getItem('loggedInUserLocal'));
-                const lastFrontCardLocal = localUserSave.lastFrontCard;
-
-                if (lastFrontCardOnline._id) {
-                    //Save to local storage only
-                    setFrontRandomCharacter(lastFrontCardOnline)
-                    setLoggedInUser({ ...loggedInUser, lastFrontCard: lastFrontCardOnline });
-                }
-
-                else if (lastFrontCardOnline.null && lastFrontCardLocal) {
-                    //Save to DB only
-                    setFrontRandomCharacter(lastFrontCardLocal);
-                    setUserUpdates({ ...loggedInUser, lastFrontCard: lastFrontCardLocal })
-
-                }
-
-                else {
-                    //Save to DB and local storage
-                    setUserUpdates({ ...loggedInUser, lastFrontCard: fetchedCharacters[0] });
-                    setLoggedInUser({ ...loggedInUser, lastFrontCard: fetchedCharacters[0] });
-
-                    setFrontRandomCharacter(fetchedCharacters[0])
-                }
-
-
-                setBackRandomCharacter(fetchedCharacters[1])
-                setCharacters(fetchedCharacters.slice(2))
-
-                setTimeout(() => {
-                    setIsLoading(false)
-                }, 1600);
-
-                console.log("Characters fetched successfully!")
-
-            } catch (error) {
-                console.error("fetchCharacters() fetch error", error)
             }
+
+
         }
 
         fetchCharacters()
@@ -129,35 +164,83 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
 
     const putCharactersInStates = async () => {
 
-        if (characters.length < 1) {
-
-            setFrontRandomCharacter(gameOver)
-            setCharacters(gameOver);
-            return;
-        }
-
-        else {
-
         setFrontRandomCharacter(backRandomCharacter);
+        setBackRandomCharacter(characters[0]);
+        setCharacters(characters.slice(1));
+
+        if (backRandomCharacter.name === "Game Over") {
+
+            setFrontRandomCharacter(backRandomCharacter);
+
+
+            //Save to DB 
+            setMatchPenalty(prevMatchPenalty => {
+                setNoMatchBonus(prevNoMatchBonus => {
+                    // Save the user prefs to DB with the latest values
+                    const updatedLoggedInUser = {
+                        ...loggedInUser,
+                        userStats: {
+                            ...loggedInUser.userStats,
+                            matchPenalty: prevMatchPenalty, // Use the current matchPenalty
+                            noMatchBonus: prevNoMatchBonus, // Use the current noMatchBonus
+                        },
+                        lastFrontCard: backRandomCharacter,
+                    };
+
+                    updateUserPrefs(updatedLoggedInUser);
+
+                    return prevNoMatchBonus; // Continue using the latest noMatchBonus
+                });
+
+                return prevMatchPenalty; // Continue using the latest matchPenalty
+            });
+
+
+            setBackRandomCharacter(null);
+            setCharacters(null);
+
+            setIsGameOver(true);
+
+        }
 
         console.log("front character:", frontRandomCharacter);
         console.log("back character: ", backRandomCharacter);
         console.log("characters:", characters);
 
-        //Save to DB and local storage
-        setUserUpdates({ ...loggedInUser, lastFrontCard: backRandomCharacter });
-        setLoggedInUser({ ...loggedInUser, lastFrontCard: backRandomCharacter });
+        setMatchPenalty(prevMatchPenalty => {
+            setNoMatchBonus(prevNoMatchBonus => {
+                // Save the user prefs to DB with the latest values
+                const updatedLoggedInUser = {
+                    ...loggedInUser,
+                    userStats: {
+                        ...loggedInUser.userStats,
+                        matchPenalty: prevMatchPenalty, // Use the current matchPenalty
+                        noMatchBonus: prevNoMatchBonus, // Use the current noMatchBonus
+                    },
+                    lastFrontCard: backRandomCharacter,
+                };
 
-   
+                updateUserPrefs(updatedLoggedInUser);
 
-      
+                return prevNoMatchBonus; // Continue using the latest noMatchBonus
+            });
 
-            setBackRandomCharacter(characters[0]);
-            setCharacters(characters.slice(1));
+            return prevMatchPenalty; // Continue using the latest matchPenalty
+        });
+
+
+        if (!characters[1] || characters[1].name === "Game Over" || !characters[1] || characters[0].name === "Game Over" || characters.length === 0) {
+
+            return;
+        }
+
+        else {
+
             let newCharacter = null;
             let attempts = 0;
 
-            while (attempts < 10) {
+
+            while (attempts < 15) {
                 attempts += 1;
                 console.log(attempts);
 
@@ -185,7 +268,7 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
                         break;  // Exit the loop if the character is unique across all states
                     }
 
-                    else{
+                    else {
                         console.log("Duplicate character found, retrying...");
                     }
 
@@ -194,17 +277,20 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
                     return; // Exit if an error occurs to prevent an infinite loop
                 }
 
-                if (attempts === 10) {
+                if (attempts >= 15) {
                     console.log("No unique characters found after max attempts.");
-                    return;
+                    newCharacter = gameOverObj;
+                    break;
                 }
 
             };
 
             // Add the new, unique character to the state
             setCharacters(prevCharacters => [...prevCharacters, newCharacter]);
+
         }
-    }
+
+    };
 
 
     /* useEffect(() => {
@@ -238,12 +324,22 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
                 body: JSON.stringify(data)
             })
 
-            const stats = ((loggedInUser.baseStat - penalty) + matchBonus)      //Add penalty to User Schema!
-            
-            const isMatch = Math.random() < stats / 100;
-            console.log("stats", stats);
 
-            isMatch ? matchHappened() : setMatchBonus(matchBonus + 5);
+            const stats = ((loggedInUser.userStats.baseStat - matchPenalty) + noMatchBonus);      //Add penalty to User Schema!
+
+            const isMatch = Math.random() < stats / 100;
+            console.log("Chance to match: ", stats, "%");
+            console.log("Penalty:", matchPenalty);
+            console.log("Bonus", noMatchBonus);
+
+            if (isMatch) { matchHappened() }
+
+            else {
+
+                setNoMatchBonus(noMatchBonus + 5);
+
+            }
+
             putCharactersInStates();
 
         } catch (e) {
@@ -278,8 +374,10 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
         //alert("You have a match!");
         setIsMatchNotificationVisible(true)
         setIsButtonDisabled(true)
-        setMatchBonus(0);
-        setPenalty(penalty + 3);
+
+
+        setNoMatchBonus(0);
+        setMatchPenalty(matchPenalty + 3);
 
 
         const username = loggedInUser.username;
@@ -350,9 +448,13 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
                         {
                             isMoreDetailsVisible && (
                                 <> <h5 className="moreDetails">More details:</h5>
-                                    {frontRandomCharacter.gender !== "??" && frontRandomCharacter.gender !== null && (
+                                    {frontRandomCharacter.gender !== null && (
                                         <h6 className="moreDetails">
-                                            {frontRandomCharacter.gender === "Female" ? "Gender: Female ♀️" : "Gender: Male ♂️"}
+                                            {frontRandomCharacter.gender === "Female"
+                                                ? "Gender: Female ♀️"
+                                                : frontRandomCharacter.gender === "Male"
+                                                    ? "Gender: Male ♂️"
+                                                    : "Gender: ?? 👽"}
                                         </h6>
                                     )}
                                     {frontRandomCharacter.height !== "??" && frontRandomCharacter.height !== null && (
@@ -377,10 +479,11 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
                     </div>
 
                     {frontRandomCharacter.origin === "??" || frontRandomCharacter.origin === null ? "" : <p className="origin">Origin: {frontRandomCharacter.origin}</p>}
+                    <p>Pen: {matchPenalty} Bon:{noMatchBonus}</p>
 
                     <div className="buttonWrapper">
-                        <button className="dislikeButton" onClick={handleDislike} disabled={isButtonDisabled ? 'true' : '' || isGameOver ? 'true' : ''} >👎</button>
-                        <button className="likeButton" onClick={handleLike} disabled={isButtonDisabled ? 'true' : '' || isGameOver ? 'true' : ''}>❤️</button>
+                        <button className="dislikeButton" onClick={handleDislike} disabled={isButtonDisabled || isGameOver} >👎</button>
+                        <button className="likeButton" onClick={handleLike} disabled={isButtonDisabled || isGameOver}>❤️</button>
                     </div>
 
 

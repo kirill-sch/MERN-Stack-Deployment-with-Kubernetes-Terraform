@@ -3,17 +3,15 @@ import Main from "../components/Main";
 import Messages from "../components/Messages";
 
 
-function HomePage ({setLoggedInUser, setIsLoggedin, loggedInUser, playMatchSound}) {
+function HomePage ({setLoggedInUserId, setLoggedInUser, loggedInUser, playMatchSound}) {
     const defaultPictureURL = "/assets/images/default_profiles/default.jpg";
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [matched, setMatched] = useState(false);
-    const [userUpdates, setUserUpdates] = useState({});
 
 
-    useEffect(() => {
 
-        async function updateUserPrefs () {
+        async function updateUserPrefs (userUpdates) {
 
         try {
             const response = await fetch(`/api/user/${loggedInUser._id}`, {
@@ -35,11 +33,9 @@ function HomePage ({setLoggedInUser, setIsLoggedin, loggedInUser, playMatchSound
             console.log(error);
         }
 
-    }
+    };
 
-    updateUserPrefs();
-
-    }, [userUpdates]);
+  
 
     return (
         <>
@@ -48,14 +44,14 @@ function HomePage ({setLoggedInUser, setIsLoggedin, loggedInUser, playMatchSound
 
         <Messages loggedInUser={loggedInUser} matched={matched}/>
 
-        <Main loggedInUser={loggedInUser} setIsLoading={setIsLoading} setMatched={setMatched} setUserUpdates={setUserUpdates} setLoggedInUser={setLoggedInUser} playMatchSound={playMatchSound}/>
+        <Main loggedInUser={loggedInUser} setIsLoading={setIsLoading} setMatched={setMatched} setLoggedInUser={setLoggedInUser} updateUserPrefs={updateUserPrefs} playMatchSound={playMatchSound}/>
 
         <div className="profileContainer">
         <img src={loggedInUser.profilePicture || defaultPictureURL} alt="Profile" className="profileImg" onClick={() => setIsModalVisible(!isModalVisible)}/>
         {isModalVisible && <div className="profileImgModal">
             <a style={{marginBottom:"10px"}}>{loggedInUser.username}</a>
             <a>Settings</a>
-            <a onClick={() => { setLoggedInUser(null) }}>Logout</a>
+            <a onClick={() => { setLoggedInUserId(null) }}>Logout</a>
             </div>}
         </div>
         </div>

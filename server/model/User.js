@@ -9,8 +9,13 @@ const userSchema = new Schema({
   email: String,
   profilePicture: String,
   userPreferences: Object,
-  baseStat: Number,
+  userStats: {
+    baseStat: Number,
+    matchPenalty: Number,
+    noMatchBonus: Number,
+  },
   lastFrontCard: Object,
+  isFirstLoad: Boolean,
   createdAt: Date
 });
 
