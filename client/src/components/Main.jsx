@@ -238,7 +238,8 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
                 body: JSON.stringify(data)
             })
 
-            const stats = ((loggedInUser.baseStat - penalty) + matchBonus)
+            const stats = ((loggedInUser.baseStat - penalty) + matchBonus)      //Add penalty to User Schema!
+            
             const isMatch = Math.random() < stats / 100;
             console.log("stats", stats);
 
