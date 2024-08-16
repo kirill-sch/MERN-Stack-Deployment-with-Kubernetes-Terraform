@@ -39,12 +39,6 @@ function RegistrationForm({ setButtonClicked , playClickSound, playFeedbackSound
         playClickSound()
     };
 
-    // Email validation if we have already an emailAddress
-    function validateEmail(emailAddress) {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        return regex.test(emailAddress)
-    }
-
 
     // Handle Send Button
     async function handleSubmit(event) {
@@ -69,12 +63,6 @@ function RegistrationForm({ setButtonClicked , playClickSound, playFeedbackSound
             }
         }
 
-        
-        // Validate email format
-        if (!validateEmail(emailAddress)) {
-            alert("Invalid email format!")
-            return
-        }
         
         const encryptedPassword = CryptoJS.AES.encrypt(password,'>+KtIM"?t#71m1rtIbF>').toString();
 
@@ -188,7 +176,7 @@ function RegistrationForm({ setButtonClicked , playClickSound, playFeedbackSound
                                 type="email"
                                 value={emailAddress}
                                 onChange={(event) => setEmailAddress(event.target.value)}
-                              //  pattern={/^[^\s@]+@[^\s@]+\.[^\s@]+$/}      //Fix regex.
+                                pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
                             />
                         </label>
 
