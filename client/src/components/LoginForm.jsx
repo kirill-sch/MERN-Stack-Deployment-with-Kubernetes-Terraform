@@ -40,7 +40,7 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked , playFeed
         */
        
         const encryptedPassword = CryptoJS.AES.encrypt(password,'>+KtIM"?t#71m1rtIbF>').toString()
-
+        console.log(encryptedPassword);
 
         const data =
         {

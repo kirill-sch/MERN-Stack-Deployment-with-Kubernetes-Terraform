@@ -238,8 +238,9 @@ function Main({ setLoggedInUser, loggedInUser, setIsLoading, setMatched, setUser
                 body: JSON.stringify(data)
             })
 
-
-            const isMatch = Math.random() < ((loggedInUser.baseStat - penalty) + matchBonus) / 100;
+            const stats = ((loggedInUser.baseStat - penalty) + matchBonus)
+            const isMatch = Math.random() < stats / 100;
+            console.log("stats", stats);
 
             isMatch ? matchHappened() : setMatchBonus(matchBonus + 5);
             putCharactersInStates();
