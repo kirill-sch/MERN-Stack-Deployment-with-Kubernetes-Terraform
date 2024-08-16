@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef} from 'react'
+import { useEffect, useState, useRef } from 'react'
 import './App.css'
 import HomePage from './pages/HomePage'
 import Signup_Login from './pages/Signup_Login'
@@ -6,7 +6,11 @@ import Signup_Login from './pages/Signup_Login'
 function App() {
 
   const [isLoggedin, setIsLoggedin] = useState(false);
+  const [loggedInUserId, setLoggedInUserId] = useState(null);
   const [loggedInUser, setLoggedInUser] = useState(null);
+
+
+  const localUserId = localStorage.getItem('loggedInUserLocalId');
 
   //Sounds
   const hoverSoundRef = useRef(null)
@@ -62,37 +66,77 @@ function App() {
   }
 
 
-  // Load logged-in user from local storage on component mount
+
+  async function fetchUserDetails(id) {
+
+    try {
+      const response = await fetch(`/api/user/${id}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
+
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+
+      const user = await response.json();
+
+      delete user.password
+      delete user.email
+
+      console.log("Fetched user:", user);
+
+      return user;
+
+    } catch (error) {
+
+      console.log(error);
+    }
+  }
+
+
+  // Load logged-in user ID from local storage on component mount
   useEffect(() => {
 
-    const localUser = localStorage.getItem('loggedInUserLocal');
-    if (localUser) {
+    if (localUserId) {
 
-      setLoggedInUser(JSON.parse(localUser));
-      setIsLoggedin(true);
-
+      setLoggedInUserId(JSON.parse(localUserId));
     }
   }, []);
 
 
-  // Save logged-in user to local storage whenever it changes
+  // Login / logout
   useEffect(() => {
 
-    if (loggedInUser) {
+    const fetchAndSetUser = async () => {
 
-      localStorage.setItem('loggedInUserLocal', JSON.stringify(loggedInUser));
-      setIsLoggedin(true);
+      if (loggedInUserId) {
 
-    }
+        const user = await fetchUserDetails(loggedInUserId);
+        console.log("useEffect user", user);
 
-    else {
+        if (!localUserId) {
+          localStorage.setItem('loggedInUserLocalId', JSON.stringify(loggedInUserId));
+        }
 
-      localStorage.removeItem('loggedInUserLocal');
-      setIsLoggedin(false);
-    }
-  }, [loggedInUser]);
+        setLoggedInUser(user);
+        setIsLoggedin(true);
 
-  console.log(loggedInUser);
+      }
+
+      else {
+
+        localStorage.removeItem('loggedInUserLocalId');
+        setLoggedInUser(null);
+        setIsLoggedin(false);
+      }
+    };
+
+    fetchAndSetUser();
+
+  }, [loggedInUserId]);
 
   return (
     <>
@@ -102,7 +146,7 @@ function App() {
       <audio ref={feedbackSoundRef} src="/assets/sounds/soundeffect3.mp3" />
       <audio ref={matchSoundRef} src="/assets/sounds/soundeffect6.mp3" />
 
-      {isLoggedin && loggedInUser ? <HomePage setIsLoggedin={setIsLoggedin} loggedInUser={loggedInUser} setLoggedInUser={setLoggedInUser} playMatchSound={playMatchSound}/> : <Signup_Login setIsLoggedin={setIsLoggedin} setLoggedInUser={setLoggedInUser} playFeedbackSound={playFeedbackSound} playClickSound={playClickSound}/>}
+      {loggedInUserId  && isLoggedin ? <HomePage loggedInUser={loggedInUser} setLoggedInUser={setLoggedInUser} playMatchSound={playMatchSound} setLoggedInUserId={setLoggedInUserId}/> : <Signup_Login setLoggedInUserId={setLoggedInUserId} playFeedbackSound={playFeedbackSound} playClickSound={playClickSound} />}
     </>
   )
 }

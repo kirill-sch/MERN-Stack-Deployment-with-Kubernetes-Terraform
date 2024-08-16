@@ -67,6 +67,8 @@ function RegistrationForm({ setButtonClicked , playClickSound, playFeedbackSound
         const encryptedPassword = CryptoJS.AES.encrypt(password,'>+KtIM"?t#71m1rtIbF>').toString();
 
         const baseStat = (Math.floor(Math.random() * (35 - 15 + 1)) + 15);
+        const matchPenalty = 0;
+        const noMatchBonus = 0;
 
         userPreferences.gender.push("??");
 
@@ -78,8 +80,9 @@ function RegistrationForm({ setButtonClicked , playClickSound, playFeedbackSound
             username: username,
             password: encryptedPassword,
             profilePicture: profilePictureURL,
-            baseStat: baseStat,
+            userStats: {baseStat: baseStat, matchPenalty: matchPenalty, noMatchBonus: noMatchBonus},
             lastFrontCard: {null: null},
+            isFirstLoad: true,
             userPreferences: userPreferences
         }
 
@@ -199,7 +202,7 @@ function RegistrationForm({ setButtonClicked , playClickSound, playFeedbackSound
                                 minLength="8"
                                 type={passwordInputType}
                                 value={password}
-                                onChange={(event) => setPassword(event.target.value)}
+                                onChange={(event) => setPassword(event.target.value)}   //Duplicate password inputs, re-enter password, validate: the two inputs must be equal. Error messages if not.
                             />
                         </label>
 

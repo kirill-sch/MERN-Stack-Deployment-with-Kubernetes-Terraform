@@ -31,13 +31,34 @@ await mongoose.connect(url);
 
 // USER
 
-app.get('api/users', async (req, res) => {
+app.get('/api/users', async (req, res) => {
     try {
         const users = await User.find({});
         res.json(users);
     } catch (e) {
         res.status(500).json({ error: 'An error occured while retrieving users.' });
     }
+});
+
+app.get('/api/user/:user_id', async (req, res) => {
+    const id = req.params.user_id;
+try {
+
+    const user = await User.findById(id);
+
+    
+    if (!user) {
+        res.status(500).json({ error: 'An error occurred while retrieving the user.' });
+    }
+    
+    res.json(user);
+
+} catch (error) {
+    res.status(500).json({ error: 'An error occured while retrieving the user.' });
+}
+
+
+
 });
 
 app.post('/api/user', async (req, res) => {
@@ -67,7 +88,7 @@ app.post('/api/user', async (req, res) => {
 
 app.post('/api/register', async (req, res) => {
     try {
-        const { username, password, email, firstName, lastName, profilePicture, userPreferences, baseStat, lastFrontCard} = req.body;
+        const { username, password, email, firstName, lastName, profilePicture, userPreferences, userStats, lastFrontCard, isFirstLoad} = req.body;
         const createdAt = Date.now();
 
         const alreadyExistedUsers = await User.find({});
@@ -95,8 +116,9 @@ app.post('/api/register', async (req, res) => {
             email,
             profilePicture,
             userPreferences,
-            baseStat,
+            userStats,
             lastFrontCard,
+            isFirstLoad,
             createdAt
         }).save();
 
@@ -163,6 +185,8 @@ app.post('/api/characters/:num', async (req, res) => {
         const results = await Character.find({ gender: { $in: gender }, race: { $in: races }});
         const liked = await Like.find({ likedBy: username });
         const disliked = await Dislike.find({ dislikedBy: username });
+        const user = await User.findOne({ username: username });
+        //CHECK FOR FRONT CARD AND FILTER IT
 
         const toSend = [];
 
@@ -174,17 +198,22 @@ app.post('/api/characters/:num', async (req, res) => {
             const alreadySeenInLiked = liked.some(like => like.likedCharacterId === selectedCharacter.id);
             const alreadySeenInDisliked = disliked.some(dislike => dislike.dislikedCharacterId === selectedCharacter.id);
             const alreadyInToSend = toSend.some(character => character.id === selectedCharacter.id);
+            const alreadyInLastCard = user.lastFrontCard.id === selectedCharacter.id;
 
-            if (alreadySeenInLiked || alreadySeenInDisliked || alreadyInToSend) {
+
+            if (alreadySeenInLiked || alreadySeenInDisliked || alreadyInToSend || alreadyInLastCard) {
+
                 results.splice(randomIndex, 1);
                 continue;
+
             } else if (selectedCharacter.age === "??" || parseInt(selectedCharacter.age) >= 18) {
                 toSend.push(selectedCharacter);
             }
+
             results.splice(randomIndex, 1);
             console.log("loop");
         }
-
+        console.log("loop over");
         if (toSend.length < num) {
             console.warn('Not enough characters to meet the requested number.');
             return res.status(206).json(toSend);

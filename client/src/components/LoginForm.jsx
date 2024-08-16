@@ -7,7 +7,7 @@ import CryptoJS from "crypto-js";
 
 // Function //
 
-function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked , playFeedbackSound}) {
+function LoginForm({ setLoggedInUserId, setButtonClicked , playFeedbackSound}) {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -40,7 +40,6 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked , playFeed
         */
        
         const encryptedPassword = CryptoJS.AES.encrypt(password,'>+KtIM"?t#71m1rtIbF>').toString()
-        console.log(encryptedPassword);
 
         const data =
         {
@@ -65,9 +64,8 @@ function LoginForm({ setIsLoggedin, setLoggedInUser, setButtonClicked , playFeed
             delete validation.user.email;
 
             console.log("Logged in: ", validation.user);
-            setLoggedInUser(validation.user);
+            setLoggedInUserId(validation.user._id);
             playFeedbackSound();
-            setIsLoggedin(true)
 
         } else if (!validation.userFound) {
             setLoginError("Incorrect username!")
