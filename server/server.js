@@ -421,7 +421,7 @@ app.post('/api/matches', async (req, res) => {
 
 //GET endpoint to send all available profile pictures
 app.get('/api/images/profiles', (req, res) => {
-    const imagesDir = path.join(__dirname, '../client/public/assets/images/default_profiles');
+    const imagesDir = path.join(__dirname, './images/default_profiles');
     fs.readdir(imagesDir, (err, files) => {
         if (err) {
             return res.status(500).json({ error: 'Unable to scan directory' });
@@ -436,7 +436,7 @@ app.get('/api/images/profiles', (req, res) => {
 
 //GET endpoint to send all available welcome pictures
 app.get('/api/images/welcome', (req, res) => {
-    const imagesDir = path.join(__dirname, '../client/public/assets/images/welcome_screens');
+    const imagesDir = path.join(__dirname, './images/welcome_screens');
     fs.readdir(imagesDir, (err, files) => {
         if (err) {
             return res.status(500).json({ error: 'Unable to scan directory' });
