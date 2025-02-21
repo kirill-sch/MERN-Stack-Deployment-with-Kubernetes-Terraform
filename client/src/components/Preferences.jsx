@@ -1,7 +1,7 @@
 // Imports //
 
 import React, { useState, useEffect } from "react"
-import data from '../../../server/db.json'      //Make an endpoint for this.
+import data from './../../../server/db.json'      //Make an endpoint for this.
 
 // Function //
 
