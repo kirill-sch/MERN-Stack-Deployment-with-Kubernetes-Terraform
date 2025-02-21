@@ -1,13 +1,13 @@
-FROM node:18.20-alpine
+FROM node:18-alpine
 
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-
 RUN npm install
 
-RUN apk update && apk add bash
+COPY . .
+RUN npm build
 
-COPY . ./
+FROM nginx:latest
 
-CMD [ "npm", "run", "dev", "--", "--host"]
+COPY --from=builder /app/dist /usr/share/nginx/html
