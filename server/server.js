@@ -449,4 +449,21 @@ app.get('/api/images/welcome', (req, res) => {
     });
 });
 
+app.get('/api/data_seed', (req, res) => {
+    const dbFile = path.join(__dirname, './db.json');
+    
+    fs.readFile(dbFile, 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).json({error: 'Unable to read db.json' });
+        }
+
+        try {
+            const jsonData = JSON.parse(data);
+            res.json(jsonData);
+        } catch (parseError) {
+            res.status(500).json({ error: 'Invalid JSON format in db.json' });
+        }
+    })
+})
+
 app.listen(3000, () => console.log('Server started on http://localhost:3000'));
