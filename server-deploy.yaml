@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-freestyle  
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: server-freestyle
+  template:
+    metadata:
+      labels:
+        app: server-freestyle
+    spec:
+      containers:
+      - name: server-freestyle
+        image: 727646485811.dkr.ecr.eu-central-1.amazonaws.com/freestyle-project/server
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-freestyle-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: server-freestyle
+  ports:
+  - port: 3000
+    targetPort: 3000
+
