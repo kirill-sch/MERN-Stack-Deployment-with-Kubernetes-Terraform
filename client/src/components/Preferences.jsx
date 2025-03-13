@@ -1,36 +1,44 @@
 // Imports //
 
 import React, { useState, useEffect } from "react"
-import data from './../../../server/db.json'      //Make an endpoint for this.
 
 // Function //
 
-function Preferences({ setUserPreferences , playClickSound}) {
+function Preferences({ setUserPreferences, playClickSound }) {
 
     const [allRaces, setAllRaces] = useState([])
     const [selectedGenders, setSelectedGenders] = useState(["Male", "Female"])
     const [selectedRaces, setSelectedRaces] = useState([])
 
     useEffect(() => {
-
-        function createAllRaces() {
-
-            let races = []
-            for (let i = 0; i < data.length; i++) {
-                if (!races.includes(data[i].race)) {
-                    races.push(data[i].race)
+        async function fetchData() {
+            try {
+                const response = await fetch("/api/data_seed");
+                if (!response.ok) {
+                    throw new Error("Failed to load data")
                 }
+                const data = await response.json();
+                createAllRaces(data);
+            } catch (error) {
+                console.error("Error fetching data:", error);
             }
-            races = races.filter(race => race !== "??")
-            console.log(races)
-            setAllRaces(races)
-            setSelectedRaces(races)
-
         }
 
-        createAllRaces()
-
+        fetchData();
     }, [])
+
+    function createAllRaces() {
+        let races = []
+        for (let i = 0; i < data.length; i++) {
+            if (!races.includes(data[i].race)) {
+                races.push(data[i].race)
+            }
+        }
+        races = races.filter(race => race !== "??")
+        console.log(races)
+        setAllRaces(races)
+        setSelectedRaces(races)
+    }
 
     useEffect(() => {
 
@@ -126,4 +134,3 @@ function Preferences({ setUserPreferences , playClickSound}) {
 
 
 export default Preferences;
-
