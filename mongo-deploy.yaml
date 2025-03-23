@@ -36,6 +36,25 @@ spec:
             configMapKeyRef:
               name: mongo-config
               key: MONGO_INITDB_DATABASE
+        livenessProbe:
+          exec:
+            command:
+              - mongosh
+              - --eval
+              - "db.runCommand({ ping: 1 })"
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+              - mongosh
+              - --eval
+              - "db.runCommand({ ping: 1 })"
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            failureThreshold: 3
         volumeMounts:
           - name: mongo-init-volume
             mountPath: /docker-entrypoint-initdb.d

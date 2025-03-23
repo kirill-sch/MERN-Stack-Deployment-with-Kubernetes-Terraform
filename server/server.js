@@ -22,6 +22,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 const url = process.env.MONGODB_STRING;
 
@@ -464,6 +465,10 @@ app.get('/api/data_seed', (req, res) => {
             res.status(500).json({ error: 'Invalid JSON format in db.json' });
         }
     })
+})
+
+app.get('/health-check', (req, res)=> {
+    res.send("Health check passed");
 })
 
 app.listen(3000, "0.0.0.0", () => console.log('Server running on port 3000'));
