@@ -36,13 +36,13 @@ spec:
             configMapKeyRef:
               name: mongo-config
               key: MONGO_INITDB_DATABASE
-      #  volumeMounts:
-      #    - name: mongo-init-volume
-      #      mountPath: /docker-entrypoint-initdb.d
-      #volumes:
-      #  - name: mongo-init-volume
-      #    configMap:
-      #      name: mongo-init-script
+        volumeMounts:
+          - name: mongo-init-volume
+            mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: mongo-init-volume
+          configMap:
+            name: mongo-init-script
 ---
 apiVersion: v1
 kind: Service
