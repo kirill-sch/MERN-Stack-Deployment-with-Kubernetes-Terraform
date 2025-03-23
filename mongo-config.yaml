@@ -3,5 +3,4 @@ kind: ConfigMap
 metadata:
   name: mongo-config
 data:
-  MONGO_INITDB_ROOT_USERNAME: kirill_admin
   MONGO_INITDB_DATABASE: freestyle  
