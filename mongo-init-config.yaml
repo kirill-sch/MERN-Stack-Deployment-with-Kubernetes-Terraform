@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-init-script
+data:
+   mongo-init.js: |
+    db = db.getSiblingDB("admin");  
+    if (!db.getUser("kirill_admin")) {  // ✅ Only create if user doesn't exist
+    db.createUser({
+      user: "kirill_admin",
+      pwd: "kirill_admin55",
+      roles: [
+        { role: "root", db: "admin" },
+        { role: "readWrite", db: "freestyle" }
+      ]
+    });
+    print("✅ User kirill_admin created successfully");
+    } else {
+    print("⚠️ User kirill_admin already exists, skipping creation");
+    }
