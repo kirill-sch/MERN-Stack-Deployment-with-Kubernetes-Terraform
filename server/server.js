@@ -49,12 +49,13 @@ try {
 
     
     if (!user) {
-        res.status(500).json({ error: 'An error occurred while retrieving the user.' });
+        return res.status(404).json({ error: 'User not found.' });
     }
     
     res.json(user);
 
-} catch (error) {
+} catch (err) {
+    console.error("Error fetching user:", err);
     res.status(500).json({ error: 'An error occured while retrieving the user.' });
 }
 

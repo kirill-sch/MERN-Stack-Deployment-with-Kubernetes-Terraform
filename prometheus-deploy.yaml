@@ -1,50 +1,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-freestyle
+  name: prometheus
 spec:
-  replicas: 2
   selector:
     matchLabels:
-      app: nginx-freestyle
+      app: prometheus
   template:
     metadata:
       labels:
-        app: nginx-freestyle
+        app: prometheus
     spec:
       containers:
-      - name: nginx-freestyle
-        image: 727646485811.dkr.ecr.eu-central-1.amazonaws.com/freestyle-project/nginx:1.2
+      - name: prometheus
+        image: bitnami/prometheus:2
         resources:
           limits:
-            memory: "128Mi" # 1GB
+            memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: 80
+        - containerPort: 9090
         livenessProbe:
           httpGet:
-            path: /
-            port: 80
+            path: /-/healthy
+            port: 9090
           initialDelaySeconds: 5
           periodSeconds: 5
           failureThreshold: 3
         readinessProbe:
           httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 30
+            path: /-/ready
+            port: 9090
+          initialDelaySeconds: 120
           periodSeconds: 5
           failureThreshold: 3
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-freestyle-svc
+  name: prometheus-svc
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
-    app: nginx-freestyle
+    app: prometheus
   ports:
-  - port: 80
-    targetPort: 80
-
+  - port: 9090
+    targetPort: 9090
