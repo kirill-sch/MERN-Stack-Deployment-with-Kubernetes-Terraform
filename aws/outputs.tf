@@ -9,7 +9,3 @@ output "security_group_name" {
 output "cluster_endpoint" {
   value = aws_eks_cluster.eks-cluster.endpoint
 }
-
-output "ebs-id" {
-  value = aws_ebs_volume.ebs-volume.id
-}

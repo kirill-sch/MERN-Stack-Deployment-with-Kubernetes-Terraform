@@ -60,6 +60,15 @@ spec:
         volumeMounts: 
           - name: mongo-storage
             mountPath: /data/db
+  volumeClaimTemplates:
+  - metadata: 
+      name: mongo-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+      storageClassName: aws-ebs 
 ---
 apiVersion: v1
 kind: Service
