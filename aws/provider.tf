@@ -17,10 +17,18 @@ provider "aws" {
 
 data "aws_eks_cluster" "eks" {
   name = var.cluster_name
+
+  depends_on = [ 
+    aws_eks_cluster.eks-cluster
+   ]
 }
 
 data "aws_eks_cluster_auth" "eks" {
   name = data.aws_eks_cluster.eks.name
+
+  depends_on = [ 
+    aws_eks_cluster.eks-cluster
+   ]
 }
 
 /*provider "kubernetes" {
@@ -29,10 +37,10 @@ data "aws_eks_cluster_auth" "eks" {
   token = data.aws_eks_cluster_auth.eks-auth.token
 } */
 
-provider "kubectl" {
+/* provider "kubectl" {
   host                   = data.aws_eks_cluster.eks.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.eks.token
   load_config_file       = false
-}
+} */
 

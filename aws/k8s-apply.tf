@@ -1,4 +1,4 @@
-data "kubectl_filename_list" "configs" {
+/* data "kubectl_filename_list" "configs" {
     pattern = "./../kubernetes/config/*.yaml"
 }
 
@@ -40,4 +40,4 @@ resource "kubectl_manifest" "deployments-apply" {
     kubectl_manifest.configs-apply,
     kubectl_manifest.secrets-apply
    ]
-}
+} */

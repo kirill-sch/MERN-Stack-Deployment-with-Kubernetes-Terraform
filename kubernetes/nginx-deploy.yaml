@@ -15,6 +15,7 @@ spec:
       containers:
       - name: nginx-freestyle
         image: 727646485811.dkr.ecr.eu-central-1.amazonaws.com/freestyle-project/nginx:1.2
+        imagePullPolicy: IfNotPresent
         resources:
           limits:
             memory: "128Mi" # 1GB
