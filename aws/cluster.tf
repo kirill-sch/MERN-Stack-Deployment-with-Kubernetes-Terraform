@@ -50,6 +50,13 @@ resource "aws_iam_role_policy_attachment" "AmazonEKS_CNI_Policy" {
   role       = aws_iam_role.NodeGroupRole.name
 }
 
+resource "aws_eks_addon" "ebs-addon" {
+  cluster_name = aws_eks_cluster.eks-cluster.name
+  addon_name = "aws-ebs-csi-driver"
+  addon_version = "v1.41.0-eksbuild.1"
+  service_account_role_arn = aws_iam_role.eks-ebs-csi-driver.arn
+}
+
 resource "aws_eks_cluster" "eks-cluster" {
   name     = var.cluster_name
   role_arn = aws_iam_role.EKSClusterRole.arn
