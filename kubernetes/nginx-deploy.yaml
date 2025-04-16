@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: nginx-freestyle
-        image: 727646485811.dkr.ecr.eu-central-1.amazonaws.com/freestyle-project/nginx:1.2
+        image: 727646485811.dkr.ecr.eu-central-1.amazonaws.com/freestyle-project/nginx:1.4
         imagePullPolicy: IfNotPresent
         resources:
           limits:
@@ -40,9 +40,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-freestyle-svc
+  name: nginx-svc
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: nginx-freestyle
   ports:

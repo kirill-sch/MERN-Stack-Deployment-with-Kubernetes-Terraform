@@ -51,7 +51,7 @@ kind: Service
 metadata:
   name: grafana-svc
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: grafana
   ports:

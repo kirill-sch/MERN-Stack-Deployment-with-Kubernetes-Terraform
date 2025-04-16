@@ -17,10 +17,10 @@ spec:
       - name: mongo
         image: mongo:6.0
         imagePullPolicy: IfNotPresent
-        resources:
-          limits:
-            memory: "700Mi"
-            cpu: "750m"
+#        resources:
+#          limits:
+#            memory: "700Mi"
+#            cpu: "750m"
         ports:
         - containerPort: 27017
         env:
@@ -76,7 +76,7 @@ kind: Service
 metadata:
   name: mongo-svc
 spec:
-  clusterIP: none
+  clusterIP: None
   selector:
     app: mongo
   ports:
