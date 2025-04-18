@@ -3,3 +3,8 @@ variable "cluster_name" {
   type        = string
   default     = "freestyle-mern-project"
 }
+
+variable "region" {
+  type = string
+  default = "eu-central-1"
+}

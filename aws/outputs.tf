@@ -9,3 +9,7 @@ output "security_group_name" {
 output "cluster_endpoint" {
   value = aws_eks_cluster.eks-cluster.endpoint
 }
+
+output "region" {
+  value = var.region
+}
