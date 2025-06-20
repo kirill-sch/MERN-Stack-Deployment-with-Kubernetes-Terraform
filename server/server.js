@@ -22,6 +22,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 const url = process.env.MONGODB_STRING;
 
@@ -48,12 +49,13 @@ try {
 
     
     if (!user) {
-        res.status(500).json({ error: 'An error occurred while retrieving the user.' });
+        return res.status(404).json({ error: 'User not found.' });
     }
     
     res.json(user);
 
-} catch (error) {
+} catch (err) {
+    console.error("Error fetching user:", err);
     res.status(500).json({ error: 'An error occured while retrieving the user.' });
 }
 
@@ -466,4 +468,8 @@ app.get('/api/data_seed', (req, res) => {
     })
 })
 
-app.listen(3000, () => console.log('Server started on http://localhost:3000'));
+app.get('/health-check', (req, res)=> {
+    res.send("Health check passed");
+})
+
+app.listen(3000, "0.0.0.0", () => console.log('Server running on port 3000'));

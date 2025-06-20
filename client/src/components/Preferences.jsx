@@ -134,4 +134,3 @@ function Preferences({ setUserPreferences, playClickSound }) {
 
 
 export default Preferences;
-

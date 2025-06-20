@@ -1,17 +1,27 @@
-FROM node:18-alpine AS builder
+
+##BUILD ENVIRONMENT##
+
+FROM node:18.20-alpine As build
 
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN npm install
 
+#RUN apk update && apk add bash
+
 COPY . .
+
 RUN npm run build
 
-FROM nginx:latest
+##PRODUCTION ENVIRONMENT##
 
-COPY --from=builder /app/dist /usr/share/nginx/html
+FROM nginx:alpine As production
+
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+
+COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
