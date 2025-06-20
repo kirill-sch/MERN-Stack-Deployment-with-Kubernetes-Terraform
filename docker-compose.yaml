@@ -19,26 +19,29 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: admin
       ME_CONFIG_MONGODB_ADMINPASSWORD: mongo
-      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_SERVER: mongo  
   frontend:
-    image: kirillsch/freestyle-frontend:1.6
-    #volumes:
-      #- ./server/db.json:/app/db.json
-    #command: ["/bin/sh", ]
-    ports:  
-      - "5173:5173"
+    build: ./client
+    volumes:
+      - ./client/dist:/usr/share/nginx/html
+    depends_on:
+      - backend
     restart: unless-stopped
-    depends_on :
-     - backend
   backend:
-    image: kirillsch/freestyle-backend:1.5
-    #volumes:
-     # - ./server/db.json:/app/db.json
+    build: ./server    
     ports:
-      - "8080:3000"
+      - "3000:3000"
     depends_on:
       - mongo
     restart: unless-stopped
+  nginx:    
+    build: ./nginx    
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped      
 volumes:
   db_data:
     

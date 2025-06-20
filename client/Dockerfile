@@ -1,3 +1,4 @@
+
 ##BUILD ENVIRONMENT##
 
 FROM node:18.20-alpine As build
@@ -5,7 +6,6 @@ FROM node:18.20-alpine As build
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-
 RUN npm install
 
 #RUN apk update && apk add bash
