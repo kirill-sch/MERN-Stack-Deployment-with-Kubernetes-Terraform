@@ -35,6 +35,11 @@ resource "aws_iam_role_policy_attachment" "AmaazonEKSClusterPolicy" {
   role       = aws_iam_role.EKSClusterRole.name
 }
 
+resource "aws_iam_role_policy_attachment" "AmazaonEKSServicePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+  role       = aws_iam_role.EKSClusterRole.name
+}
+
 resource "aws_iam_role_policy_attachment" "AmazonEksWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.NodeGroupRole.name
@@ -51,10 +56,14 @@ resource "aws_iam_role_policy_attachment" "AmazonEKS_CNI_Policy" {
 }
 
 resource "aws_eks_addon" "ebs-addon" {
-  cluster_name = aws_eks_cluster.eks-cluster.name
-  addon_name = "aws-ebs-csi-driver"
-  addon_version = "v1.41.0-eksbuild.1"
+  cluster_name             = aws_eks_cluster.eks-cluster.name
+  addon_name               = "aws-ebs-csi-driver"
+  addon_version            = "v1.41.0-eksbuild.1"
   service_account_role_arn = aws_iam_role.eks-ebs-csi-driver.arn
+
+  depends_on = [ 
+    aws_iam_role_policy_attachment.amazon-ebs-csi-driver
+   ]
 }
 
 resource "aws_eks_cluster" "eks-cluster" {
@@ -68,13 +77,14 @@ resource "aws_eks_cluster" "eks-cluster" {
   }
 
   depends_on = [
-    aws_iam_role_policy_attachment.AmaazonEKSClusterPolicy
+    aws_iam_role_policy_attachment.AmaazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.AmazaonEKSServicePolicy
   ]
 }
 
 resource "aws_eks_node_group" "nodes" {
   cluster_name    = aws_eks_cluster.eks-cluster.name
-  node_group_name = "t3_medium_node_group"
+  node_group_name = "main_node_group"
   node_role_arn   = aws_iam_role.NodeGroupRole.arn
   subnet_ids      = [aws_subnet.private-subnet-1.id, aws_subnet.private-subnet-2.id]
 
