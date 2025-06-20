@@ -59,7 +59,7 @@ It will look something like this: a2e885ad0eff74527bea23f46446c764-210310661.eu-
 
 Configure your Ingress host
 - Open 'ingress.yaml'.
-- Paste the exterbal IP into the 'spec.rules.host' field.
+- Paste the external IP into the 'spec.rules.host' field.
 ```
 kubectl apply -f ingress.yaml
 ```
