@@ -34,7 +34,8 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           DYNAMODB_TABLE: ${{ secrets.DYNAMODB_TABLE }}
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
-        run: terraform init \
+        run: |
+          terraform init \
           -backend-config:"bucket=$S3_BUCKET" \
           -backend-config:"key=state/terraform.tfstate" \
           -backend-config:"region=$AWS_DEFAULT_REGION" \
