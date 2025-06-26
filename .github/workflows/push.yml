@@ -2,8 +2,9 @@ name: Push to feature branch
 
 on:
   push:
-    branches-ignore:
-      - 'main'
+    branches:
+      - '*'
+      - '!main'
 
 env: 
   TF_LOG: INFO
