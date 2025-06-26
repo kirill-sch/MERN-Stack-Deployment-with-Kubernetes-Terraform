@@ -36,11 +36,11 @@ jobs:
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
         run: |
           terraform init \
-          -backend-config:"bucket=$S3_BUCKET" \
-          -backend-config:"key=state/terraform.tfstate" \
-          -backend-config:"region=$AWS_DEFAULT_REGION" \
-          -backend-config:"encrypt=true" \
-          -backend-config:"dynamodb_table=$DYNAMODB_TABLE"
+          -backend-config="bucket=$S3_BUCKET" \
+          -backend-config="key=state/terraform.tfstate" \
+          -backend-config="region=$AWS_DEFAULT_REGION" \
+          -backend-config="encrypt=true" \
+          -backend-config="dynamodb_table=$DYNAMODB_TABLE"
 
       - name: Terraform Format
         id: fmt
