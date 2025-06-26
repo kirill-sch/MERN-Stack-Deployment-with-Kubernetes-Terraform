@@ -3,13 +3,13 @@ terraform {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 5.0"
-    }   
+    }
   }
   /*backend "s3" {
-    bucket = "mern-stack-deployment-tf-state"
-    key = "state/terraform.tfstate"
-    region = "eu-central-1"
-    encrypt = true
+    bucket         = "mern-stack-deployment-tf-state"
+    key            = "state/terraform.tfstate"
+    region         = "eu-central-1"
+    encrypt        = true
     dynamodb_table = "terraform-state-lock-table"
   }*/
 }

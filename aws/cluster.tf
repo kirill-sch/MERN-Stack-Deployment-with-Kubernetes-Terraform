@@ -61,9 +61,9 @@ resource "aws_eks_addon" "ebs-addon" {
   addon_version            = "v1.41.0-eksbuild.1"
   service_account_role_arn = aws_iam_role.eks-ebs-csi-driver.arn
 
-  depends_on = [ 
+  depends_on = [
     aws_iam_role_policy_attachment.amazon-ebs-csi-driver
-   ]
+  ]
 }
 
 resource "aws_eks_cluster" "eks-cluster" {
