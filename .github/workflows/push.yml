@@ -40,7 +40,7 @@ jobs:
           -backend-config:"key=state/terraform.tfstate" \
           -backend-config:"region=$AWS_DEFAULT_REGION" \
           -backend-config:"encrypt=true" \
-          -backend-config="dynamodb_table=$DYNAMODB_TABLE"
+          -backend-config:"dynamodb_table=$DYNAMODB_TABLE"
 
       - name: Terraform Format
         id: fmt
