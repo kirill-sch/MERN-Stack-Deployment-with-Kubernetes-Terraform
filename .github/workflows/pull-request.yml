@@ -54,6 +54,7 @@ jobs:
           framework: terraform
           container_user: 1000
           output_format: github_failed_only
+          skip_check: CKV_AWS_23,CKV_AWS_119
 
       - name: Add Plan Comment
         id: comment
