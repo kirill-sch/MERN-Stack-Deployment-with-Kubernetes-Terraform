@@ -58,6 +58,7 @@ jobs:
       - name: Add Plan Comment
         id: comment
         uses: actions/github-script@v7
+        if: always()
         env: 
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
