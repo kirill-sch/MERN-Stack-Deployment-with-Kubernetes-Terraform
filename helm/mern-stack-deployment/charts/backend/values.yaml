@@ -1,0 +1,35 @@
+deployment:
+  name: backend-deploy
+  replicaCount: 2
+  image: 727646485811.dkr.ecr.eu-central-1.amazonaws.com/freestyle-project/server:1.3
+  imagePullPolicy: IfNotPresent
+  containerPort: 3000  
+  livenessProbe:
+    httpGet:
+      path: /health-check
+      port: 3000
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    failureThreshold: 3
+  readinessProbe:
+    httpGet:
+      path: /health-check
+      port: 3000
+    initialDelaySeconds: 30
+    periodSeconds: 5
+    failureThreshold: 3
+
+service:
+  name: backend-svc
+  type: ClusterIP
+  ports:
+    protocol: TCP
+    port: 3000
+    targetPort: 3000
+
+secret:
+  name: backend-secret
+
+env: 
+  secret:
+      MONGODB_STRING: "bW9uZ29kYjovL2tpcmlsbF9hZG1pbjpraXJpbGxfYWRtaW41NUBtb25nby1zdmM6MjcwMTcvZnJlZXN0eWxlP2F1dGhTb3VyY2U9YWRtaW4="
